@@ -56,10 +56,10 @@ do
 	DST="`echo "$SRC" | sed -e 's#.*/#.#'`"
 	if echo "$SRC" | grep -q /profile$
 	then
-		create_link "$HOME/$SRC" .bash_profile
-		create_link "$HOME/$SRC" .bashrc
+		create_link "$SRC" .bash_profile
+		create_link "$SRC" .bashrc
 	else
-		create_link "$HOME/$SRC" "$DST"
+		create_link "$SRC" "$DST"
 	fi
 done
 
