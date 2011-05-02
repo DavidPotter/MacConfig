@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function realpath()
+{
+	python -c 'import os,sys;print os.path.realpath(sys.argv[1])' "$@"
+}
+
 INSTALLSCRIPTLOC="$(realpath `dirname $BASH_SOURCE`)"
 
 # Create an entry in the ~/Library/LaunchAgents directory to automatically execute

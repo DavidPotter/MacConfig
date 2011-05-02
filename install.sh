@@ -2,10 +2,11 @@
 cd
 
 # Location of repository.
-REPOLOC="$HOME/bin/MacConfig"
+REPONAME='MacConfig'
+REPOLOC="$HOME/bin/$REPONAME"
 
 # Clone the dotfiles repository and execute the profile script.
-[ -d $REPOLOC ] || git clone git://github.com/DavidPotter/MacConfig.git $REPOLOC
+[ -d $REPOLOC ] || git clone git://github.com/DavidPotter/$REPONAME.git $REPOLOC
 (
 	set -e
 	cd $REPOLOC
@@ -36,7 +37,7 @@ function create_link()
 	else
 		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]
 		then
-			echo -n "dotfiles: $DST already exists" >&2
+			echo -n "$REPONAME: $DST already exists" >&2
 			if [ -L "$DST" ]
 			then
 				echo " (pointing to `readlink "$DST"`)"
