@@ -68,4 +68,8 @@ done
 # and set up the correct hosts file.
 source $REPOLOC/installChangeHosts.sh
 
-echo "#\n# Invoke the following command to complete the installation:\n#   source ~/.bash_profile\n#"
+echo '#'
+echo "# `basename $BASH_SOURCE`:"
+echo '# Invoke the following command to complete the installation:'
+echo '#   source ~/.bash_profile'
+echo '#"
