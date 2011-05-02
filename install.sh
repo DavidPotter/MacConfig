@@ -67,3 +67,5 @@ done
 # Install the CreateHosts script to detect changes in the network configuration
 # and set up the correct hosts file.
 source $REPOLOC/installChangeHosts.sh
+
+source $HOME/.bash_profile
