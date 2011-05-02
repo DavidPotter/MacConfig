@@ -1,0 +1,26 @@
+[user]
+	name = David Potter
+	#email = me@domain.com
+
+[github]
+	user = DavidPotter
+
+[core]
+	excludesfile = ~/.gitignore_global
+	# Explicitly specify an editor that exits when it's done (as opposed to TextMate which doesn't).
+	editor = pico
+
+[alias]
+	# Display a formatted graphical log.
+	lg = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s %C(blue bold)- %an %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	# Display the recent commits sorted by person.
+	recent = shortlog --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --since='1 week ago'
+
+[difftool "sourcetree"]
+	path = 
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+# " <-- need this to close quote from previous line
+
+[mergetool "sourcetree"]
+	cmd = /Applications/Software Development/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

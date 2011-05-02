@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Look for a connection to an INRIX network.
+export domain=$(ipconfig getpacket en0 | grep 'inrix' | sed -e 's/domain_name (string)*: //')
+if [ "$domain" == "" ]
+then
+	export domain=$(ipconfig getpacket en1 | grep 'inrix' | sed -e 's/domain_name (string)*: //')
+fi
+
+# If the current network is recognized, use a special hosts file.
+# Otherwise use the default hosts file.
+ROOTDIR="`dirname $BASH_SOURCE`/hostinfo)
+if [ "$domain" == "inrix.corpnet.local" ]
+then 
+	ln -sf $ROOTDIR/hosts.inrix $ROOTDIR/hosts
+	LOCATION="INRIX"
+else
+	ln -sf $ROOTDIR/hosts.default $ROOTDIR/hosts
+	LOCATION="NOT INRIX"
+fi
+echo `date "+%Y-%m-%d %H:%M:%S"` "Location: $LOCATION" >> $HOME/Library/Logs/ChangeHosts.log
+
+# Flush the Directory Service cache to recognize this change.
+dscacheutil -flushcache
