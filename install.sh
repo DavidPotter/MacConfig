@@ -15,7 +15,7 @@ REPOLOC="$HOME/bin/MacConfig"
 
 	set +e
 	git fetch origin
-	git show origin/master:profile > "$TEMPFILE"
+	git show origin/master:dotfiles/profile > "$TEMPFILE"
 	echo "Executing $TEMPFILE"
 	source "$TEMPFILE"
 	set -e
