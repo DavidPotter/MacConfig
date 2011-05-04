@@ -9,7 +9,7 @@ fi
 
 # If the current network is recognized, use a special hosts file.
 # Otherwise use the default hosts file.
-ROOTDIR="`dirname $BASH_SOURCE`/hostinfo)
+ROOTDIR="`dirname $BASH_SOURCE`/hostinfo"
 if [ "$domain" == "inrix.corpnet.local" ]
 then 
 	ln -sf $ROOTDIR/hosts.inrix $ROOTDIR/hosts
