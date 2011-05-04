@@ -7,3 +7,8 @@ Inspired by https://github.com/markcarroll/dotfiles, https://github.com/jasoncod
 
 ## Installation
     bash < <( curl -sL http://github.com/DavidPotter/MacConfig/raw/master/install.sh )
+
+Installing in this way will do the following:
+* Clone this Git repository to ~/bin/MacConfig.
+* Attempt to create a symbol link for all the files in the dotfiles subdirectory in your root directory.
+* Run the installChangeHosts.sh script to configure the ChangeHosts script.
