@@ -7,9 +7,14 @@ then
 	export domain=$(ipconfig getpacket en1 | grep 'inrix' | sed -e 's/domain_name (string)*: //')
 fi
 
+function realpath()
+{
+	python -c 'import os,sys;print os.path.realpath(sys.argv[1])' "$@"
+}
+
 # If the current network is recognized, use a special hosts file.
 # Otherwise use the default hosts file.
-ROOTDIR="`dirname $BASH_SOURCE`/hostinfo"
+ROOTDIR="$(realpath `dirname $BASH_SOURCE`/hostinfo)"
 if [ "$domain" == "inrix.corpnet.local" ]
 then 
 	ln -sf $ROOTDIR/hosts.inrix $ROOTDIR/hosts
