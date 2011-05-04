@@ -1,5 +1,20 @@
 #!/bin/bash
 
+#
+# ChangeHosts
+#   Create a symbol link in the user's directory pointed at by /etc/hosts
+#   based on which network the user is connected to.  This allows per-network
+#   changes to be made to the system's hosts file.  The links look like this:
+#
+#       /etc/hosts --> ~/.../scripts/hostfiles/hosts --> hosts.default OR
+#                                                    --> hosts.inrix
+#
+#   This is necessary since changes to the /etc/hosts file cannot be
+#   automated without allowing sudo access.
+#
+#   This script logs its actions to ~/Library/Logs/ChangeHosts.log
+#
+
 # Look for a connection to an INRIX network.
 export domain=$(ipconfig getpacket en0 | grep 'inrix' | sed -e 's/domain_name (string)*: //')
 if [ "$domain" == "" ]
@@ -7,6 +22,7 @@ then
 	export domain=$(ipconfig getpacket en1 | grep 'inrix' | sed -e 's/domain_name (string)*: //')
 fi
 
+# Function to construct the canonical full path for a path.
 function realpath()
 {
 	python -c 'import os,sys;print os.path.realpath(sys.argv[1])' "$@"
@@ -23,7 +39,9 @@ else
 	ln -sf $ROOTDIR/hosts.default $ROOTDIR/hosts
 	LOCATION="NOT INRIX"
 fi
+
+# Log our actions.
 echo `date "+%Y-%m-%d %H:%M:%S"` "Location: $LOCATION" >> $HOME/Library/Logs/ChangeHosts.log
 
-# Flush the Directory Service cache to recognize this change.
+# Flush the Directory Service cache to get the system to recognize this change.
 dscacheutil -flushcache

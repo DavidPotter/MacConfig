@@ -4,7 +4,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.user.ChangeHosts</string>
+	<string>com.inrix.DavidP.ChangeHosts</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>SCRIPTLOCATION/ChangeHosts</string>
