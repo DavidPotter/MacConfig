@@ -56,6 +56,11 @@ alias ....='cd ../../..'
 alias home='cd ~'
 
 # Directory listing aliases.
+# -F = Display / after directory, * after executable @ after symbolic link, = after socket, % after whiteout, | after FIFO.
+# -G = Colorized output.
+# -h = Use unit suffixes to reduce th # of digits to 3 or less.
+# -l = List in long format.
+# -a = Include directory entries whose names begin with a dot.
 alias d='ls -FGhl'
 alias dir='ls -FGhl'
 alias da='ls -aFGhl'
@@ -83,6 +88,7 @@ alias reveal='open -R --'
 # Launch applications.
 alias textedit='open -e'
 alias eclipse='open /Applications/eclipse/Eclipse.app'
+alias filemerge='open /Applications/Xcode.app/Contents/Applications/FileMerge.app'
 
 # Default editor.
 alias edit='open -a /Applications/TextMate.app'
