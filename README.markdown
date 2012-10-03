@@ -26,21 +26,21 @@ To take full advantage of these scripts, you also need to install the following 
 profile:
 
 * Sets the command line prompt to show:
-** The current time.
-** The current user and machine.
-** The current directory.
-** The current branch and status if in a directory that is a GIT repository.
+  * The current time.
+  * The current user and machine.
+  * The current directory.
+  * The current branch and status if in a directory that is a GIT repository.
 * Sets TextMate as the default editor.
 * Sets the default man pager to 'less'.
 * Configures the command line history.
 * Sets up GIT command line completion.
 * Defines a number of useful aliases (dir, .., etc.)
 * Defines a number of useful functions:
-** pman - Open man pages in Preview app.
-** cd_smburl - 'cd' into SMB URLs like this:  cd_smburl smb://host/share
-** mategem - Open a gem in TextMate.
-** gup - Update the current branch from the upstream branch. If there are uncommited changes, rebase them on top of the upstream changes.
-** dif - Compare two files using the selected diff application (p4merge).
+  * pman - Open man pages in Preview app.
+  * cd_smburl - 'cd' into SMB URLs like this:  cd_smburl smb://host/share
+  * mategem - Open a gem in TextMate.
+  * gup - Update the current branch from the upstream branch. If there are uncommited changes, rebase them on top of the upstream changes.
+  * dif - Compare two files using the selected diff application (p4merge).
 
 inputrc:
 
