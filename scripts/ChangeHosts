@@ -2,7 +2,7 @@
 
 #
 # ChangeHosts
-#   Create a symbol link in the user's directory pointed at by /etc/hosts
+#   Create a symbolic link in the user's directory pointed at by /etc/hosts
 #   based on which network the user is connected to.  This allows per-network
 #   changes to be made to the system's hosts file.  The links look like this:
 #

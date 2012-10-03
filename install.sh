@@ -49,7 +49,7 @@ function create_link()
 
 }
 
-# Loop throgh the files in the dotfiles directory and create a symlink to each one
+# Loop through the files in the dotfiles directory and create a symlink to each one
 # from a file with the same name but with a dot prefix (a dotfile) in the home directory.
 # Special-case the profile script.
 find $REPOLOC/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
