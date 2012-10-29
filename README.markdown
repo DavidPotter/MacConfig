@@ -24,7 +24,7 @@ To take full advantage of these scripts, you also need to install the following 
 * git wtf command - This can be found at git://gitorious.org/willgit/mainline.git/.
 * Ruby - If you have Ruby installed additional features are added for editing and recognizing Ruby files.  Most of this is commented out as I don't currently use Ruby.
 
-To install the starred items, you can execute the install-git-tools.sh script.
+To install the starred items, you can execute the install-tools.sh script.
 
 ## What it gives you
 

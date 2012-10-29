@@ -2,11 +2,9 @@
 #pwd
 
 # Find the directory containing git.
-if [ -f /usr/bin/git ]
-then
+if [ -f /usr/bin/git ]; then
 	GITDIR=/usr/bin
-elif [ -f /usr/local/bin/git ]
-then
+elif [ -f /usr/local/bin/git ]; then
 	GITDIR=/usr/local/bin
 else
 	echo '** Git not installed yet. Aborting.'
@@ -15,7 +13,7 @@ fi
 echo "[Git is in $GITDIR]"
 
 #
-# install-git-tools.sh
+# install-tools.sh
 #   Installs the git helpers by performing following steps:
 #   - Clones repositories:
 #     - Git source to ~/src/external/git.
@@ -27,6 +25,7 @@ echo "[Git is in $GITDIR]"
 #     - git-completion
 #     - git-flow-completion
 #     - git-wtf
+#   Installs RVM and Ruby
 #
 
 ###############################################################################
@@ -35,13 +34,11 @@ echo "[Git is in $GITDIR]"
 
 # Clone the git source if not already present.
 REPOLOC="$HOME/src/external/git"
-if [ ! -d $REPLOC ]
-then
+if [ ! -d $REPLOC ]; then
 	echo "--> Cloning git to $REPOLOC..."
 	git clone https://github.com/git/git.git $REPOLOC
 fi
-if [ ! -d $REPLOC ]
-then
+if [ ! -d $REPLOC ]; then
 	echo '** Failed to clone git. Aborting.'
 	return
 fi
@@ -53,8 +50,7 @@ git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/contrib/completion/git-completion.bash ]
-then
+if [ ! -f $REPOLOC/contrib/completion/git-completion.bash ]; then
 	echo '** Git completion script not found. Aborting.'
 	return
 fi
@@ -65,13 +61,11 @@ fi
 
 # Clone the git-flow source if not already present.
 REPOLOC="$HOME/src/external/gitflow"
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '--> Cloning gitflow...'
 	git clone https://github.com/nvie/gitflow.git $REPOLOC
 fi
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '** Failed to clone git-flow. Aborting.'
 	return
 fi
@@ -83,8 +77,7 @@ git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/contrib/gitflow-installer.sh ]
-then
+if [ ! -f $REPOLOC/contrib/gitflow-installer.sh ]; then
 	echo '** Git-flow install script not found. Aborting.'
 	return
 fi
@@ -105,13 +98,11 @@ EOF
 
 # Clone the git-flow-completion source if not already present.
 REPOLOC="$HOME/src/external/git-flow-completion"
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '--> Cloning git-flow-completion...'
 	git clone https://github.com/bobthecow/git-flow-completion.git $REPOLOC
 fi
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '** Failed to clone git-flow-completion. Aborting.'
 	return
 fi
@@ -123,8 +114,7 @@ git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/git-flow-completion.bash ]
-then
+if [ ! -f $REPOLOC/git-flow-completion.bash ]; then
 	echo '** Git-flow completion script not found. Aborting.'
 	return
 fi
@@ -135,13 +125,11 @@ fi
 
 # Clone the git-wtf source if not already present.
 REPOLOC="$HOME/src/external/willgit"
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '--> Cloning git-wtf...'
 	git clone git://gitorious.org/willgit/mainline.git/ $REPOLOC
 fi
-if [ ! -d $REPOLOC ]
-then
+if [ ! -d $REPOLOC ]; then
 	echo '** Failed to clone git-wtf. Aborting.'
 	return
 fi
@@ -153,8 +141,7 @@ git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/bin/git-wtf ]
-then
+if [ ! -f $REPOLOC/bin/git-wtf ]; then
 	echo '** Git-wtf script not found. Aborting.'
 	return
 fi
@@ -170,16 +157,13 @@ function create_link()
 	local SRC="$1"
 	local DST="$2"
 
-	if [ ! -e "$DST" ]
-	then
+	if [ ! -e "$DST" ]; then
 		echo -n "--> Creating symbolic link: "
 		ln -sv "$SRC" "$DST"
 	else
-		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]
-		then
+		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]; then
 			echo -n "--> $REPONAME: $DST already exists" >&2
-			if [ -L "$DST" ]
-			then
+			if [ -L "$DST" ]; then
 				echo " (pointing to `readlink "$DST"`)"
 			else
 				echo " (not a symlink)"
@@ -190,6 +174,35 @@ function create_link()
 
 # Create symbolic links to completion and command.
 
-create_link $HOME/src/external/git/contrib/completion/git-completion.bash $HOME/bin/git-completion.sh
-create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.sh
-create_link $HOME/src/external/willgit/bin/git-wtf $HOME/bin/git-wtf
+create_link $HOME/src/external/git/contrib/completion/git-completion.bash   $HOME/bin/git-completion.bash
+create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOME/bin/git-prompt.sh
+create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
+create_link $HOME/src/external/willgit/bin/git-wtf                          $HOME/bin/git-wtf
+
+###############################################################################
+# Install RVM
+###############################################################################
+
+# Install the stable release version of RVM.
+if [ ! -s "$HOME/.rvm/scripts/rvm" ]; then
+	echo '--> Installing RVM...'
+	curl -L https://get.rvm.io | bash -s stable
+fi
+
+# Enable rvm if available.
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+	source "$HOME/.rvm/scripts/rvm"
+fi
+
+# Tell user what to do next.
+echo ' '
+echo 'To install Ruby, type:'
+echo ' '
+echo '   rvm install _version_'
+echo ' '
+echo 'where _version_ is the version to install.'
+echo 'The latest version of Ruby as of 10/28/2012 is 1.9.3.'
+echo 'To get a list of available versions type:'
+echo ' '
+echo '   rvm list known'
+echo ' '

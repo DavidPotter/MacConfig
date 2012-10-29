@@ -95,11 +95,10 @@ alias edit='open -a /Applications/TextMate.app'
 
 # Set up git command line completion.
 #done below - source ~/bin/git-completion.sh
-source ~/bin/git-flow-completion.sh
+source ~/bin/git-flow-completion.bash
 
 # If TextMate is available and we're in Terminal.app...
-if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]
-then
+if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
 	export LESSEDIT='mate -l %lm %f' # press V in less to edit the file in TextMate
 fi
 
@@ -134,8 +133,7 @@ export rvm_pretty_print_flag=1
 function mategem()
 {
 	local GEM="$1"
-	if [ -z "$GEM" ]
-	then
+	if [ -z "$GEM" ]; then
 		echo "Usage: mategem <gem>" 1>&2
 		false
 	else
@@ -167,8 +165,7 @@ function gup
 		set -e # fail immediately if there's a problem
 
 		# use `git-up` if installed
-		if type git-up > /dev/null 2>&1
-		then
+		if type git-up > /dev/null 2>&1; then
 			exec git-up
 		fi
 
@@ -176,8 +173,7 @@ function gup
 		git fetch
 
 		BRANCH=$(git describe --contains --all HEAD)
-		if [ -z "$(git config branch.$BRANCH.remote)" -o -z "$(git config branch.$BRANCH.merge)" ]
-		then
+		if [ -z "$(git config branch.$BRANCH.remote)" -o -z "$(git config branch.$BRANCH.merge)" ]; then
 			echo "\"$BRANCH\" is not a tracking branch." >&2
 			exit 1
 		fi
@@ -187,13 +183,11 @@ function gup
 		trap '{ rm -f "$TEMPFILE"; }' EXIT
 
 		# if we're behind upstream, we need to update
-		if git status | grep "# Your branch" > "$TEMPFILE"
-		then
+		if git status | grep "# Your branch" > "$TEMPFILE"; then
 
 			# extract tracking branch from message
 			UPSTREAM=$(cat "$TEMPFILE" | cut -d "'" -f 2)
-			if [ -z "$UPSTREAM" ]
-			then
+			if [ -z "$UPSTREAM" ]; then
 				echo Could not detect upstream branch >&2
 				exit 1
 			fi
@@ -210,8 +204,7 @@ function gup
 			HAVE_STASH=0
 			grep -q "No local changes" "$TEMPFILE" || HAVE_STASH=1
 
-			if [ "$CAN_FF" -ne 0 ]
-			then
+			if [ "$CAN_FF" -ne 0 ]; then
 				# if nothing has changed locally, just fast foward.
 				git merge --ff "$UPSTREAM"
 			else
@@ -230,25 +223,21 @@ function gup
 # Compare two files using the selected diff application.
 dif()
 {
-    if [ ${1:0:1} == "/" ];
-    then
+    if [ ${1:0:1} == "/" ]; then
         DIFFPATH1=$1
     else
         DIFFPATH1=$(pwd)/$1
     fi
 
-    if [ ${2:0:1} == "/" ];
-    then
+    if [ ${2:0:1} == "/" ]; then
         DIFFPATH2=$2
     else
         DIFFPATH2=$(pwd)/$2
     fi
 
-    if [ -z ${3} ];
-    then
+    if [ -z ${3} ]; then
         DIFFPATH3=
-    elif [ ${3:0:1} == "/" ];
-    then
+    elif [ ${3:0:1} == "/" ]; then
         DIFFPATH3=$3
     else
         DIFFPATH3=$(pwd)/$3
@@ -305,13 +294,11 @@ txtrst='\e[0m'    # Text Reset
 export PS1="\[$txtrst\][\t] "
 
 # Add rvm version@gemset
-if [[ -n "$rvm_path" ]]
-then
+if [[ -n "$rvm_path" ]]; then
 	function __my_rvm_ps1()
 	{
 		#[[ -z "$rvm_ruby_string" ]] && return
-		if [[ -z "$rvm_gemset_name" && "$rvm_sticky_flag" -ne 1 ]]
-		then
+		if [[ -z "$rvm_gemset_name" && "$rvm_sticky_flag" -ne 1 ]]; then
 			[[ "$rvm_ruby_string" = "system" && ! -s "$rvm_path/config/alias" ]] && return
 			grep -q -F "default=$rvm_ruby_string" "$rvm_path/config/alias" && return
 		fi
@@ -341,8 +328,7 @@ function first_file_match()
 	shift
 	while [ $# -gt 0 ]
 	do
-		if [ $OP "$1" ]
-		then
+		if [ $OP "$1" ]; then
 			echo "$1"
 			return 0
 		fi
@@ -352,26 +338,44 @@ function first_file_match()
 }
 
 # Add git status if available.
-if which git > /dev/null
-then
-	GIT_COMPLETION_PATH="$(dirname $(realpath "$(which git)"))/../etc/bash_completion.d/git-completion.bash"
-fi
-if [ ! -f "$GIT_COMPLETION_PATH" ]
-then
-	GIT_COMPLETION_PATH=$(first_file_match -f \
-		"/usr/local/git/contrib/completion/git-completion.bash" \
-		"/opt/local/share/doc/git-core/contrib/completion/git-completion.bash" \
-		"/etc/bash_completion.d/git" \
-	)
-fi
-if [ -f "$GIT_COMPLETION_PATH" ]
-then
+GIT_COMPLETION_PATH="$HOME/bin/git-completion.bash"
+if [ -f "$GIT_COMPLETION_PATH" ]; then
 	source "$GIT_COMPLETION_PATH"
+fi
+
+GIT_PROMPT_PATH="$HOME/bin/git-prompt.sh"
+#ls -FGhl $GIT_PROMPT_PATH
+if [ -f "$GIT_PROMPT_PATH" ]; then
+	source "$GIT_PROMPT_PATH"
 	export GIT_PS1_SHOWDIRTYSTATE=1
 	export GIT_PS1_SHOWSTASHSTATE=1
 	export GIT_PS1_SHOWUNTRACKEDFILES=1
 	export PS1="$PS1\[$txtylw\]"'$(__git_ps1 " (%s)")'
 fi
 
+#if which git > /dev/null; then
+#	GITDIR="$(dirname $(realpath "$(which git)"))"
+#	GIT_COMPLETION_PATH="$GITDIR/../etc/bash_completion.d/git-completion.bash"
+#	GIT_PROMPT_PATH="$GITDIR/../etc/bash_completion.d/git-completion.bash"
+#fi
+#if [ ! -f "$GIT_COMPLETION_PATH" ]; then
+#	GIT_COMPLETION_PATH=$(first_file_match -f \
+#		"$GITDIR/contrib/completion/git-completion.bash" \
+#		"/opt/local/share/doc/git-core/contrib/completion/git-completion.bash" \
+#		"/etc/bash_completion.d/git" \
+#		"$HOME/bin/git-completion.sh" \
+#	)
+#	echo "GIT_COMPLETION_PATH = $GIT_COMPLETION_PATH"
+#fi
+#if [ -f "$GIT_COMPLETION_PATH" ]; then
+#	source "$GIT_COMPLETION_PATH"
+#	export GIT_PS1_SHOWDIRTYSTATE=1
+#	export GIT_PS1_SHOWSTASHSTATE=1
+#	export GIT_PS1_SHOWUNTRACKEDFILES=1
+#	export PS1="$PS1\[$txtylw\]"'$(__git_ps1 " (%s)")'
+#fi
+
 # Finish off the prompt.
 export PS1="$PS1\[$txtrst\]"' > '
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
