@@ -17,9 +17,14 @@ Installing in this way will do the following:
 
 To take full advantage of these scripts, you also need to install the following packages:
 
-* Git
-* Git Completion
+* Git - This is installed with Xcode.  Go to the Downloads pane of the Preferences panel to do this.
+* Git Completion (*) - This is located in the contrib directory of the git repository, which can be found at https://github.com/git/git.git.
+* Git-Flow (*) - This can be found at https://github.com/nvie/gitflow.git.
+* Git-Flow Completion (*) - This can be found at https://github.com/bobthecow/git-flow-completion.git.
+* git wtf command - This can be found at git://gitorious.org/willgit/mainline.git/.
 * Ruby - If you have Ruby installed additional features are added for editing and recognizing Ruby files.  Most of this is commented out as I don't currently use Ruby.
+
+To install the starred items, you can execute the install-git-tools.sh script.
 
 ## What it gives you
 
