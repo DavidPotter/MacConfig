@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+#
+# add-xcode-to-path
+#   Adds the usr/bin subdirectory within the currently-selected Xcode app to
+#   the path environment variable.  This code is also in the profile dotfile
+#   so this script does not need to be execute separately if it is already
+#   there.
+#
+
+XCRUN=$(which xcrun)
+if [ -f "$XCRUN" ]
+then
+	XCODEPATH=$(xcode-select --print-path)
+	PATH=$PATH:$XCODEPATH/usr/bin
+	export PATH
+fi

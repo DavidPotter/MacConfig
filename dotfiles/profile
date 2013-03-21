@@ -20,7 +20,14 @@ export PS1="[\t] \u@\h:\w > "
 export LSCOLORS=gxCxFxfxhxegedHxHxGxGx
 
 # Add to the path
-export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts:/android-sdk/tools:/android-sdk/platform-tools
+XCRUN=$(which xcrun)
+if [ -f "$XCRUN" ]
+then
+    XCODEPATH=$(xcode-select --print-path)
+    XCODEPATH=:$XCODEPATH/usr/bin
+fi
+
+export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts$XCODEPATH:/android-sdk/tools:/android-sdk/platform-tools
 
 # Set the default editor to TextMate.
 export EDITOR=/usr/local/bin/mate
