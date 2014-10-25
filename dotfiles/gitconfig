@@ -11,10 +11,30 @@
 	editor = pico
 
 [alias]
+	# Displays all commits whose hash start with given string.
+	abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
+	# List git aliases
+	aliases = "!git config -l | grep alias | cut -c 7-"
+	# Cleanup will:
+	# - remove remote branch references that no longer exist
+	# - cleanup unnecessary git files
+	# - remove untracked files from the working tree
+	# - clear out your stash
+	cleanup = !git remote prune origin && git gc && git clean -dfx && git stash clear
 	# Display a formatted graphical log.
 	lg = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s %C(blue bold)- %an %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	# Display a formatted log with one line for each commit.
+	ls = log --pretty=format:"%C(yellow)%h\\ %Cgreen%cd%Creset\\%Cred%d%Creset\\ %s\\ [%Cblue%cn]" --decorate --date=local
+	# Display a formatted log with files.
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d%Creset\\ %s\\ [%Cblue%cn]%n%Creset%Cgreen%cd%Creset" --decorate --date=local --numstat
+	# Display what new commits have been created by the last command (e.g. after a "git pull").
+	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+	# Prune all stale remote branches.
+	prune-all = !git remote | xargs -n 1 git remote prune
 	# Display the recent commits sorted by person.
 	recent = shortlog --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr)%Creset' --since='1 week ago'
+	# Display who has contributed to the repository.
+	who = shortlog -n -s --no-merges
 
 [difftool "sourcetree"]
 	path = 
@@ -22,5 +42,9 @@
 # " <-- need this to close quote from previous line
 
 [mergetool "sourcetree"]
-	cmd = /Applications/Software Development/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
