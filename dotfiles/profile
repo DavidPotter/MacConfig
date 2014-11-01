@@ -87,10 +87,14 @@ alias ren=mv
 alias eject='drutil tray open'
 
 # Ping only 4 times like in Windows.
-alias ping='ping -c4'
+alias ping4='ping -c4'
 
 # Reveal files in finder instead of opening them.
 alias reveal='open -R --'
+
+# Show and hide hidden files in Finder.
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
 # Launch applications.
 alias textedit='open -e'
@@ -98,7 +102,11 @@ alias eclipse='open /Applications/eclipse/Eclipse.app'
 alias filemerge='open /Applications/Xcode.app/Contents/Applications/FileMerge.app'
 
 # Default editor.
-alias edit='open -a /Applications/TextMate.app'
+if [ -d /Applications/TextMate.app ]; then
+    alias edit='open -a /Applications/TextMate.app'
+else
+    echo 'TextMate is not installed.'
+fi
 
 # Set up git command line completion.
 #done below - source ~/bin/git-completion.sh
