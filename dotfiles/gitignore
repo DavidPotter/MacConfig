@@ -1,0 +1,103 @@
+#-----------------------------------------------------------------------------
+# OS X temporary files that should never be committed.
+#-----------------------------------------------------------------------------
+
+# c.f. http://www.westwind.com/reference/os-x/invisibles.html
+
+.DS_Store
+.Trashes
+*.swp
+
+# *.lock - This is used and abused by many editors for many different things.
+#    For the main ones (e.g. Eclipse), it should be excluded from source-control,
+#    but YMMV
+
+*.lock
+
+#-----------------------------------------------------------------------------
+# Xcode temporary files that should never be committed.
+#-----------------------------------------------------------------------------
+
+# NIB/XIB files still exist even on Storyboard projects.
+
+*~.nib
+
+#-----------------------------------------------------------------------------
+# Xcode build files
+#-----------------------------------------------------------------------------
+
+# Slash on the end so we only remove the FOLDER and not any files that were badly named with these names.
+
+build/
+DerivedData/
+
+*.ipa
+
+#-----------------------------------------------------------------------------
+# Xcode private settings (window sizes, bookmarks, breakpoints, custom executables, smart groups)
+#-----------------------------------------------------------------------------
+
+# .pbxuser: http://lists.apple.com/archives/xcode-users/2004/Jan/msg00193.html
+
+*.pbxuser
+
+# .mode1v3, .mode2v3: http://lists.apple.com/archives/xcode-users/2007/Oct/msg00465.html
+
+*.mode1v3
+*.mode2v3
+
+# .perspectivev3: http://stackoverflow.com/questions/5223297/xcode-projects-what-is-a-perspectivev3-file
+
+*.perspectivev3
+
+# Whitelist the default ones.  Some projects need to use these.
+!default.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.perspectivev3
+
+# This file exists for managing Xcode's knowledge of the possibly many VCS systems in your project.
+
+*.xccheckout
+
+#-----------------------------------------------------------------------------
+# Xcode 4 files
+#-----------------------------------------------------------------------------
+
+# Throw away ALL personal settings (including custom schemes! - unless they are "shared").
+
+xcuserdata
+*.xcuserstate
+
+#-----------------------------------------------------------------------------
+# Xcode 4 - Deprecated classes
+#-----------------------------------------------------------------------------
+
+# Allegedly, if you manually "deprecate" your classes, they get moved here.
+# We're using source-control, so this is a "feature" that we do not want!
+
+*.moved-aside
+
+#-----------------------------------------------------------------------------
+# Other Xcode files
+#-----------------------------------------------------------------------------
+
+# Header map files - Included in default GitHub .gitignore without explanation.
+
+*.hmap
+
+#-----------------------------------------------------------------------------
+# CocoaPods
+#-----------------------------------------------------------------------------
+
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control?
+#
+# Pods/
+!Podfile.lock
+!Manifest.lock
+!Pods/Headers/Build
+
+# Ignoring the XcodeCoverage/env.sh file since it is generated at run time
+env.sh
