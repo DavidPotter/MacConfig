@@ -1,3 +1,17 @@
+##############################################################################
+# profile
+#
+# Shell profile (.bash_profile, .bashrc, .profile, etc.).
+# Sets up the shell the way I like it, which includes the following:
+# - Prompt
+# - Environment variables (including PATH)
+# - Aliases
+# - Useful functions
+# - Ruby
+# - Git
+# - Xcode
+##############################################################################
+
 # Set the command line to include host and current directory.
 #export PS1="[\h \w] "
 # Set the command line to include time, user@host, current directory.
@@ -60,6 +74,7 @@ alias ~='cd ~'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+alias .....='cd ../../../..'
 alias home='cd ~'
 
 # Directory listing aliases.
@@ -117,6 +132,8 @@ if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
 	export LESSEDIT='mate -l %lm %f' # press V in less to edit the file in TextMate
 fi
 
+##############################################################################
+# Helpful Functions
 ##############################################################################
 
 # Open man pages in Preview.app.
@@ -393,4 +410,12 @@ fi
 # Finish off the prompt.
 export PS1="$PS1\[$txtrst\]"' > '
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+##############################################################################
+# Invoke other profile scripts
+##############################################################################
+
+# The hash statement determines whether the file exists in the PATH or not.
+
+if hash '~/.bash-local.sh' 2>/dev/null; then
+    source ~/.bash-local.sh
+fi
