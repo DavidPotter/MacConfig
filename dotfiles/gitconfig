@@ -10,6 +10,9 @@
 	# Explicitly specify an editor that exits when it's done (as opposed to TextMate which doesn't).
 	editor = pico
 
+[push]
+	default = simple
+
 [alias]
 	# Displays all commits whose hash start with given string.
 	abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
@@ -44,6 +47,7 @@
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+
 [filter "media"]
 	clean = git media clean %f
 	smudge = git media smudge %f
