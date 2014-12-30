@@ -6,7 +6,7 @@ REPONAME='MacConfig'
 REPOLOC="$HOME/bin/$REPONAME"
 
 # Clone the dotfiles repository and execute the profile script.
-[ -d $REPOLOC ] || git clone git://github.com/DavidPotter/$REPONAME.git $REPOLOC
+[ -d $REPOLOC ] || git clone https://github.com/DavidPotter/$REPONAME.git $REPOLOC
 (
 	set -e
 	cd $REPOLOC
