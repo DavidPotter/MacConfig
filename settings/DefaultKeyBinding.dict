@@ -1,0 +1,9 @@
+{
+    /* Remap Home, End, Page Up, and Page Down to be the same as on Windows and Linux. */
+    "\UF729"  = "moveToBeginningOfLine:";                       /* Home */
+    "\UF72B"  = "moveToEndOfLine:";                             /* End */
+    "$\UF729" = "moveToBeginningOfLineAndModifySelection:";     /* Shift + Home */
+    "$\UF72B" = "moveToEndOfLineAndModifySelection:";           /* Shift + End */
+    "\UF72C"  = "pageUp:";                                      /* Page Up */
+    "\UF72D"  = "pageDown:";                                    /* Page Down */
+}

@@ -29,6 +29,12 @@ set convert-meta off
 "\e[3~": delete-char
 "\e[2~": quoted-insert
 
+# Support Home and End like in Windows and Linux.
+# In order for this to work, you have to modify the keyboard settings for home
+# an end in Preferences.
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+
 $if Bash
   # F10 toggles mc on and off
   # Note Ctrl-o toggles panes on and off in mc

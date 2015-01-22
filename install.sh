@@ -64,6 +64,9 @@ do
 	fi
 done
 
+# Create a link for the default key bindings.
+create_link $REPOLOC/DefaultKeyBindings.dict ~/Library/Keyboard\ Layouts/DefaultKeyBindings.dict
+
 # Install the ChangeHosts script to detect changes in the network configuration
 # and set up the correct hosts file.
 #source $REPOLOC/installChangeHosts.sh
