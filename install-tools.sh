@@ -34,11 +34,11 @@ echo "[Git is in $GITDIR]"
 
 # Clone the git source if not already present.
 REPOLOC="$HOME/src/external/git"
-if [ ! -d $REPLOC ]; then
+if [ ! -d $REPOLOC ]; then
 	echo "--> Cloning git to $REPOLOC..."
 	git clone https://github.com/git/git.git $REPOLOC
 fi
-if [ ! -d $REPLOC ]; then
+if [ ! -d $REPOLOC ]; then
 	echo '** Failed to clone git. Aborting.'
 	return
 fi
