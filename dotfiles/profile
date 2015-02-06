@@ -45,6 +45,7 @@ export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts$XCODEPATH:/android-sdk/t
 
 # Set the default editor to TextMate.
 export EDITOR=/usr/local/bin/mate
+export P4EDITOR="/usr/local/bin/mate -w"
 
 # Set the default man pager to less with the following options:
 # -F = Display and then exit if only a single page.
