@@ -276,7 +276,7 @@ dif()
         DIFFPATH3=$(pwd)/$3
     fi
 
-    /Applications/Software\ Development/p4merge.app/Contents/Resources/launchp4merge ${DIFFPATH1} ${DIFFPATH2} ${DIFFPATH3}
+    /Applications/p4merge.app/Contents/Resources/launchp4merge ${DIFFPATH1} ${DIFFPATH2} ${DIFFPATH3}
 
     unset DIFFPATH1
     unset DIFFPATH2
