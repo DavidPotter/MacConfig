@@ -7,8 +7,9 @@
 
 [core]
 	excludesfile = ~/.gitignore_global
-	# Explicitly specify an editor that exits when it's done (as opposed to TextMate which doesn't).
-	editor = pico
+	# Explicitly specify an editor that exits when it's done.
+	#editor = pico
+	editor = /usr/local/bin/mate -w
 
 [push]
 	default = simple
