@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# git-2p4 - Copy changes in a Git repository into a change list in a Perforce client workspace.
+#
+# Run this script from a Git repository by typing the following command:
+#   git 2p4
+#
+# Conditions:
+#   - Make sure no files are checked out in the Perforce client workspace.
+#   - Make sure the master branch is up to date with Perforce.
+#   - Make sure your changes in Git are in a branch other than master.
+#   - Set the GIT_2P4_PERFORCE_DIR environment variable to the same path that your Git repo is based on.
+#   - Make sure Perforce configuration is specified based on the Perforce directory (e.g. in a .p4config file).
+
+function print_error()
+{
+    echo "Could not find directory '${PERFORCE_DIR}'"
+    echo 'Define the GIT_2P4_PERFORCE_DIR environment variable.'
+}
+
+# Path to the Perforce repository.
+PERFORCE_DIR=${GIT_2P4_PERFORCE_DIR}
+if [[ -z "${PERFORCE_DIR}" ]]; then
+    print_error
+    exit 1
+fi
+if [ ! -d ${PERFORCE_DIR} ]; then
+    print_error
+    exit 1
+fi
+
+# Detect whether the current directory is a Git repository or not.
+if [ ! -d .git ] && ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo 'Not in a Git repository.'
+    exit 1
+fi
+
+# Path to the Git repository.
+GIT_REPO_DIR=`pwd`
+echo $GIT_REPO_DIR
+
+# Git branch name.
+BRANCH_NAME=master
+
+# Clean up the Perforce repository by removing all the files and then syncing.
+echo Cleaning Perforce client workspace...
+cd ${PERFORCE_DIR}
+rm -rf *
+echo Downloading a fresh copy...
+p4 sync -f ... > /dev/null
+
+# Generate a patch from the Git repository and apply it to the Perforce client workspace.
+echo Generating diff...
+git -C ${GIT_REPO_DIR} format-patch ${BRANCH_NAME} --stdout | patch -p1
+
+# Reconcile changes in Perforce in case there were files that were added or deleted.
+echo Reconciling changes...
+p4 reconcile > /dev/null
+
+echo Done!
