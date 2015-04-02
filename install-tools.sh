@@ -1,20 +1,8 @@
 #!/bin/bash -e
-#pwd
-
-# Find the directory containing git.
-if [ -f /usr/bin/git ]; then
-	GITDIR=/usr/bin
-elif [ -f /usr/local/bin/git ]; then
-	GITDIR=/usr/local/bin
-else
-	echo '** Git not installed yet. Aborting.'
-	return
-fi
-echo "[Git is in $GITDIR]"
 
 #
 # install-tools.sh
-#   Installs the git helpers by performing following steps:
+#   Installs the Git helpers by performing following steps:
 #   - Clones repositories:
 #     - Git source to ~/src/external/git.
 #     - Git-Flow to ~/src/external/gitflow.
@@ -26,29 +14,41 @@ echo "[Git is in $GITDIR]"
 #   Installs RVM and Ruby
 #
 
+# Find the directory containing Git.
+if [ -f /usr/bin/git ]; then
+	GIT_DIR=/usr/bin
+elif [ -f /usr/local/bin/git ]; then
+	GIT_DIR=/usr/local/bin
+else
+	echo '** Git not installed yet. Aborting.'
+	return
+fi
+echo "[Git is in $GIT_DIR]"
+
 ###############################################################################
 # Git
 ###############################################################################
 
-# Clone the git source if not already present.
-REPOLOC="$HOME/src/external/git"
-if [ ! -d $REPOLOC ]; then
-	echo "--> Cloning git to $REPOLOC..."
-	git clone https://github.com/git/git.git $REPOLOC
+# Clone the Git source if not already present.
+LOCAL_REPO_DIR="$HOME/src/external/git"
+REMOTE_REPO="https://github.com/git/git.git"
+if [ ! -d $LOCAL_REPO_DIR ]; then
+	echo "--> Cloning git to $LOCAL_REPO_DIR..."
+	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
-if [ ! -d $REPOLOC ]; then
+if [ ! -d $LOCAL_REPO_DIR ]; then
 	echo '** Failed to clone git. Aborting.'
 	return
 fi
 
 # Update the git repository.
 echo '--> Pulling git repository from origin...'
-pushd $REPOLOC
+pushd $LOCAL_REPO_DIR
 git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/contrib/completion/git-completion.bash ]; then
+if [ ! -f $LOCAL_REPO_DIR/contrib/completion/git-completion.bash ]; then
 	echo '** Git completion script not found. Aborting.'
 	return
 fi
@@ -58,35 +58,36 @@ fi
 ###############################################################################
 
 # Clone the git-flow source if not already present.
-REPOLOC="$HOME/src/external/gitflow"
-if [ ! -d $REPOLOC ]; then
+LOCAL_REPO_DIR="$HOME/src/external/gitflow"
+REMOTE_REPO="https://github.com/nvie/gitflow.git"
+if [ ! -d $LOCAL_REPO_DIR ]; then
 	echo '--> Cloning gitflow...'
-	git clone https://github.com/nvie/gitflow.git $REPOLOC
+	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
-if [ ! -d $REPOLOC ]; then
+if [ ! -d $LOCAL_REPO_DIR ]; then
 	echo '** Failed to clone git-flow. Aborting.'
 	return
 fi
 
 # Update the git-flow repository.
 echo '--> Pulling gitflow repository from origin...'
-pushd $REPOLOC
+pushd $LOCAL_REPO_DIR
 git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/contrib/gitflow-installer.sh ]; then
+if [ ! -f $LOCAL_REPO_DIR/contrib/gitflow-installer.sh ]; then
 	echo '** Git-flow install script not found. Aborting.'
 	return
 fi
 
 # Install Git-Flow if not already installed.
-echo "--> Installing git-flow into $GITDIR..."
-echo "If prompted, enter admin password for updating system directory $GITDIR"
+echo "--> Installing git-flow into $GIT_DIR..."
+echo "If prompted, enter admin password for updating system directory $GIT_DIR"
 sudo bash <<EOF
-	cd $REPOLOC/..
-	export INSTALL_PREFIX="$GITDIR"
-	bash $REPOLOC/contrib/gitflow-installer.sh
+	cd $LOCAL_REPO_DIR/..
+	export INSTALL_PREFIX="$GIT_DIR"
+	bash $LOCAL_REPO_DIR/contrib/gitflow-installer.sh
 	unset INSTALL_PREFIX
 EOF
 
@@ -95,24 +96,25 @@ EOF
 ###############################################################################
 
 # Clone the git-flow-completion source if not already present.
-REPOLOC="$HOME/src/external/git-flow-completion"
-if [ ! -d $REPOLOC ]; then
+LOCAL_REPO_DIR="$HOME/src/external/git-flow-completion"
+REMOTE_REPO="https://github.com/bobthecow/git-flow-completion.git"
+if [ ! -d $LOCAL_REPO_DIR ]; then
 	echo '--> Cloning git-flow-completion...'
-	git clone https://github.com/bobthecow/git-flow-completion.git $REPOLOC
+	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
-if [ ! -d $REPOLOC ]; then
+if [ ! -d $LOCAL_REPO_DIR ]; then
 	echo '** Failed to clone git-flow-completion. Aborting.'
 	return
 fi
 
 # Update the git-flow-completion repository.
 echo '--> Pulling git-flow-completion repository from origin...'
-pushd $REPOLOC
+pushd $LOCAL_REPO_DIR
 git pull origin
 popd
 
 # Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/git-flow-completion.bash ]; then
+if [ ! -f $LOCAL_REPO_DIR/git-flow-completion.bash ]; then
 	echo '** Git-flow completion script not found. Aborting.'
 	return
 fi
@@ -133,7 +135,7 @@ function create_link()
 		ln -sv "$SRC" "$DST"
 	else
 		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]; then
-			echo -n "--> $REPONAME: $DST already exists" >&2
+			echo -n "--> $DST already exists" >&2
 			if [ -L "$DST" ]; then
 				echo " (pointing to `readlink "$DST"`)"
 			else
