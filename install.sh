@@ -1,24 +1,34 @@
 #!/bin/bash -e
-cd
+
+#
+# install.sh
+#   Installs files and creates symbolic links to use the tools in the
+#   MacConfig repository.
+#
+#   The follow steps are performed:
+#   - Clone the MacConfig repository to ~/bin/MacConfig.
+#   - Create symbolic links for dot files in the home directory.
+#   - Create symbolic links for workflow files to add services.
+#
 
 # Location of repository.
-REPONAME='MacConfig'
-REPOLOC="$HOME/bin/$REPONAME"
+REPO_NAME='MacConfig'
+LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 
 # Clone the dotfiles repository and execute the profile script.
-[ -d $REPOLOC ] || git clone git://github.com/DavidPotter/$REPONAME.git $REPOLOC
+[ -d $LOCAL_REPO_DIR ] || git clone git://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
 (
 	set -e
-	cd $REPOLOC
+	cd $LOCAL_REPO_DIR
 
-	TEMPFILE="`mktemp -t install.XXXXXX`"
-	trap '{ rm -f "$TEMPFILE"; }' EXIT
+	TEMP_FILE="`mktemp -t install.XXXXXX`"
+	trap '{ rm -f "$TEMP_FILE"; }' EXIT
 
 	set +e
 	git fetch origin
-	git show origin/master:dotfiles/profile > "$TEMPFILE"
-	echo "Executing $TEMPFILE"
-	source "$TEMPFILE"
+	git show origin/master:dotfiles/profile > "$TEMP_FILE"
+	echo "Executing $TEMP_FILE"
+	source "$TEMP_FILE"
 	set -e
 
 	gup
@@ -37,7 +47,7 @@ function create_link()
 	else
 		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]
 		then
-			echo -n "$REPONAME: $DST already exists" >&2
+			echo -n "$REPO_NAME: $DST already exists" >&2
 			if [ -L "$DST" ]
 			then
 				echo " (pointing to `readlink "$DST"`)"
@@ -49,10 +59,11 @@ function create_link()
 
 }
 
-# Loop through the files in the dotfiles directory and create a symlink to each one
-# from a file with the same name but with a dot prefix (a dotfile) in the home directory.
-# Special-case the profile script.
-find $REPOLOC/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
+# CREATE SYMBOLIC LINKS FOR DOT FILES
+# Loop through the files in the dotfiles directory and create a symlink to
+# each one from a file with the same name but with a dot prefix (a dotfile) in
+# the home directory.  Special-case the profile script.
+find $LOCAL_REPO_DIR/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
 do
 	DST="`echo "$SRC" | sed -e 's#.*/#.#'`"
 	if echo "$SRC" | grep -q /profile$
