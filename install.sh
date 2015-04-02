@@ -16,7 +16,7 @@ REPO_NAME='MacConfig'
 LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 
 # Clone the dotfiles repository and execute the profile script.
-[ -d $LOCAL_REPO_DIR ] || git clone git://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
+[ -d $LOCAL_REPO_DIR ] || git clone https://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
 (
 	set -e
 	cd $LOCAL_REPO_DIR
