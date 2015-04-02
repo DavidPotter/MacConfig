@@ -11,7 +11,8 @@
 #   - Creates symbolic links:
 #     - git-completion
 #     - git-flow-completion
-#   Installs RVM and Ruby
+#   Installs git-up.
+#   Installs RVM and Ruby.
 #
 
 # Find the directory containing Git.
@@ -150,6 +151,13 @@ function create_link()
 create_link $HOME/src/external/git/contrib/completion/git-completion.bash   $HOME/bin/git-completion.bash
 create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOME/bin/git-prompt.sh
 create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
+
+###############################################################################
+# Install git-up
+###############################################################################
+
+echo "You may be prompted for your password to allow git-up to be installed."
+sudo gem install git-up
 
 ###############################################################################
 # Install RVM
