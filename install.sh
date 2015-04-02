@@ -78,5 +78,5 @@ done
 
 echo '#'
 echo '# Invoke the following command to complete the installation:'
-echo '#   source ~/.bash_profile'
+echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
