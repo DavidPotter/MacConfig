@@ -19,12 +19,10 @@ echo "[Git is in $GITDIR]"
 #     - Git source to ~/src/external/git.
 #     - Git-Flow to ~/src/external/gitflow.
 #     - Git-Flow Completion to ~/src/external/git-flow-completion.
-#     - git-wtf to ~/src/external/willgit.
 #   - Installs Git-Flow.
 #   - Creates symbolic links:
 #     - git-completion
 #     - git-flow-completion
-#     - git-wtf
 #   Installs RVM and Ruby
 #
 
@@ -120,33 +118,6 @@ if [ ! -f $REPOLOC/git-flow-completion.bash ]; then
 fi
 
 ###############################################################################
-# Git-wtf
-###############################################################################
-
-# Clone the git-wtf source if not already present.
-REPOLOC="$HOME/src/external/willgit"
-if [ ! -d $REPOLOC ]; then
-	echo '--> Cloning git-wtf...'
-	git clone git://gitorious.org/willgit/mainline.git/ $REPOLOC
-fi
-if [ ! -d $REPOLOC ]; then
-	echo '** Failed to clone git-wtf. Aborting.'
-	return
-fi
-
-# Update the git-wtf (willgit) repository.
-echo '--> Pulling git-wtf (willgit) repository from origin...'
-pushd $REPOLOC
-git pull origin
-popd
-
-# Don't continue if required files aren't present.
-if [ ! -f $REPOLOC/bin/git-wtf ]; then
-	echo '** Git-wtf script not found. Aborting.'
-	return
-fi
-
-###############################################################################
 # Create symbolic links
 ###############################################################################
 
@@ -177,7 +148,6 @@ function create_link()
 create_link $HOME/src/external/git/contrib/completion/git-completion.bash   $HOME/bin/git-completion.bash
 create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOME/bin/git-prompt.sh
 create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
-create_link $HOME/src/external/willgit/bin/git-wtf                          $HOME/bin/git-wtf
 
 ###############################################################################
 # Install RVM
