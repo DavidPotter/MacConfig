@@ -37,11 +37,11 @@ export LSCOLORS=gxCxFxfxhxegedHxHxGxGx
 XCRUN=$(which xcrun)
 if [ -f "$XCRUN" ]
 then
-    XCODEPATH=$(xcode-select --print-path)
-    XCODEPATH=:$XCODEPATH/usr/bin
+	XCODE_PATH=$(xcode-select --print-path)
+	XCODE_PATH=:$XCODE_PATH/usr/bin
 fi
 
-export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts$XCODEPATH:/android-sdk/tools:/android-sdk/platform-tools
+export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts$XCODE_PATH:/android-sdk/tools:/android-sdk/platform-tools
 
 # Set the default editor to TextMate.
 export EDITOR=/usr/local/bin/mate
@@ -119,9 +119,9 @@ alias filemerge='open /Applications/Xcode.app/Contents/Applications/FileMerge.ap
 
 # Default editor.
 if [ -d /Applications/TextMate.app ]; then
-    alias edit='open -a /Applications/TextMate.app'
+	alias edit='open -a /Applications/TextMate.app'
 else
-    echo 'TextMate is not installed.'
+	echo 'TextMate is not installed.'
 fi
 
 # Set up git command line completion.
@@ -195,31 +195,31 @@ complete -F _mategem -o dirnames mategem
 # Compare two files using the selected diff application.
 dif()
 {
-    if [ ${1:0:1} == "/" ]; then
-        DIFFPATH1=$1
-    else
-        DIFFPATH1=$(pwd)/$1
-    fi
+	if [ ${1:0:1} == "/" ]; then
+		DIFFPATH1=$1
+	else
+		DIFFPATH1=$(pwd)/$1
+	fi
 
-    if [ ${2:0:1} == "/" ]; then
-        DIFFPATH2=$2
-    else
-        DIFFPATH2=$(pwd)/$2
-    fi
+	if [ ${2:0:1} == "/" ]; then
+		DIFFPATH2=$2
+	else
+		DIFFPATH2=$(pwd)/$2
+	fi
 
-    if [ -z ${3} ]; then
-        DIFFPATH3=
-    elif [ ${3:0:1} == "/" ]; then
-        DIFFPATH3=$3
-    else
-        DIFFPATH3=$(pwd)/$3
-    fi
+	if [ -z ${3} ]; then
+		DIFFPATH3=
+	elif [ ${3:0:1} == "/" ]; then
+		DIFFPATH3=$3
+	else
+		DIFFPATH3=$(pwd)/$3
+	fi
 
-    /Applications/p4merge.app/Contents/Resources/launchp4merge ${DIFFPATH1} ${DIFFPATH2} ${DIFFPATH3}
+	/Applications/p4merge.app/Contents/Resources/launchp4merge ${DIFFPATH1} ${DIFFPATH2} ${DIFFPATH3}
 
-    unset DIFFPATH1
-    unset DIFFPATH2
-    unset DIFFPATH3
+	unset DIFFPATH1
+	unset DIFFPATH2
+	unset DIFFPATH3
 }
 
 ##############################################################################
@@ -356,5 +356,5 @@ export PS1="$PS1\[$txtrst\]"' > '
 
 LOCAL_SCRIPT=".bash_local.sh"
 if [ -f ~/$LOCAL_SCRIPT ]; then
-    source ~/$LOCAL_SCRIPT
+	source ~/$LOCAL_SCRIPT
 fi
