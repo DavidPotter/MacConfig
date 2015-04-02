@@ -75,9 +75,6 @@ do
 	fi
 done
 
-# Install the ChangeHosts script to detect changes in the network configuration
-# and set up the correct hosts file.
-#source $REPOLOC/installChangeHosts.sh
 
 echo '#'
 echo '# Invoke the following command to complete the installation:'
