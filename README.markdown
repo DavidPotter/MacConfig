@@ -21,7 +21,7 @@ To take full advantage of these scripts, you also need to install the following 
 * Git Completion (*) - This is located in the contrib directory of the git repository, which can be found at https://github.com/git/git.git.
 * Git-Flow (*) - This can be found at https://github.com/nvie/gitflow.git.
 * Git-Flow Completion (*) - This can be found at https://github.com/bobthecow/git-flow-completion.git.
-* git wtf command - This can be found at git://gitorious.org/willgit/mainline.git/.
+* git-up command - This can be found at https://github.com/aanand/git-up.
 * Ruby - If you have Ruby installed additional features are added for editing and recognizing Ruby files.  Most of this is commented out as I don't currently use Ruby.
 
 To install the starred items, you can execute the install-tools.sh script.
@@ -44,7 +44,6 @@ profile:
   * pman - Open man pages in Preview app.
   * cd_smburl - 'cd' into SMB URLs like this:  cd_smburl smb://host/share
   * mategem - Open a gem in TextMate.
-  * gup - Update the current branch from the upstream branch. If there are uncommited changes, rebase them on top of the upstream changes.
   * dif - Compare two files using the selected diff application (p4merge).
 
 inputrc:
