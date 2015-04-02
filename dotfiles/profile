@@ -125,8 +125,12 @@ else
 fi
 
 # Set up git command line completion.
-#done below - source ~/bin/git-completion.sh
-source ~/bin/git-flow-completion.bash
+SCRIPT_FILE=~/bin/git-flow-completion.bash
+if [ -f "${SCRIPT_FILE}" ]; then
+	source ${SCRIPT_FILE}
+else
+	echo "${SCRIPT_FILE} not found."
+fi
 
 # If TextMate is available and we're in Terminal.app...
 if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
