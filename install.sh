@@ -31,7 +31,7 @@ LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 	source "$TEMP_FILE"
 	set -e
 
-	gup
+	git pull
 )
 
 # Helper function to create a link if the destination doesn't exist
