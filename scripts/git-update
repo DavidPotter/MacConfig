@@ -1,0 +1,58 @@
+#!/bin/bash -e
+
+# git-update - Update the current branch from the upstream branch preserving uncommitted changes.
+#
+
+set -e # Fail immediately if there's a problem.
+
+# Use `git-up` if installed.
+if type git-up > /dev/null 2>&1; then
+	exec git-up
+fi
+
+# Fetch upstream changes.
+git fetch
+
+BRANCH=$(git describe --contains --all HEAD)
+if [ -z "$(git config branch.$BRANCH.remote)" -o -z "$(git config branch.$BRANCH.merge)" ]; then
+	echo "\"$BRANCH\" is not a tracking branch." >&2
+	exit 1
+fi
+
+# Create a temp file for capturing command output.
+TEMPFILE="`mktemp -t git-update.XXXXXX`"
+trap '{ rm -f "$TEMPFILE"; }' EXIT
+
+# If we're behind upstream, we need to update.
+if git status | grep "Your branch" > "$TEMPFILE"; then
+
+	# Extract tracking branch from message.
+	UPSTREAM=$(cat "$TEMPFILE" | cut -d "'" -f 2)
+	if [ -z "$UPSTREAM" ]; then
+		echo Could not detect upstream branch >&2
+		exit 1
+	fi
+
+	# Can we fast-forward?
+	CAN_FF=1
+	grep -q "can be fast-forwarded" "$TEMPFILE" || CAN_FF=0
+
+	# Stash any uncommitted changes.
+	git stash | tee "$TEMPFILE"
+	[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
+
+	# Take note if anything was stashed.
+	HAVE_STASH=0
+	grep -q "No local changes" "$TEMPFILE" || HAVE_STASH=1
+
+	if [ "$CAN_FF" -ne 0 ]; then
+		# If nothing has changed locally, just fast foward.
+		git merge --ff "$UPSTREAM"
+	else
+		# Rebase our changes on top of upstream, but keep any merges.
+		git rebase -p "$UPSTREAM"
+	fi
+
+	# Restore any stashed changed.
+	[ "$HAVE_STASH" -ne 0 ] && git stash pop -q
+fi
