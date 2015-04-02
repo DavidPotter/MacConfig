@@ -21,7 +21,7 @@ To take full advantage of these scripts, you also need to install the following 
 * Git Completion (*) - This is located in the contrib directory of the git repository, which can be found at https://github.com/git/git.git.
 * Git-Flow (*) - This can be found at https://github.com/nvie/gitflow.git.
 * Git-Flow Completion (*) - This can be found at https://github.com/bobthecow/git-flow-completion.git.
-* git-up command - This can be found at https://github.com/aanand/git-up.
+* git-up command (*) - This can be found at https://github.com/aanand/git-up.
 * Ruby - If you have Ruby installed additional features are added for editing and recognizing Ruby files.  Most of this is commented out as I don't currently use Ruby.
 
 To install the starred items, you can execute the install-tools.sh script.
