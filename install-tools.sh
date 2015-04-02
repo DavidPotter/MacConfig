@@ -153,13 +153,6 @@ create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOM
 create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
 
 ###############################################################################
-# Install git-up
-###############################################################################
-
-echo "You may be prompted for your password to allow git-up to be installed."
-sudo gem install git-up
-
-###############################################################################
 # Install RVM
 ###############################################################################
 
@@ -173,6 +166,17 @@ fi
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
 	source "$HOME/.rvm/scripts/rvm"
 fi
+
+###############################################################################
+# Install git-up
+###############################################################################
+
+echo "You may be prompted for your password to allow git-up to be installed."
+sudo gem install git-up
+
+###############################################################################
+# Instructions for installing Ruby
+###############################################################################
 
 # Tell user what to do next.
 echo ' '
