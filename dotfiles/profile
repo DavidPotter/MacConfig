@@ -350,8 +350,7 @@ export PS1="$PS1\[$txtrst\]"' > '
 # Invoke other profile scripts
 ##############################################################################
 
-# The hash statement determines whether the file exists in the PATH or not.
-
-if hash '.bash-local.sh' 2>/dev/null; then
-    source .bash_local.sh
+LOCAL_SCRIPT=".bash_local.sh"
+if [ -f ~/$LOCAL_SCRIPT ]; then
+    source ~/$LOCAL_SCRIPT
 fi
