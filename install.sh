@@ -76,9 +76,6 @@ do
 done
 
 
-# INVOKE THE PROFILE
-source ~/.bashrc
-
 echo '#'
 echo '# Invoke the following commands to complete the installation:'
 echo '#   source ~/.bashrc'
