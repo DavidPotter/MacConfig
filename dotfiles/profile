@@ -132,6 +132,12 @@ else
 	echo "${SCRIPT_FILE} not found."
 fi
 
+# Load Homebrew's shell completion.
+if which brew &> /dev/null && [ -f "$(brew --prefix)/Library/Contributions/brew_bash_completion.sh" ]
+then
+	source "$(brew --prefix)/Library/Contributions/brew_bash_completion.sh"
+fi
+
 # If TextMate is available and we're in Terminal.app...
 if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
 	export LESSEDIT='mate -l %lm %f' # press V in less to edit the file in TextMate
