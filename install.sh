@@ -80,6 +80,7 @@ done
 source ~/.bashrc
 
 echo '#'
-echo '# Invoke the following command to complete the installation:'
+echo '# Invoke the following commands to complete the installation:'
+echo '#   source ~/.bashrc'
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
