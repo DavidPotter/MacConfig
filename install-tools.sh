@@ -32,8 +32,9 @@ echo "[Git is in $GIT_DIR]"
 
 # Clone the Git source if not already present.
 LOCAL_REPO_DIR="$HOME/src/external/git"
-REMOTE_REPO="https://github.com/git/git.git"
+REMOTE_REPO='https://github.com/git/git.git'
 if [ ! -d $LOCAL_REPO_DIR ]; then
+	echo '--'
 	echo "--> Cloning git to $LOCAL_REPO_DIR..."
 	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
@@ -43,6 +44,7 @@ if [ ! -d $LOCAL_REPO_DIR ]; then
 fi
 
 # Update the git repository.
+echo '--'
 echo '--> Pulling git repository from origin...'
 pushd $LOCAL_REPO_DIR
 git pull origin
@@ -60,8 +62,9 @@ fi
 
 # Clone the git-flow source if not already present.
 LOCAL_REPO_DIR="$HOME/src/external/gitflow"
-REMOTE_REPO="https://github.com/nvie/gitflow.git"
+REMOTE_REPO='https://github.com/nvie/gitflow.git'
 if [ ! -d $LOCAL_REPO_DIR ]; then
+	echo '--'
 	echo '--> Cloning gitflow...'
 	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
@@ -71,6 +74,7 @@ if [ ! -d $LOCAL_REPO_DIR ]; then
 fi
 
 # Update the git-flow repository.
+echo '--'
 echo '--> Pulling gitflow repository from origin...'
 pushd $LOCAL_REPO_DIR
 git pull origin
@@ -83,6 +87,7 @@ if [ ! -f $LOCAL_REPO_DIR/contrib/gitflow-installer.sh ]; then
 fi
 
 # Install Git-Flow if not already installed.
+echo '--'
 echo "--> Installing git-flow into $GIT_DIR..."
 echo "If prompted, enter admin password for updating system directory $GIT_DIR"
 sudo bash <<EOF
@@ -98,8 +103,9 @@ EOF
 
 # Clone the git-flow-completion source if not already present.
 LOCAL_REPO_DIR="$HOME/src/external/git-flow-completion"
-REMOTE_REPO="https://github.com/bobthecow/git-flow-completion.git"
+REMOTE_REPO='https://github.com/bobthecow/git-flow-completion.git'
 if [ ! -d $LOCAL_REPO_DIR ]; then
+	echo '--'
 	echo '--> Cloning git-flow-completion...'
 	git clone $REMOTE_REPO $LOCAL_REPO_DIR
 fi
@@ -109,6 +115,7 @@ if [ ! -d $LOCAL_REPO_DIR ]; then
 fi
 
 # Update the git-flow-completion repository.
+echo '--'
 echo '--> Pulling git-flow-completion repository from origin...'
 pushd $LOCAL_REPO_DIR
 git pull origin
@@ -132,7 +139,8 @@ function create_link()
 	local DST="$2"
 
 	if [ ! -e "$DST" ]; then
-		echo -n "--> Creating symbolic link: "
+		echo '--'
+		echo -n '--> Creating symbolic link: '
 		ln -sv "$SRC" "$DST"
 	else
 		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]; then
@@ -140,7 +148,7 @@ function create_link()
 			if [ -L "$DST" ]; then
 				echo " (pointing to `readlink "$DST"`)"
 			else
-				echo " (not a symlink)"
+				echo ' (not a symlink)'
 			fi
 		fi
 	fi
@@ -148,6 +156,8 @@ function create_link()
 
 # Create symbolic links to completion and command.
 
+echo '--'
+echo '--> Create symbolic links for Git helpers.'
 create_link $HOME/src/external/git/contrib/completion/git-completion.bash   $HOME/bin/git-completion.bash
 create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOME/bin/git-prompt.sh
 create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
@@ -158,12 +168,15 @@ create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOM
 
 # Install the stable release version of RVM.
 if [ ! -s "$HOME/.rvm/scripts/rvm" ]; then
+	echo '--'
 	echo '--> Installing RVM...'
 	curl -L https://get.rvm.io | bash -s stable
 fi
 
 # Enable rvm if available.
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+	echo '--'
+	echo '--> Enable RVM...'
 	source "$HOME/.rvm/scripts/rvm"
 fi
 
@@ -171,7 +184,9 @@ fi
 # Install git-up
 ###############################################################################
 
-echo "You may be prompted for your password to allow git-up to be installed."
+echo '--'
+echo '--> Installing git-up...'
+echo 'You may be prompted for your admin password to allow git-up to be installed.'
 sudo gem install git-up
 
 ###############################################################################

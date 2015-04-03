@@ -21,7 +21,7 @@ LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 	set -e
 	cd $LOCAL_REPO_DIR
 
-	TEMP_FILE="`mktemp -t install.XXXXXX`"
+	TEMP_FILE='`mktemp -t install.XXXXXX`'
 	trap '{ rm -f "$TEMP_FILE"; }' EXIT
 
 	set +e
@@ -52,7 +52,7 @@ function create_link()
 			then
 				echo " (pointing to `readlink "$DST"`)"
 			else
-				echo " (not a symlink)"
+				echo ' (not a symlink)'
 			fi
 		fi
 	fi
@@ -75,9 +75,21 @@ do
 	fi
 done
 
+# CREATE SYMBOLIC LINKS FOR WORKFLOW FILES TO ADD SERVICES
+# Loop through the *.workflow files in the Library/Services directory of the
+# repository and create a symlink to each one from a file in the
+# ~/Library/Services directory.
+# http://macs.about.com/od/diyguidesprojects/qt/Create-A-Menu-Item-To-Hide-And-Show-Hidden-Files-In-Os-X.htm
+find $LOCAL_REPO_DIR/Library/Services/*.workflow -maxdepth 0 -type d -not -name 'README*' | while read SRC
+do
+	DST="`echo "$SRC" | sed -e 's#.*/##'`"
+	create_link "$SRC" "$DST"
+done
 
+echo ' '
 echo '#'
 echo '# Invoke the following commands to complete the installation:'
 echo '#   source ~/.bashrc'
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
+echo ' '
