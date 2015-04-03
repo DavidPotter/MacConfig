@@ -76,6 +76,9 @@ do
 done
 
 
+# INVOKE THE PROFILE
+source ~/.bashrc
+
 echo '#'
 echo '# Invoke the following command to complete the installation:'
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
