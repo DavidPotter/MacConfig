@@ -26,7 +26,8 @@
 # Xcode build files
 #-----------------------------------------------------------------------------
 
-# Slash on the end so we only remove the FOLDER and not any files that were badly named with these names.
+# Slash on the end so we only remove the FOLDER and not any files that were
+# badly named with these names.
 
 build/
 DerivedData/
@@ -34,7 +35,8 @@ DerivedData/
 *.ipa
 
 #-----------------------------------------------------------------------------
-# Xcode private settings (window sizes, bookmarks, breakpoints, custom executables, smart groups)
+# Xcode private settings
+# (window sizes, bookmarks, breakpoints, custom executables, smart groups)
 #-----------------------------------------------------------------------------
 
 # .pbxuser: http://lists.apple.com/archives/xcode-users/2004/Jan/msg00193.html
@@ -56,7 +58,8 @@ DerivedData/
 !default.mode2v3
 !default.perspectivev3
 
-# This file exists for managing Xcode's knowledge of the possibly many VCS systems in your project.
+# This file exists for managing Xcode's knowledge of the possibly many VCS
+# systems in your project.
 
 *.xccheckout
 
@@ -64,7 +67,8 @@ DerivedData/
 # Xcode 4 files
 #-----------------------------------------------------------------------------
 
-# Throw away ALL personal settings (including custom schemes! - unless they are "shared").
+# Throw away ALL personal settings (including custom schemes! - unless they
+# are "shared").
 
 xcuserdata
 *.xcuserstate
@@ -99,5 +103,17 @@ xcuserdata
 !Manifest.lock
 !Pods/Headers/Build
 
-# Ignoring the XcodeCoverage/env.sh file since it is generated at run time
-env.sh
+#-----------------------------------------------------------------------------
+# Carthage
+#-----------------------------------------------------------------------------
+
+Carthage/
+
+# Whitelist Carthage/Checkouts for Carthage submodule support
+!Carthage/Checkouts/
+
+#-----------------------------------------------------------------------------
+# JetBrains IDE Files
+#-----------------------------------------------------------------------------
+
+.idea/
