@@ -9,7 +9,8 @@
 	excludesfile = ~/.gitignore_global
 	# Explicitly specify an editor that exits when it's done.
 	#editor = pico
-	editor = /usr/local/bin/mate -w
+	#editor = /usr/local/bin/mate -w
+	editor = atom --wait
 
 [push]
 	default = simple
@@ -41,7 +42,7 @@
 	who = shortlog -n -s --no-merges
 
 [difftool "sourcetree"]
-	path = 
+	path =
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 # " <-- need this to close quote from previous line
 
