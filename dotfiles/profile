@@ -63,6 +63,8 @@ shopt -s histappend
 # Append every line to history.
 export PROMPT_COMMAND='history -a'
 
+export JAVA_HOME=$(/usr/libexec/java_home -v '1.8*')
+
 # Only complete with directories when executing a directory-related command.
 complete -d cd mkdir rmdir
 
@@ -132,10 +134,9 @@ else
 	echo "${SCRIPT_FILE} not found."
 fi
 
-# Load Homebrew's shell completion.
-if which brew &> /dev/null && [ -f "$(brew --prefix)/Library/Contributions/brew_bash_completion.sh" ]
-then
-	source "$(brew --prefix)/Library/Contributions/brew_bash_completion.sh"
+# Install bash-completion to support other types of shell completion.
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+	. $(brew --prefix)/etc/bash_completion
 fi
 
 # If TextMate is available and we're in Terminal.app...
@@ -147,10 +148,20 @@ fi
 # Helpful Functions
 ##############################################################################
 
+# Change the current directory to an ancestor directory n levels up.
+function up()
+{
+	local i=${1:-1} dot
+	for ((;i;i--)); do
+		dot=$dot../
+	done
+	cd $dot
+}
+
 # Open man pages in Preview.app.
-function pman() 
-{ 
-	man -t "$@" | open -f -a /Applications/Preview.app; 
+function pman()
+{
+	man -t "$@" | open -f -a /Applications/Preview.app;
 }
 
 # 'cd' into SMB URLs like this:  cd_smburl smb://host/share
@@ -328,6 +339,7 @@ if [ -f "$GIT_PROMPT_PATH" ]; then
 	export GIT_PS1_SHOWDIRTYSTATE=1
 	export GIT_PS1_SHOWSTASHSTATE=1
 	export GIT_PS1_SHOWUNTRACKEDFILES=1
+	export GIT_PS1_SHOWUPSTREAM="auto verbose"
 	export PS1="$PS1\[$txtylw\]"'$(__git_ps1 " (%s)")'
 fi
 
