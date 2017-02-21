@@ -13,7 +13,7 @@
 	editor = atom --wait
 
 [push]
-	default = simple
+	default = upstream
 
 [alias]
 	# Displays all commits whose hash start with given string.
