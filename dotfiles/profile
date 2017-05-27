@@ -369,6 +369,14 @@ fi
 export PS1="$PS1\[$txtrst\]"' > '
 
 ##############################################################################
+# Android SDK Command Line Configuration
+##############################################################################
+
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+export PATH=${PATH}:${ANDROID_HOME}/tools
+export PATH=${PATH}:${ANDROID_HOME}/platform-tools
+
+##############################################################################
 # Invoke other profile scripts
 ##############################################################################
 
