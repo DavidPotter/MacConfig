@@ -37,11 +37,18 @@ export LSCOLORS=gxCxFxfxhxegedHxHxGxGx
 XCRUN=$(which xcrun)
 if [ -f "$XCRUN" ]
 then
-	XCODE_PATH=$(xcode-select --print-path)
-	XCODE_PATH=:$XCODE_PATH/usr/bin
+	XCODE_PATH="$(xcode-select --print-path)"
+	XCODE_PATH="$XCODE_PATH/usr/bin"
 fi
 
-export PATH=$PATH:$HOME/bin:$HOME/bin/MacConfig/scripts$XCODE_PATH:/android-sdk/tools:/android-sdk/platform-tools
+export PATH="$PATH:$HOME/bin/MacConfig/scripts:$XCODE_PATH:/android-sdk/tools:/android-sdk/platform-tools"
+
+if which yarn > /dev/null
+then
+	export PATH="$PATH:$(yarn global bin)"
+fi
+
+export PATH="$PATH:$HOME/bin"
 
 # Set the default editor to TextMate.
 export EDITOR=/usr/local/bin/mate
