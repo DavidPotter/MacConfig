@@ -140,6 +140,21 @@ if [ -f "${SCRIPT_FILE}" ]; then
 else
 	echo "${SCRIPT_FILE} not found."
 fi
+unset SCRIPT_FILE
+
+# Set up npm command line completion.
+if [ ! -z `which npm` ]; then
+	source <(npm completion)
+fi
+
+# Set up yarn command line completion.
+SCRIPT_FILE=~/src/external/yarn-completion/yarn-completion.bash
+if [ -f "${SCRIPT_FILE}" ]; then
+	source ${SCRIPT_FILE}
+else
+	echo "${SCRIPT_FILE} not found."
+fi
+unset SCRIPT_FILE
 
 # Install bash-completion to support other types of shell completion.
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
