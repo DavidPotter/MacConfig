@@ -1,0 +1,77 @@
+# This file contains aliases for use with Git from the command line.
+#
+# Include this file in your ~/.gitconfig file:
+# [include]
+#     path = ~/bin/MacConfig/config/gitconfig-aliases
+
+[alias]
+	#---------
+	# Aliases
+	#---------
+
+	# Define an aliase.
+	alias = "!sh -c '[ $# = 2 ] && git config --global alias.\"$1\" \"$2\" && exit 0 || echo \"usage: git alias <new alias> <original command>\" >&2 && exit 1' -"
+
+	# List git aliases
+	aliases = "!git config -l | grep alias | cut -c 7-"
+
+	#---------
+	# Logging
+	#---------
+
+	# Displays all commits whose hash start with given string.
+	abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%C(yellow)%H%Creset %C(green)%ci%Creset %C(cyan)%an%Creset %s%n\" $commit; done' -"
+
+	# Display a formatted graphical log.
+	lg = log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %C(cyan)[%an]%Creset %C(green)(%cr)%Creset' --abbrev-commit --date=relative
+
+	# Like lg except displays the author's email address with their name.
+	lgf = log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %C(cyan)[%an <%ae>]%Creset %C(green)(%cr)%Creset' --abbrev-commit --date=relative
+
+	# Display info about the last commit.
+	last = show -s --pretty='tformat:%C(yellow)%h%Creset %s %C(cyan)[%an <%ae>]%Creset %C(green)(%ad)%Creset' --date=relative
+
+	# Display a formatted log with files.
+	ll = log --pretty=format:'%C(yellow)%h%C(auto)%d%Creset %s %C(cyan)[%cn <%an>]%n%Creset%C(green)%cd%Creset' --decorate --date=local --numstat
+
+	# Display a formatted log with one line for each commit.
+	ls = log --pretty=format:"%C(yellow)%h\\ %C(green)%cd%Creset\\%C(auto)%d%Creset\\ %s\\ %C(cyan)[%cn]%Creset" --decorate --date=local
+
+	# Display what new commits have been created by the last command (e.g. after a "git pull").
+	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+
+	# Display the recent commits sorted by person.
+	recent = shortlog --pretty=format:'%C(yellow)%h%Creset %s %C(green)(%cr)%Creset' --since='1 week ago'
+
+	# Display who has contributed to the repository.
+	who = shortlog -n -s --no-merges
+
+	#-------
+	# Lists
+	#-------
+
+	# List all branches
+	branches = branch -a
+
+	# List all stashes
+	stashes = stash list
+
+	#---------------
+	# Other Actions
+	#---------------
+
+	# Cleanup will:
+	# - remove remote branch references that no longer exist
+	# - cleanup unnecessary git files
+	# - remove untracked files from the working tree
+	# - clear out your stash
+	cleanup = !git remote prune origin && git gc && git clean -dfx && git stash clear
+
+	# Prune all stale remote branches.
+	prune-all = !git remote | xargs -n 1 git remote prune
+
+	# Fires up a Git daemon for the repo you are currently in.  Connect to it with git://127.0.0.1/.
+	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+
+	# Save everything in the working directory and remove the commit.  This allows restoring the commit if necessary.
+	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard

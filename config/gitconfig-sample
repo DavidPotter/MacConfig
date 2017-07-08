@@ -1,0 +1,10 @@
+[include]
+	path = ~/bin/MacConfig/config/gitconfig-base
+	path = ~/bin/MacConfig/config/gitconfig-aliases
+
+[user]
+	name = David Potter
+	#email = me@domain.com
+
+[github]
+	user = DavidPotter

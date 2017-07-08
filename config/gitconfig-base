@@ -1,0 +1,31 @@
+# This file contains base configuration for Git.
+#
+# Include this file in your ~/.gitconfig file:
+# [include]
+#     path = ~/bin/MacConfig/config/gitconfig-base
+
+[core]
+	excludesfile = ~/.gitignore_global
+	# Explicitly specify an editor that exits when it's done.
+	#editor = pico
+	#editor = /usr/local/bin/mate -w
+	editor = atom --wait
+
+[push]
+	# default = upstream
+	# simple is same as upstream except refuses to push if the upstream branch's name is different from the local one.
+	default = simple
+
+[difftool "sourcetree"]
+	path =
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+# " <-- need this to close quote from previous line
+
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
