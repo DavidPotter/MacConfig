@@ -9,7 +9,8 @@
 	# Explicitly specify an editor that exits when it's done.
 	#editor = pico
 	#editor = /usr/local/bin/mate -w
-	editor = atom --wait
+	#editor = atom --wait
+	editor = code --wait
 
 [push]
 	# default = upstream
