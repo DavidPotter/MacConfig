@@ -93,8 +93,8 @@ export PATH=$PATH:$HOME/bin
 ##############################################################################
 
 # Set the default editor to TextMate.
-export EDITOR=/usr/local/bin/mate
-export P4EDITOR="/usr/local/bin/mate -w"
+# export EDITOR=/usr/local/bin/mate
+# export P4EDITOR="/usr/local/bin/mate -w"
 
 # Set the default man pager to less with the following options:
 # -F = Display and then exit if only a single page.
@@ -193,8 +193,8 @@ fi
 SCRIPT_FILE=~/src/external/yarn-completion/yarn-completion.bash
 if [ -f "${SCRIPT_FILE}" ]; then
 	source ${SCRIPT_FILE}
-else
-	echo "${SCRIPT_FILE} not found."
+#else
+#	echo "${SCRIPT_FILE} not found."
 fi
 unset SCRIPT_FILE
 
