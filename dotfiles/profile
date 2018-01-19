@@ -33,41 +33,64 @@ export PS1="[\t] \u@\h:\w > "
 #   directory w/o sticky = G:bold cyan
 export LSCOLORS=gxCxFxfxhxegedHxHxGxGx
 
+##############################################################################
 # Add to the path
-MACCONFIG_SCRIPTS_PATH="$HOME/bin/MacConfig/scripts"
-ANDROID_SDK_TOOLS_PATH="/android-sdk/tools"
-ANDROID_PLATFORM_TOOLS_PATH="/android-sdk/platform-tools"
+##############################################################################
+
+export PATH=$PATH:$HOME/bin/MacConfig/scripts
 
 XCRUN=$(which xcrun)
 if [ -f "$XCRUN" ]
 then
-	XCODE_PATH=":$(xcode-select --print-path)/usr/bin"
+	export PATH=$PATH:$(xcode-select --print-path)/usr/bin
 fi
+unset XCRUN
 
-VSCODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-if [ -d "$VSCODE" ]
+VSCODE_DIR="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+if [ -d "$VSCODE_DIR" ]
 then
-	export VSCODE_PATH=":$VSCODE"
+	export PATH=$PATH:$VSCODE_DIR
 fi
+unset VSCODE_DIR
 
 if which yarn > /dev/null
 then
-	export YARN_PATH=":$(yarn global bin)"
+	YARN_DIR="$(yarn global bin)"
+	# Only add the path if it isn't already in the path.
+	if [ "$PATH" == *"$YARN_DIR:"* ]
+	then
+		export PATH=$PATH:$YARN_DIR
+	fi
+fi
+unset YARN_DIR
+
+ANDROID_SDK_TOOLS_DIR="/android-sdk/tools"
+if [ -d "$ANDROID_SDK_TOOLS_DIR" ]
+then
+	export PATH=$PATH=:$ANDROID_SDK_TOOLS_DIR
+fi
+unset ANDROID_SDK_TOOLS_DIR
+
+ANDROID_PLATFORM_TOOLS_DIR="/android-sdk/platform-tools"
+if [ -d "$ANDROID_PLATFORM_TOOLS_DIR" ]
+then
+	export PATH=$PATH:$ANDROID_PLATFORM_TOOLS_DIR
+fi
+unset ANDROID_PLATFORM_TOOLS_DIR
+
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+if [ -d "$ANDROID_HOME" ]
+then
+	export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+else
+	unset ANDROID_HOME
 fi
 
-BIN_PATH="$HOME/bin"
+export PATH=$PATH:$HOME/bin
 
-export PATH="$PATH:$MACCONFIG_SCRIPTS_PATH$XCODE_PATH$VSCODE_PATH:$ANDROID_SDK_TOOLS_PATH:$ANDROID_PLATFORM_TOOLS_PATH$YARN_PATH:$BIN_PATH"
-
-unset MACCONFIG_SCRIPTS_PATH
-unset ANDROID_SDK_TOOLS_PATH
-unset ANDROID_PLATFORM_TOOLS_PATH
-unset XCODE_PATH
-unset VSCODE_PATH
-unset YARN_PATH
-unset BIN_PATH
-unset XCRUN
-unset VSCODE
+##############################################################################
+# Environment
+##############################################################################
 
 # Set the default editor to TextMate.
 export EDITOR=/usr/local/bin/mate
@@ -408,14 +431,6 @@ fi
 
 # Finish off the prompt.
 export PS1="$PS1\[$txtrst\]"' > '
-
-##############################################################################
-# Android SDK Command Line Configuration
-##############################################################################
-
-export ANDROID_HOME=${HOME}/Library/Android/sdk
-export PATH=${PATH}:${ANDROID_HOME}/tools
-export PATH=${PATH}:${ANDROID_HOME}/platform-tools
 
 ##############################################################################
 # Invoke other profile scripts
