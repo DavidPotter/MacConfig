@@ -37,56 +37,41 @@ export LSCOLORS=gxCxFxfxhxegedHxHxGxGx
 # Add to the path
 ##############################################################################
 
-export PATH=$PATH:$HOME/bin/MacConfig/scripts
+function addToPathIfExists() {
+	if [ -d "$1" ]
+	then
+		export PATH="$PATH:$1"
+	fi
+}
 
-XCRUN=$(which xcrun)
-if [ -f "$XCRUN" ]
-then
-	export PATH=$PATH:$(xcode-select --print-path)/usr/bin
-fi
-unset XCRUN
+addToPathIfExists "$HOME/bin/MacConfig/scripts"
 
-VSCODE_DIR="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-if [ -d "$VSCODE_DIR" ]
+local_XCRUN=$(which xcrun)
+if [ -f "$local_XCRUN" ]
 then
-	export PATH=$PATH:$VSCODE_DIR
+	export PATH="$PATH:$(xcode-select --print-path)/usr/bin"
 fi
-unset VSCODE_DIR
+unset local_XCRUN
+
+addToPathIfExists '/Applications/Visual Studio Code.app/Contents/Resources/app/bin'
 
 if which yarn > /dev/null
 then
-	YARN_DIR="$(yarn global bin)"
+	local_YARN_DIR="$(yarn global bin)"
 	# Only add the path if it isn't already in the path.
-	if [ "$PATH" == *"$YARN_DIR:"* ]
+	if [ "$PATH" == *"$local_YARN_DIR:"* ]
 	then
-		export PATH=$PATH:$YARN_DIR
+		addToPathIfExists "$local_YARN_DIR"
 	fi
 fi
-unset YARN_DIR
+unset local_YARN_DIR
 
-ANDROID_SDK_TOOLS_DIR="/android-sdk/tools"
-if [ -d "$ANDROID_SDK_TOOLS_DIR" ]
-then
-	export PATH=$PATH=:$ANDROID_SDK_TOOLS_DIR
-fi
-unset ANDROID_SDK_TOOLS_DIR
+export ANDROID_SDK_ROOT=${HOME}/Library/Android/sdk
+addToPathIfExists "$ANDROID_SDK_ROOT/emulator"
+addToPathIfExists "$ANDROID_SDK_ROOT/tools"
+addToPathIfExists "$ANDROID_SDK_ROOT/platform-tools"
 
-ANDROID_PLATFORM_TOOLS_DIR="/android-sdk/platform-tools"
-if [ -d "$ANDROID_PLATFORM_TOOLS_DIR" ]
-then
-	export PATH=$PATH:$ANDROID_PLATFORM_TOOLS_DIR
-fi
-unset ANDROID_PLATFORM_TOOLS_DIR
-
-export ANDROID_HOME=${HOME}/Library/Android/sdk
-if [ -d "$ANDROID_HOME" ]
-then
-	export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-else
-	unset ANDROID_HOME
-fi
-
-export PATH=$PATH:$HOME/bin
+addToPathIfExists "$HOME/bin"
 
 ##############################################################################
 # Environment
@@ -106,13 +91,13 @@ export PAGER='less -Fis'
 export HISTSIZE=100000
 export HISTFILESIZE=100000
 export HISTCONTROL=ignoredups      # Ignore duplicates in history
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "
+export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
 # Set history list to append to the history file when the shell exists, rather than overwrite.
 shopt -s histappend
 # Append every line to history.
 export PROMPT_COMMAND='history -a'
 
-export JAVA_HOME=$(/usr/libexec/java_home -v '1.8*')
+export JAVA_HOME="$(/usr/libexec/java_home -v '1.8*')"
 
 # Only complete with directories when executing a directory-related command.
 complete -d cd mkdir rmdir
@@ -165,7 +150,6 @@ alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall F
 
 # Launch applications.
 alias textedit='open -e'
-alias eclipse='open /Applications/eclipse/Eclipse.app'
 alias filemerge='open /Applications/Xcode.app/Contents/Applications/FileMerge.app'
 
 # Default editor.
@@ -176,13 +160,13 @@ else
 fi
 
 # Set up git command line completion.
-SCRIPT_FILE=~/bin/git-flow-completion.bash
-if [ -f "${SCRIPT_FILE}" ]; then
-	source ${SCRIPT_FILE}
+local_SCRIPT_FILE="$HOME/bin/git-flow-completion.bash"
+if [ -f "${local_SCRIPT_FILE}" ]; then
+	source ${local_SCRIPT_FILE}
 else
-	echo "${SCRIPT_FILE} not found."
+	echo "${local_SCRIPT_FILE} not found."
 fi
-unset SCRIPT_FILE
+unset local_SCRIPT_FILE
 
 # Set up npm command line completion.
 if [ ! -z `which npm` ]; then
@@ -190,13 +174,13 @@ if [ ! -z `which npm` ]; then
 fi
 
 # Set up yarn command line completion.
-SCRIPT_FILE=~/src/external/yarn-completion/yarn-completion.bash
-if [ -f "${SCRIPT_FILE}" ]; then
-	source ${SCRIPT_FILE}
+local_SCRIPT_FILE="$HOME/src/external/yarn-completion/yarn-completion.bash"
+if [ -f "${local_SCRIPT_FILE}" ]; then
+	source ${local_SCRIPT_FILE}
 #else
-#	echo "${SCRIPT_FILE} not found."
+#	echo "${local_SCRIPT_FILE} not found."
 fi
-unset SCRIPT_FILE
+unset local_SCRIPT_FILE
 
 # Install bash-completion to support other types of shell completion.
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -233,6 +217,17 @@ function pman()
 function cd_smburl()
 {
 	cd "`smburl_to_path "$1"`"
+}
+
+function startAndroid() {
+	if [ -z "$ANDROID_DEVICE" ]
+	then
+		echo 'ANDROID_DEVICE not defined.'
+		return
+	fi
+	pushd "${ANDROID_SDK_ROOT}/emulator" > /dev/null 2>&1
+	emulator -avd "$ANDROID_DEVICE" > /dev/null 2>&1 &
+	popd > /dev/null 2>&1
 }
 
 ##############################################################################
@@ -436,7 +431,9 @@ export PS1="$PS1\[$txtrst\]"' > '
 # Invoke other profile scripts
 ##############################################################################
 
-LOCAL_SCRIPT=".bash_local.sh"
-if [ -f ~/$LOCAL_SCRIPT ]; then
-	source ~/$LOCAL_SCRIPT
+local_LOCAL_SCRIPT="$HOME/.bash_local.sh"
+if [ -f "$local_LOCAL_SCRIPT" ]
+then
+	source "$local_LOCAL_SCRIPT"
 fi
+unset local_LOCAL_SCRIPT
