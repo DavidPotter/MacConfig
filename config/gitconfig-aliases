@@ -46,12 +46,19 @@
 	# Display who has contributed to the repository.
 	who = shortlog -n -s --no-merges
 
-	#-------
-	# Lists
-	#-------
+	#----------
+	# Branches
+	#----------
 
 	# List all branches
-	branches = branch -a
+	branches = branch -a -vv
+
+	# Display the name of the current branch
+	branch-name = "!git rev-parse --abbrev-ref @"
+
+	#---------
+	# Stashes
+	#---------
 
 	# List all stashes
 	stashes = stash list
@@ -59,6 +66,15 @@
 	#---------------
 	# Other Actions
 	#---------------
+
+	# Print files in the tree that are not under source control
+	ignored = clean -ndX
+
+	#Unstage any files that have been added to the staging area
+	unstage = "reset @"
+
+	# Remove remote branch corresponding to the current branch
+	unpublish = "!git push origin --delete $(git branch-name)"
 
 	# Cleanup will:
 	# - remove remote branch references that no longer exist
@@ -73,5 +89,6 @@
 	# Fires up a Git daemon for the repo you are currently in.  Connect to it with git://127.0.0.1/.
 	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
 
-	# Save everything in the working directory and remove the commit.  This allows restoring the commit if necessary.
+	# Save everything in the working directory and remove the commit.
+	# This allows restoring the commit if necessary.
 	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
