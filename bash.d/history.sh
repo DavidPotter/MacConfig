@@ -2,7 +2,7 @@
 
 # History configuration
 export HISTSIZE=100000
-export HISTFILESIZE=100000
+export HISTFILESIZE=${HISTSIZE}
 export HISTCONTROL=ignoredups      # Ignore duplicates in history
 export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
 
