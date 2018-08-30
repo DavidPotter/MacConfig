@@ -51,12 +51,12 @@ To install the starred items, you can execute the install-tools.sh script.
 - Defines a number of useful aliases (dir, .., etc.)
 - Defines a number of useful functions:
 
-  | Function  | Description                                                     |
-  | --------- | --------------------------------------------------------------- |
-  | pman      | Open man pages in Preview app                                   |
-  | cd_smburl | 'cd' into SMB URLs like this: cd_smburl smb://host/share        |
-  | mategem   | Open a gem in TextMate.                                         |
-  | dif       | Compare two files using the selected diff application (p4merge) |
+| Function  | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| pman      | Open man pages in Preview app                                   |
+| cd_smburl | 'cd' into SMB URLs like this: cd_smburl smb://host/share        |
+| mategem   | Open a gem in TextMate.                                         |
+| dif       | Compare two files using the selected diff application (p4merge) |
 
 ### inputrc
 
@@ -65,7 +65,7 @@ To install the starred items, you can execute the install-tools.sh script.
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
 
-# Packages to Install
+## Packages to Install
 
 [Homebrew](https://brew.sh/) is the first thing to install. Homebrew is a
 package manager for installing other packages.
@@ -88,27 +88,27 @@ brew install <package>
 | [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                            |
 | [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                             |
 | [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically              |
-| [unix2dox](https://linux.die.net/man/1/unix2dos)                                     | Convert line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
+| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Convert line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
 | [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                |
 
-# Terminal
+## Terminal
 
 Do this to support the Home and End keys in Terminal:
 
-1.  Bring up preferences on Terminal
-2.  Switch to the Profile tab
-3.  Switch to the Keyboard tab of the desired profile
-4.  Click the + to add a new keyboard definition
-5.  Set the Home or End for Key
-6.  Set Modifier to None
-7.  Set Action to Send Text
-8.  Type one of the following in the text box (press the esc key for `\033`):
-    - home: `\033[H`
-    - end: `\033[F`
+1. Bring up preferences on Terminal
+2. Switch to the Profiles tab
+3. Switch to the Keyboard tab of the desired profile
+4. Click the + to add a new keyboard definition
+5. Set the key to Home or End
+6. Set Modifier to None
+7. Set Action to Send Text
+8. Type one of the following in the text box (press the esc key for `\033`):
+    - Home: `\033[H`
+    - End: `\033[F`
 
 (from https://apple.stackexchange.com/questions/12997/can-home-and-end-keys-be-mapped-when-using-terminal)
 
-# Visual Studio Code Extensions
+## Visual Studio Code Extensions
 
 - [Bracket Pair Colorizer](https://marketplace.visualstudio.com/items?itemName=CoenraadS.bracket-pair-colorizer)
 - [CocoaPods Snippets](https://marketplace.visualstudio.com/items?itemName=Agenric.cocoapods-snippets)
@@ -119,6 +119,7 @@ Do this to support the Home and End keys in Terminal:
 - [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
 - [Gradle Language Support](https://marketplace.visualstudio.com/items?itemName=naco-siren.gradle-language)
 - [HTML Preview](https://marketplace.visualstudio.com/items?itemName=tht13.html-preview-vscode)
+- [iOS Common Files](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-ios-common-files)
 - [Kotlin Language](https://marketplace.visualstudio.com/items?itemName=mathiasfrohlich.Kotlin)
 - [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
