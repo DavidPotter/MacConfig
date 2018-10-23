@@ -103,8 +103,8 @@ Do this to support the Home and End keys in Terminal:
 6. Set Modifier to None
 7. Set Action to Send Text
 8. Type one of the following in the text box (press the esc key for `\033`):
-    - Home: `\033[H`
-    - End: `\033[F`
+   - Home: `\033[H`
+   - End: `\033[F`
 
 (from https://apple.stackexchange.com/questions/12997/can-home-and-end-keys-be-mapped-when-using-terminal)
 
@@ -133,3 +133,11 @@ Do this to support the Home and End keys in Terminal:
 - [vscode-icons](https://marketplace.visualstudio.com/items?itemName=robertohuertasm.vscode-icons)
 - [Wallaby.js](https://marketplace.visualstudio.com/items?itemName=WallabyJs.wallaby-vscode)
 - [yarn](https://marketplace.visualstudio.com/items?itemName=gamunu.vscode-yarn)
+
+## Other Settings
+
+Here are other changes you will want to make to settings that are not exposed through the UI.
+
+| Command                                                                  | Description                               |
+| ------------------------------------------------------------------------ | ----------------------------------------- |
+| `defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES` | Shows how long it takes to build in Xcode |
