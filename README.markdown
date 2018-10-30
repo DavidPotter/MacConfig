@@ -79,6 +79,7 @@ brew install <package>
 
 | Tool                                                                                 | Description                                                               |
 | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| bash                                                                                 | Latest version of the Bourne Again SHell (see notes below)                |
 | [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                     |
 | [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                     |
 | [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects           |
@@ -90,6 +91,39 @@ brew install <package>
 | [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically              |
 | [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Convert line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
 | [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                |
+
+## Bash
+
+The version of bash included with macOs is very old (something like 3.2.57)
+and the state of art has moved on. Here are the steps to use the latest
+version of bash:
+
+1. Use Homebrew to install bash:
+
+   ```shell
+   brew install bash
+   ```
+
+2. Add the new version to the `/etc/shells` file:
+
+   ```shell
+   sudo bash -c "echo $(brew --prefix)/bin/bash >> /private/etc/shells"
+   ```
+
+3. Change the default terminal shell:
+
+   ```shell
+   sudo chsh -s $(brew --prefix)/bin/bash
+   ```
+
+4. Reboot
+
+### References
+
+- [shell bash 4 on macos](http://www.aozsky.com/shelltools/shell-bash)
+- [Upgrade bash on your mac os !](https://coderwall.com/p/dmuxma/upgrade-bash-on-your-mac-os)
+- [Upgrade to bash 4 in Mac OS X](https://clubmate.fi/upgrade-to-bash-4-in-mac-os-x/)
+- [GNU Bash](https://www.gnu.org/software/bash/)
 
 ## Terminal
 
