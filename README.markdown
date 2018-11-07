@@ -8,6 +8,14 @@ Inspired by [Mark Carroll's dotfiles](https://github.com/markcarroll/dotfiles)
 and Jason Weathered's [dotfiles](https://github.com/jasoncodes/dotfiles) and
 [scripts](https://github.com/jasoncodes/scripts).
 
+## Prerequisites
+
+The following packages are required before installing this set of tools:
+
+- Xcode
+- Xcode Command Line Tools
+- Java JVM
+
 ## Installation
 
 ```bash
@@ -67,7 +75,7 @@ To install the starred items, you can execute the install-tools.sh script.
 
 ## Packages to Install
 
-[Homebrew](https://brew.sh/) is the first thing to install. Homebrew is a
+[Homebrew](https://brew.sh/) is the next thing to install. Homebrew is a
 package manager for installing other packages.
 
 Once you've installed Homebrew, you may want to install the following
@@ -127,7 +135,8 @@ version of bash:
 
 ## Terminal
 
-Do this to support the Home and End keys in Terminal:
+By default the Home and End keys don't do anything in Terminal. The following
+procedure will modify their behavior to be like in Windows.
 
 1. Bring up preferences on Terminal
 2. Switch to the Profiles tab
@@ -141,6 +150,12 @@ Do this to support the Home and End keys in Terminal:
    - End: `\033[F`
 
 (from https://apple.stackexchange.com/questions/12997/can-home-and-end-keys-be-mapped-when-using-terminal)
+
+## Other Tools
+
+| Tool               | Description                       |
+| ------------------ | --------------------------------- |
+| Visual Studio Code | Excellent free IDE from Microsoft |
 
 ## Visual Studio Code Extensions
 
