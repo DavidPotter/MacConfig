@@ -15,11 +15,21 @@
 REPO_NAME='MacConfig'
 LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 
-# Clone the dotfiles repository and execute the profile script.
-[ -d $LOCAL_REPO_DIR ] || git clone https://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
+function clone_repo()
+{
+	echo "--- CLONING REPO $REPO_NAME ---"
+	git clone https://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
+}
+
+# If the repository doesn't exist on the local disk, clone it.
+[ -d $LOCAL_REPO_DIR ] || clone_repo
+
+# Pull from the remote repository.
 (
 	set -e
 	cd $LOCAL_REPO_DIR
+
+	echo "--- PULL FROM REPO $REPO_NAME ---"
 
 	TEMP_FILE='`mktemp -t install.XXXXXX`'
 	trap '{ rm -f "$TEMP_FILE"; }' EXIT
@@ -45,15 +55,16 @@ function create_link()
 	then
 		ln -sv "$SRC" "$DST"
 	else
-		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]
+		echo -n "$REPO_NAME: $DST already" >&2
+		if [ -L "$DST" ]
 		then
-			echo -n "$REPO_NAME: $DST already exists" >&2
-			if [ -L "$DST" ]
+			if [ "`readlink "$DST"`" = "$SRC" ] >&2
 			then
-				echo " (pointing to `readlink "$DST"`)"
-			else
-				echo ' (not a symlink)'
+				echo -n ' defined properly' >&2
 			fi
+			echo " (pointing to `readlink "$DST"`)" >&2
+		else
+			echo ' exists (not a symlink)' >&2
 		fi
 	fi
 
@@ -63,14 +74,15 @@ function create_link()
 # Loop through the files in the dotfiles directory and create a symlink to
 # each one from a file with the same name but with a dot prefix (a dotfile) in
 # the home directory.  Special-case the profile script.
+echo '--- CREATE SYMBOLIC LINKS FOR DOT FILES ---'
 find $LOCAL_REPO_DIR/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
 do
-	DST="`echo "$SRC" | sed -e 's#.*/#.#'`"
 	if echo "$SRC" | grep -q /profile$
 	then
-		create_link "$SRC" .bash_profile
-		create_link "$SRC" .bashrc
+		create_link "$SRC" "$HOME/.bash_profile"
+		create_link "$SRC" "$HOME/.bashrc"
 	else
+		DST="$HOME/`echo "$SRC" | sed -e 's#.*/#.#'`"
 		create_link "$SRC" "$DST"
 	fi
 done
@@ -80,16 +92,22 @@ done
 # repository and create a symlink to each one from a file in the
 # ~/Library/Services directory.
 # http://macs.about.com/od/diyguidesprojects/qt/Create-A-Menu-Item-To-Hide-And-Show-Hidden-Files-In-Os-X.htm
+echo '--- CREATE SYMBOLIC LINKS FOR WORKFLOW FILES TO ADD SERVICES ---'
 find $LOCAL_REPO_DIR/Library/Services/*.workflow -maxdepth 0 -type d -not -name 'README*' | while read SRC
 do
-	DST="`echo "$SRC" | sed -e 's#.*/##'`"
+	DST="$HOME/`echo "$SRC" | sed -e 's#.*/##'`"
 	create_link "$SRC" "$DST"
 done
 
+# INSTALL APPLICATION CONFIGURATIONS
+echo '--- INSTALL APPLICATION CONFIGURATIONS ---'
+source $LOCAL_REPO_DIR/Application-Config/install-application-configs.sh
+
+# FINAL INSTRUCTIONS
 echo ' '
 echo '#'
 echo '# Invoke the following commands to complete the installation:'
-echo '#   source ~/.bashrc'
+echo '#   source ~/.bash_profile'
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
 echo ' '
