@@ -99,16 +99,29 @@ brew install <package>
 | [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Convert line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
 | [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                |
 
-## React Native Debugger
+### React Native Debugger
 
 The [React Native Debugger](https://github.com/jhen0409/react-native-debugger)
-is available via Homebrew:
+is available via Homebrew.
 
 ```shell
 brew cask install react-native-debugger
 ```
 
-## Bash
+After installation it is available in the Applications directory.
+
+### Reactotron
+
+[Reactotron](https://github.com/infinitered/reactotron) is desktop app for
+inspecting React JS and React Native projects and it is installed using Homebrew.
+
+```shell
+brew cask install reactotron
+```
+
+After installation it is available in the Applications directory.
+
+### Bash
 
 The version of bash included with macOs is very old (something like 3.2.57)
 and the state of art has moved on. Here are the steps to use the latest
@@ -134,7 +147,7 @@ version of bash:
 
 4. Reboot
 
-### References
+#### References
 
 - [shell bash 4 on macos](http://www.aozsky.com/shelltools/shell-bash)
 - [Upgrade bash on your mac os !](https://coderwall.com/p/dmuxma/upgrade-bash-on-your-mac-os)
