@@ -81,6 +81,13 @@
     "typescriptreact",
     "yml"
   ],
+  "cSpell.userWords": [
+    "Podfile"
+  ],
+  "debug.toolBarLocation": "docked",
+  "editor.largeFileOptimizations": false,
+  "git.allowForcePush": true,
+  "git.rebaseWhenSync": true,
   "gitlens.advanced.messages": {
     "suppressCommitHasNoPreviousCommitWarning": false,
     "suppressCommitNotFoundWarning": false,
@@ -93,12 +100,10 @@
   },
   "gitlens.historyExplorer.enabled": true,
   "gitlens.keymap": "chorded",
+  "gitlens.views.fileHistory.enabled": true,
+  "gitlens.views.lineHistory.enabled": true,
+  "search.showLineNumbers": true,
   "typescript.updateImportsOnFileMove.enabled": "never",
   "workbench.iconTheme": "vscode-icons",
-  "editor.largeFileOptimizations": false,
-  "git.rebaseWhenSync": true,
-  "git.allowForcePush": true,
-  "cSpell.userWords": [
-    "Podfile"
-  ]
+  "workbench.editor.highlightModifiedTabs": true
 }
