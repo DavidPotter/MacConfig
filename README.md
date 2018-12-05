@@ -72,10 +72,12 @@ To install the starred items, you can execute the install-tools.sh script.
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
 
-## Packages to Install
+## Packages and Applications to Install via Homebrew
 
 [Homebrew](https://brew.sh/) is the next thing to install. Homebrew is a
 package manager for installing other packages.
+
+### Packages to Install
 
 Once you've installed Homebrew, you may want to install the following
 packages. You will install these using the syntax:
@@ -84,68 +86,64 @@ packages. You will install these using the syntax:
 brew install <package>
 ```
 
-| Tool                                                                                 | Description                                                               |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                |
-| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                     |
-| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                     |
-| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects           |
-| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Convert line endings in a file from CR/LF (Windows) to just LF (Unix/Mac) |
-| [gdub](https://github.com/dougborg/gdub)                                             | Simple command-line tool for running Gradle or the Gradle wrapper script  |
-| [gradle](https://gradle.org/)                                                        | Build tool                                                                |
-| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                            |
-| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                             |
-| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically              |
-| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Convert line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
-| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                |
+| Tool                                                                                 | Description                                                                |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                 |
+| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                      |
+| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                      |
+| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects            |
+| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac) |
+| [gdub](https://github.com/dougborg/gdub)                                             | Simple command-line tool for running Gradle or the Gradle wrapper script   |
+| [gradle](https://gradle.org/)                                                        | Build tool                                                                 |
+| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                             |
+| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                              |
+| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically               |
+| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
+| [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                          |
+| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                 |
 
-### React Native Debugger
+### Applications to Install via Homebrew
 
-The [React Native Debugger](https://github.com/jhen0409/react-native-debugger)
-is available via Homebrew.
+Homebrew provides formulae for installing some applications. This is a
+convenient way to install applications that doesn't require visiting a web
+page and downloading a disk image file (.dmg).
 
-```shell
-brew cask install react-native-debugger
+Use the following command to install an application with Homebrew:
+
+```bash
+brew cask install <cask>
 ```
 
-After installation it is available in the Applications directory.
+Once an application has been installed, it will be available in the
+`Application` directory just like applications installed via the App Store
+app.
 
-### Reactotron
-
-[Reactotron](https://github.com/infinitered/reactotron) is desktop app for
-inspecting React JS and React Native projects and it is installed using Homebrew.
-
-```shell
-brew cask install reactotron
-```
-
-After installation it is available in the Applications directory.
+| Application                                                                | Description                                                           |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [docker](https://www.docker.com/)                                          | Tool for creating, deploying, and running applications in a container |
+| [powershell](https://docs.microsoft.com/en-us/powershell/)                 | Command-line shell built on .NET                                      |
+| [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | Standalone application for debugging React Native applications.       |
+| [reactotron](https://github.com/infinitered/reactotron)                    | Desktop app for inspecting React JS and React Native projects         |
 
 ### Bash
 
-The version of bash included with macOs is very old (something like 3.2.57)
-and the state of art has moved on. Here are the steps to use the latest
-version of bash:
+The version of bash included with macOS is very old (something like 3.2.57)
+and the state of art has moved on. Here are the steps to configure the latest
+version of bash once it's been installed:
 
-1. Use Homebrew to install bash:
-
-   ```shell
-   brew install bash
-   ```
-
-2. Add the new version to the `/etc/shells` file:
+1. Add the new version to the `/etc/shells` file:
 
    ```shell
    sudo bash -c "echo $(brew --prefix)/bin/bash >> /private/etc/shells"
    ```
 
-3. Change the default terminal shell:
+2. Change the default terminal shell:
 
    ```shell
    sudo chsh -s $(brew --prefix)/bin/bash
    ```
 
-4. Reboot
+3. Reboot
 
 #### References
 
@@ -154,15 +152,12 @@ version of bash:
 - [Upgrade to bash 4 in Mac OS X](https://clubmate.fi/upgrade-to-bash-4-in-mac-os-x/)
 - [GNU Bash](https://www.gnu.org/software/bash/)
 
-## PowerShell Core
+### PowerShell
 
-PowerShell Core can run on a Mac and is available via Homebrew using the following command:
+The PowerShell cask installs an application in the `Applications` directory
+and also installs a command line tool in `/user/local/bin`.
 
-```shell
-brew cask install powershell
-```
-
-To run it, execute the following command:
+To run PowerShell from the command line, execute the following command:
 
 ```shell
 pwsh
@@ -187,6 +182,9 @@ procedure will modify their behavior to be like in Windows.
 (from https://apple.stackexchange.com/questions/12997/can-home-and-end-keys-be-mapped-when-using-terminal)
 
 ## Applications
+
+The following sections list the applications that I use either on every
+machine (e.g. `BetterSnapTool`) or on select machines depending on their use.
 
 ### AppStore Applications
 
