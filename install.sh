@@ -99,6 +99,11 @@ do
 	create_link "$SRC" "$DST"
 done
 
+# CREATE POWERSHELL PROFILES
+echo '-- CREATE POWERSHELL PROFILES ---'
+echo ". '$LOCAL_REPO_DIR/PowerShell/profile/profile.ps1'" | tee "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1"
+create_link "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1" "$HOME/.config/powershell/Microsoft.VSCode_profile.ps1"
+
 # INSTALL APPLICATION CONFIGURATIONS
 echo '--- INSTALL APPLICATION CONFIGURATIONS ---'
 source $LOCAL_REPO_DIR/Application-Config/install-application-configs.sh
