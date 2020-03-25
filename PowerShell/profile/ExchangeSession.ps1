@@ -1,3 +1,8 @@
+# NOTE:
+#   The New-PSSession command in the Start-Office365Session function requires a specific
+#   version of OpenSSL.  Look at this issue for details:
+#       https://github.com/PowerShell/PowerShell/issues/5561#issuecomment-592476131
+#
 # Start a session to Office 365 and import commands to use against that session.
 # Execute `Stop-Office365Session` when done to free up resources on the server.
 function Start-Office365Session {
