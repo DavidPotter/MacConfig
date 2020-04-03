@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+#
+# clear-onedrive-cache
+#
+# Deletes cache files stored for/by/? Office applications that cause OneDrive
+# Finder Integration to use a LOT of CPU.
+#
+# Ref: https://gist.github.com/drblue/6fdc431396760f2440ce
+#
+
+find ~/Library/Containers -type d -name OfficeFileCache -exec rm -r {} +
