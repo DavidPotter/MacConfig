@@ -30,7 +30,7 @@ Installing in this way will do the following:
 ## What else you have to do
 
 To take full advantage of these scripts, you also need to install the
-following packages:
+following packages. You can do this by executing the install-tools.sh script.
 
 | Tool                     | Description                                                                                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -39,8 +39,6 @@ following packages:
 | Git-Flow (\*)            | [Git extensions](https://github.com/nvie/gitflow) to provide high-level repository operations for Vincent Driessen's branching model.                         |
 | Git-Flow Completion (\*) | [Command line completion](https://github.com/bobthecow/git-flow-completion.git) for Git-Flow.                                                                 |
 | Ruby                     | If you have Ruby installed additional features are added for editing and recognizing Ruby files. Most of this is commented out as I don't currently use Ruby. |
-
-To install the starred items, you can execute the install-tools.sh script.
 
 ## What It Gives You
 
@@ -51,7 +49,6 @@ To install the starred items, you can execute the install-tools.sh script.
   - The current user and machine
   - The current directory
   - The current branch and status if in a directory that is a GIT repository
-- Sets TextMate as the default editor
 - Sets the default man pager to 'less'
 - Configures the command line history
 - Sets up GIT command line completion
@@ -62,7 +59,6 @@ To install the starred items, you can execute the install-tools.sh script.
 | --------- | --------------------------------------------------------------- |
 | pman      | Open man pages in Preview app                                   |
 | cd_smburl | 'cd' into SMB URLs like this: cd_smburl smb://host/share        |
-| mategem   | Open a gem in TextMate.                                         |
 | dif       | Compare two files using the selected diff application (p4merge) |
 
 ### inputrc
@@ -184,7 +180,9 @@ procedure will modify their behavior to be like in Windows.
 ## Applications
 
 The following sections list the applications that I use either on every
-machine (e.g. `BetterSnapTool`) or on select machines depending on their use.
+machine or on select machines depending on their use.
+
+\* Purchase required
 
 ### AppStore Applications
 
@@ -199,7 +197,7 @@ machine (e.g. `BetterSnapTool`) or on select machines depending on their use.
 | FullContact               | Productivity | Contact manager                                      |
 | Hex Fiend                 | Development  | Hex editor                                           |
 | iMage Tools               | Media        | Simple image editing tool                            |
-| JSON Editor               | Development  | A simple but powerful JSON editor                    |
+| \*JSON Editor             | Development  | A simple but powerful JSON editor                    |
 | Kindle                    | Productivity | Amazon's book reader                                 |
 | Microsoft OneDrive        | Productivity | Cloud drive software                                 |
 | Microsoft OneNote         | Productivity | Note taking application                              |
@@ -210,7 +208,6 @@ machine (e.g. `BetterSnapTool`) or on select machines depending on their use.
 | Pocket                    | Productivity | Internet news reader                                 |
 | QR Journal                | Productivity | Scan QR codes                                        |
 | Simplenote                | Productivity | Note application                                     |
-| Wunderlist                | Productivity | To-do list application                               |
 
 ### Development Tools
 
@@ -227,7 +224,7 @@ machine (e.g. `BetterSnapTool`) or on select machines depending on their use.
 | [MySQL Workbench](https://www.mysql.com/products/workbench/)       | Visual tool for MySQL                   |
 | [\*PhpStorm by JetBrains](https://www.jetbrains.com)               | IDE for PHP development                 |
 | [\*PyCharm by JetBrains](https://www.jetbrains.com)                | IDE for Python development              |
-| [RESTClient](https://github.com/wiztools/rest-client)              | Tool to test HTTP?RESTful web services  |
+| [RESTClient](https://github.com/wiztools/rest-client)              | Tool to test HTTP RESTful web services  |
 | [SourceTree](https://www.sourcetreeapp.com)                        | Git client                              |
 | [\*TextMate](https://macromates.com)                               | Text editor                             |
 | [Visual Studio Code](https://code.visualstudio.com)                | Excellent free IDE from Microsoft       |
