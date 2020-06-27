@@ -1,7 +1,7 @@
 ##############################################################################
-# profile
+# bash_profile
 #
-# Shell profile (.bash_profile, .bashrc, .profile, etc.).
+# Bash profile (.bash_profile, .bashrc, .profile, etc.).
 # Sets up the shell the way I like it by performing the following actions:
 # 1. Source scripts in the bash.d directory in the repo to perform most of the
 #       configuration.

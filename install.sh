@@ -36,7 +36,7 @@ function clone_repo()
 
 	set +e
 	git fetch origin
-	git show origin/master:dotfiles/profile > "$TEMP_FILE"
+	git show origin/master:dotfiles/bash_profile > "$TEMP_FILE"
 	echo "Executing $TEMP_FILE"
 	source "$TEMP_FILE"
 	set -e
@@ -73,11 +73,11 @@ function create_link()
 # CREATE SYMBOLIC LINKS FOR DOT FILES
 # Loop through the files in the dotfiles directory and create a symlink to
 # each one from a file with the same name but with a dot prefix (a dotfile) in
-# the home directory.  Special-case the profile script.
+# the home directory.  Special-case the bash_profile script.
 echo '--- CREATE SYMBOLIC LINKS FOR DOT FILES ---'
 find $LOCAL_REPO_DIR/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
 do
-	if echo "$SRC" | grep -q /profile$
+	if echo "$SRC" | grep -q /bashrc$
 	then
 		create_link "$SRC" "$HOME/.bash_profile"
 		create_link "$SRC" "$HOME/.bashrc"
