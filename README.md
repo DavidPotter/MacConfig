@@ -308,6 +308,7 @@ machine or on select machines depending on their use.
 - [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [React Native Tools](https://marketplace.visualstudio.com/items?itemName=vsmobile.vscode-react-native)
+- [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 - [Rewrap](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap)
 - [TODO Highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight)
 - [TSLint](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)
