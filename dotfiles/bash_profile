@@ -18,17 +18,17 @@ function __get_script_dir() {
     local SOURCE="${BASH_SOURCE[0]}"
     # Resolve $SOURCE until the file is no longer a symlink.
     while [ -h "${SOURCE}" ]; do
-        SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+        SCRIPT_DIR="$( SHELL_SESSION_FILE= && cd -P "$( dirname "${SOURCE}" )" && pwd )"
         SOURCE="$(readlink "${SOURCE}")"
         # If $SOURCE was a relative symlink, resolve it relative to the path where the symlink file was located.
         [[ ${SOURCE} != /* ]] && SOURCE="${SCRIPT_DIR}/${SOURCE}"
     done
-    SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+    SCRIPT_DIR="$( SHELL_SESSION_FILE= && cd -P "$( dirname "${SOURCE}" )" && pwd )"
 }
 
 __get_script_dir
 
-ROOT_DIR="$( cd "$( dirname "${SCRIPT_DIR}" )" && pwd )"
+ROOT_DIR="$( SHELL_SESSION_FILE= && cd "$( dirname "${SCRIPT_DIR}" )" && pwd )"
 
 # Source all the scripts in a folder.
 #  $1 - Folder containing scripts to source.
