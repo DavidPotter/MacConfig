@@ -92,6 +92,7 @@ brew install <package>
 | [gdub](https://github.com/dougborg/gdub)                                             | Simple command-line tool for running Gradle or the Gradle wrapper script   |
 | [gradle](https://gradle.org/)                                                        | Build tool                                                                 |
 | [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                             |
+| [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                      |
 | [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                              |
 | [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically               |
 | [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
