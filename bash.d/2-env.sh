@@ -48,6 +48,11 @@ export JAVA_HOME="$(/usr/libexec/java_home -v '1.8*')"
 
 export ANDROID_SDK_ROOT=${HOME}/Library/Android/sdk
 
+# Veriables for using the LastPass command line tool available here:
+#   https://github.com/lastpass/lastpass-cli
+export LPASS_HOME=~/.lpass
+export LPASS_AGENT_TIMEOUT=0
+
 # If TextMate is available and we're in Terminal.app...
 # TODO: Is this still necessary?
 if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
