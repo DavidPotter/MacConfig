@@ -48,6 +48,11 @@ export JAVA_HOME="$(/usr/libexec/java_home -v '1.8*')"
 
 export ANDROID_SDK_ROOT=${HOME}/Library/Android/sdk
 
+# Tell the Perforce command line tool (p4) to read a file in the parent
+# directory or in a parent directory to get configuration information for
+# connecting to the Perforce server.
+export P4CONFIG=.p4config
+
 # Veriables for using the LastPass command line tool available here:
 #   https://github.com/lastpass/lastpass-cli
 export LPASS_HOME=~/.lpass
