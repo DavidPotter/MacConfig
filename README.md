@@ -185,7 +185,7 @@ machine or on select machines depending on their use.
 
 \* Purchase required
 
-### AppStore Applications
+### App Store Applications
 
 | Application               | Type         | Description                                          |
 | ------------------------- | ------------ | ---------------------------------------------------- |
@@ -233,18 +233,19 @@ machine or on select machines depending on their use.
 
 ### Utilities
 
-| Application                                                                           | Description                                |
-| ------------------------------------------------------------------------------------- | ------------------------------------------ |
-| [AccessMenuBarApps](http://www.ortisoft.de/en/accessmenubarapps/)                     | Gives access to all menu bar apps          |
-| [Duet](https://www.duetdisplay.com)                                                   | App to use attached iOS device as screen   |
-| [Intel Power Gadget](https://software.intel.com/en-us/articles/intel-power-gadget-20) | Power usage monitoring tool                |
-| [\*iStat Menus](https://bjango.com/mac/istatmenus/)                                   | System monitor for the menubar             |
-| [LastPass](https://www.lastpass.com)                                                  | Password manager                           |
-| [Malwarebytes](https://www.malwarebytes.com)                                          | Malware detection software                 |
-| [OmniDiskSweeper](https://www.omnigroup.com/more/)                                    | Disk cleaning application                  |
-| [OverSight](https://objective-see.com/products/oversight.html)                        | Mic and webcam monitor                     |
-| [\*Stay](https://cordlessdog.com/stay/)                                               | Restores window positions                  |
-| [TinkerTool](https://www.bresink.com/osx/TinkerTool.html)                             | Provides access to additional Mac settings |
+| Application                                                                           | Description                                             |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [AccessMenuBarApps](http://www.ortisoft.de/en/accessmenubarapps/)                     | Gives access to all menu bar apps                       |
+| [Duet](https://www.duetdisplay.com)                                                   | App to use attached iOS device as screen                |
+| [Fanny for macOS](https://www.fannywidget.com)                                        | Notification Center Widget/Menu Bar app to monitor fans |
+| [Intel Power Gadget](https://software.intel.com/en-us/articles/intel-power-gadget-20) | Power usage monitoring tool                             |
+| [\*iStat Menus](https://bjango.com/mac/istatmenus/)                                   | System monitor for the menubar                          |
+| [LastPass](https://www.lastpass.com)                                                  | Password manager                                        |
+| [Malwarebytes](https://www.malwarebytes.com)                                          | Malware detection software                              |
+| [OmniDiskSweeper](https://www.omnigroup.com/more/)                                    | Disk cleaning application                               |
+| [OverSight](https://objective-see.com/products/oversight.html)                        | Mic and webcam monitor                                  |
+| [\*Stay](https://cordlessdog.com/stay/)                                               | Restores window positions                               |
+| [TinkerTool](https://www.bresink.com/osx/TinkerTool.html)                             | Provides access to additional Mac settings              |
 
 ### Productivity
 
