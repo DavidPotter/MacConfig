@@ -114,7 +114,7 @@ page and downloading a disk image file (.dmg).
 Use the following command to install an application with Homebrew:
 
 ```bash
-brew cask install <cask>
+brew install --cask <cask>
 ```
 
 Once an application has been installed, it will be available in the
