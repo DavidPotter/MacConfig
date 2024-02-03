@@ -17,6 +17,12 @@ The following packages are required before installing this set of tools:
 
 ## Installation
 
+From GitLab:
+```bash
+bash < <( curl -sL https://raw.githubusercontent.com/DavidPotter/MacConfig/master/install.sh )
+```
+
+From GitHub:
 ```bash
 bash < <( curl -sL http://github.com/DavidPotter/MacConfig/raw/master/install.sh )
 ```
