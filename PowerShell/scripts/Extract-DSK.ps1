@@ -1,0 +1,1 @@
+Get-Clipboard | ForEach-Object { $_.Substring(12) } | ForEach-Object { for ($index = 0; $index -lt $_.Length / 5; $index++) { $_[($index*5)..(($index*5) + 4)] -join '' } } | Select-Object -First 8 | Join-String -Separator '-'
