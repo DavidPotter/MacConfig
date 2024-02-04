@@ -7,6 +7,13 @@ Inspired by [Mark Carroll's dotfiles](https://github.com/markcarroll/dotfiles)
 and Jason Weathered's [dotfiles](https://github.com/jasoncodes/dotfiles) and
 [scripts](https://github.com/jasoncodes/scripts).
 
+## Additional Repositories
+
+This repository is just a beginning for configuring your Mac. Consider the following repositories as well.
+
+- [Shared Config](https://gitlab.com/DavidPotter/SharedConfig)
+  - Shared configuration across Mac and Windows.
+
 ## Prerequisites
 
 The following packages are required before installing this set of tools:
@@ -191,7 +198,7 @@ machine or on select machines depending on their use.
 
 \* Purchase required
 
-### App Store Applications
+### Mac App Store Applications
 
 | Application               | Type         | Description                                          |
 | ------------------------- | ------------ | ---------------------------------------------------- |
@@ -220,22 +227,9 @@ machine or on select machines depending on their use.
 
 | Application                                                        | Description                             |
 | ------------------------------------------------------------------ | --------------------------------------- |
-| [Android Studio](https://developer.android.com/studio/)            | IDE for developing Android applications |
-| [\*AppCode by JetBrains](https://www.jetbrains.com)                | IDE for iOS/macOS development           |
-| [\*CLion by JetBrains](https://www.jetbrains.com)                  | A cross-platform IDE for C and C++      |
 | [Cocoa Rest Client](http://mmattozzi.github.io/cocoa-rest-client/) | App for testing HTTP/REST endpoints     |
-| [\*DataGrip by JetBrains](https://www.jetbrains.com)               | Database tool                           |
-| [DB Browser for SQLite](https://sqlitebrowser.org)                 | SQLite database browser                 |
-| [GitKraken](https://www.gitkraken.com)                             | Git client                              |
 | [iExplorer](https://macroplant.com)                                | Transfer utility for iOS devices        |
-| [MySQL Workbench](https://www.mysql.com/products/workbench/)       | Visual tool for MySQL                   |
-| [\*PhpStorm by JetBrains](https://www.jetbrains.com)               | IDE for PHP development                 |
-| [\*PyCharm by JetBrains](https://www.jetbrains.com)                | IDE for Python development              |
-| [RESTClient](https://github.com/wiztools/rest-client)              | Tool to test HTTP RESTful web services  |
-| [SourceTree](https://www.sourcetreeapp.com)                        | Git client                              |
-| [\*TextMate](https://macromates.com)                               | Text editor                             |
-| [Visual Studio Code](https://code.visualstudio.com)                | Excellent free IDE from Microsoft       |
-| [\*WebStorm by JetBrains](https://www.jetbrains.com)               | IDE for web development                 |
+| \*[TextMate](https://macromates.com)                               | Text editor                             |
 
 ### Utilities
 
@@ -246,7 +240,6 @@ machine or on select machines depending on their use.
 | [Fanny for macOS](https://www.fannywidget.com)                                        | Notification Center Widget/Menu Bar app to monitor fans |
 | [Intel Power Gadget](https://software.intel.com/en-us/articles/intel-power-gadget-20) | Power usage monitoring tool                             |
 | [\*iStat Menus](https://bjango.com/mac/istatmenus/)                                   | System monitor for the menubar                          |
-| [LastPass](https://www.lastpass.com)                                                  | Password manager                                        |
 | [Malwarebytes](https://www.malwarebytes.com)                                          | Malware detection software                              |
 | [OmniDiskSweeper](https://www.omnigroup.com/more/)                                    | Disk cleaning application                               |
 | [OverSight](https://objective-see.com/products/oversight.html)                        | Mic and webcam monitor                                  |
@@ -255,79 +248,24 @@ machine or on select machines depending on their use.
 
 ### Productivity
 
-| Application                                                       | Description                             |
-| ----------------------------------------------------------------- | --------------------------------------- |
-| [Dropbox](https://www.dropbox.com/downloading)                    | Dropbox desktop sync app                |
-| [Evernote](https://evernote.com/download)                         | Evernote notes manager                  |
-| [FileZilla](https://filezilla-project.org)                        | FTP client                              |
-| [Firefox](https://www.mozilla.org/en-US/firefox/)                 | Web browser                             |
-| [Google Chrome](https://www.google.com/chrome/)                   | Web browser                             |
-| [PDF Expert](https://pdfexpert.com)                               | PDF editor                              |
-| [Signal](https://signal.org/download/)                            | Secure chat application                 |
-| [Skype](https://www.skype.com/en/get-skype/)                      | Video conferencing application          |
-| [TeamViewer](https://www.teamviewer.com/en/download/)             | Remote desktop application              |
-| [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) | Remote desktop application from RealVNC |
+| Application                                           | Description                |
+| ----------------------------------------------------- | -------------------------- |
+| [PDF Expert](https://pdfexpert.com)                   | PDF editor                 |
+| [TeamViewer](https://www.teamviewer.com/en/download/) | Remote desktop application |
 
 ### Corporate/Subscription Applications
 
-| Application                        | Description                          |
-| ---------------------------------- | ------------------------------------ |
-| Microsoft Office (from Office 365) | Office productivity suite            |
-| Mimecast                           | Mail quarantine application          |
-| Remotix                            | Remote desktop application           |
-| Parallels                          | Virtual machine software for the Mac |
-
-### Media
-
-| Application                                                                                 | Description                                         |
-| ------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [Adobe Digital Negative Converter](https://helpx.adobe.com/photoshop/digital-negative.html) | Converts photos between various RAW formats and DNG |
-| [Amazon Photos](https://www.amazon.com/b/?node=16409408011)                                 | Desktop app for syncing photos with Amazon          |
-| [Amazon Music](https://www.amazon.com/Amazon-Music-Apps/b?ie=UTF8&node=2658409011)          | Desktop app for managing music from Amazon          |
-| [\*MakeMKV](https://makemkv.com)                                                            | Video conversion tool                               |
-| [Plex Media Player](https://www.plex.tv/media-server-downloads/#plex-app)                   | Player for streaming from a Plex server             |
-| [VLC](https://www.videolan.org)                                                             | Video player                                        |
+| Application | Description                          |
+| ----------- | ------------------------------------ |
+| Mimecast    | Mail quarantine application          |
+| Remotix     | Remote desktop application           |
+| Parallels   | Virtual machine software for the Mac |
 
 ### Personal Applications
 
-| Application                                                                             | Description                                         |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [HDHomeRun](https://www.silicondust.com/products/software/)                             | Viewer for playing video from HDHomeRun devices     |
-| [Infinity Dashboard](https://fiplab.com/apps/infinity-dashboard-for-mac)                | Customizable menubar tool                           |
-| [Logos Bible Software](https://www.logos.com)                                           | Bible study software                                |
-| [NETGEAR Switch Discovery Tool](https://www.netgear.com/support/product/GS116Ev2.aspx)  | Tool for discovering NETGEAR smart switches         |
-| [SketchUp](https://www.sketchup.com)                                                    | 3D modeling application                             |
-| [Synology Assistant](https://www.synology.com/en-us/support/download/DS1517+#utilities) | Application to help connect to Synology NAS devices |
-
-## Visual Studio Code Extensions
-
-- [Bracket Pair Colorizer](https://marketplace.visualstudio.com/items?itemName=CoenraadS.bracket-pair-colorizer)
-- [CocoaPods Snippets](https://marketplace.visualstudio.com/items?itemName=Agenric.cocoapods-snippets)
-- [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
-- [Color Highlight](https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight)
-- [Document This](https://marketplace.visualstudio.com/items?itemName=joelday.docthis)
-- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-- [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
-- [Gradle Language Support](https://marketplace.visualstudio.com/items?itemName=naco-siren.gradle-language)
-- [HTML Preview](https://marketplace.visualstudio.com/items?itemName=tht13.html-preview-vscode)
-- [iOS Common Files](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-ios-common-files)
-- [Kotlin Language](https://marketplace.visualstudio.com/items?itemName=mathiasfrohlich.Kotlin)
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [React Native Tools](https://marketplace.visualstudio.com/items?itemName=vsmobile.vscode-react-native)
-- [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-- [Rewrap](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap)
-- [TODO Highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight)
-- [TSLint](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)
-- [Version Lens](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens)
-- [VS Live Share Extension Pack](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack), includes:
-  - [VS Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)
-  - [VS Live Share Audio](https://marketplace.visualstudio.com/items?itemName=ms-vsliveshare.vsliveshare-audio)
-  - [Team Chat: for Slack, Discord, Live Share](https://marketplace.visualstudio.com/items?itemName=karigari.chat)
-- [vscode-icons](https://marketplace.visualstudio.com/items?itemName=robertohuertasm.vscode-icons)
-- [Wallaby.js](https://marketplace.visualstudio.com/items?itemName=WallabyJs.wallaby-vscode)
-- [yarn](https://marketplace.visualstudio.com/items?itemName=gamunu.vscode-yarn)
+| Application                                                              | Description               |
+| ------------------------------------------------------------------------ | ------------------------- |
+| [Infinity Dashboard](https://fiplab.com/apps/infinity-dashboard-for-mac) | Customizable menubar tool |
 
 ## Other Settings
 
