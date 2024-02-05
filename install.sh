@@ -102,8 +102,8 @@ done
 # CREATE POWERSHELL PROFILES
 # Create the PowerShell config directory first if it doesn't exist.
 echo '-- CREATE POWERSHELL PROFILES ---'
-if [ ! -d "$HOME/.config/powershell1" ]; then
-    mkdir "$HOME/.config/powershell1"
+if [ ! -d "$HOME/.config/powershell" ]; then
+    mkdir "$HOME/.config/powershell"
 fi
 # Create symlink for profile stored in repo.
 echo ". '$LOCAL_REPO_DIR/PowerShell/profile/profile.ps1'" | tee "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1"
