@@ -49,7 +49,7 @@ if which -s brew; then
     eval "$(brew shellenv)"
 else
     if [ -f /opt/homebrew/bin/brew ]; then
-        eval "$(/usr/homebrew/bin/brew shellenv)"
+        eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
 fi
 
