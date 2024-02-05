@@ -18,9 +18,17 @@ This repository is just a beginning for configuring your Mac. Consider the follo
 
 The following packages are required before installing this set of tools:
 
-- Xcode
+- Xcode (this turns out to be optional)
 - Xcode Command Line Tools
 - Java JVM
+- [Homebrew](https://brew.sh/) - package manager for installing other packages
+- [Visual Studio Code](https://code.visualstudio.com)
+
+Then install these packages:
+
+```bash
+brew install --cask powershell
+```
 
 ## Installation
 
