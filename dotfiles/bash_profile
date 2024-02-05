@@ -41,6 +41,19 @@ function __source_files {
 }
 
 #-----------------------------------------------------------------------------
+# Update environment with Homebrew details.
+#-----------------------------------------------------------------------------
+
+# Check to see if brew is in the path.  If not, check it's default location.
+if which -s brew; then
+    eval "$(brew shellenv)"
+else
+    if [ -f /opt/homebrew/bin/brew ]; then
+        eval "$(/usr/homebrew/bin/brew shellenv)"
+    fi
+fi
+
+#-----------------------------------------------------------------------------
 # Source common files.
 #-----------------------------------------------------------------------------
 

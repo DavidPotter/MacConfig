@@ -11,6 +11,8 @@ alias -- -='cd -'
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+alias manpath='echo -e ${MANPATH//:/\\n}'
+alias infopath='echo -e ${INFOPATH//:/\\n}'
 
 # Directory listing aliases.
 # -F = Display:
