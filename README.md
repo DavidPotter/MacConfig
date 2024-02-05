@@ -27,7 +27,7 @@ The following packages are required before installing this set of tools:
 Then install these packages:
 
 ```bash
-brew install --cask powershell
+brew install powershell/tap/powershell
 ```
 
 ## Installation
