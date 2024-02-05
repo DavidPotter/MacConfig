@@ -8,8 +8,7 @@
   "editor.formatOnType": true,
   "editor.insertSpaces": true,
   "editor.minimap.enabled": true,
-  "editor.renderIndentGuides": true,
-  "editor.renderWhitespace": "all",
+  "editor.renderWhitespace": "boundary",
   "editor.rulers": [
     120
   ],
@@ -158,5 +157,6 @@
       "name": "Vue Green",
       "value": "#42b883"
     }
-  ]
+  ],
+  "editor.guides.indentation": true
 }
