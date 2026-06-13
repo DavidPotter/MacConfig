@@ -5,3 +5,5 @@ desktop.ini
 local.properties
 Thumbs.db
 thumbs.db
+
+**/.claude/settings.local.json
