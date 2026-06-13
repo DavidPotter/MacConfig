@@ -24,7 +24,7 @@ The following packages are required before installing this set of tools:
 - [Homebrew](https://brew.sh/) - package manager for installing other packages
 - [Visual Studio Code](https://code.visualstudio.com)
 
-Then install these packages:
+Then install the [powershell](https://docs.microsoft.com/en-us/powershell/) package:
 
 ```bash
 brew install powershell/tap/powershell
@@ -33,11 +33,13 @@ brew install powershell/tap/powershell
 ## Installation
 
 From GitLab:
+
 ```bash
 bash < <( curl -sL https://raw.githubusercontent.com/DavidPotter/MacConfig/master/install.sh )
 ```
 
 From GitHub:
+
 ```bash
 bash < <( curl -sL http://github.com/DavidPotter/MacConfig/raw/master/install.sh )
 ```
@@ -51,11 +53,12 @@ Installing in this way will do the following:
 ## What else you have to do
 
 To take full advantage of these scripts, you also need to install the
-following packages. You can do this by executing the install-tools.sh script.
+following packages.
+
+> The most convenient way to do this is by executing the **_install-tools.sh_** script.
 
 | Tool                     | Description                                                                                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git                      | This is installed with Xcode. Go to the Downloads pane of the Preferences panel to do this.                                                                   |
 | Git Completion (\*)      | Located in the [contrib directory of the git repository](https://github.com/git/git.git).                                                                     |
 | Git-Flow (\*)            | [Git extensions](https://github.com/nvie/gitflow) to provide high-level repository operations for Vincent Driessen's branching model.                         |
 | Git-Flow Completion (\*) | [Command line completion](https://github.com/bobthecow/git-flow-completion.git) for Git-Flow.                                                                 |
@@ -103,22 +106,22 @@ packages. You will install these using the syntax:
 brew install <package>
 ```
 
-| Tool                                                                                 | Description                                                                |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                 |
-| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                      |
-| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                      |
-| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects            |
-| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac) |
-| [gdub](https://github.com/dougborg/gdub)                                             | Simple command-line tool for running Gradle or the Gradle wrapper script   |
-| [gradle](https://gradle.org/)                                                        | Build tool                                                                 |
-| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                             |
-| [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                      |
-| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                              |
-| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically               |
-| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)      |
-| [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                          |
-| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                 |
+| Tool                                                                                 | Description                                                                                   |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                                    |
+| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                                         |
+| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                                         |
+| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects                               |
+| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac)                    |
+| [gng](https://github.com/gdubw/gng)                                                  | Simple command-line tool for running Gradle or the Gradle wrapper script using a `gw` command |
+| [gradle](https://gradle.org/)                                                        | Build tool                                                                                    |
+| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                                                |
+| [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                                         |
+| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                                                 |
+| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically                                  |
+| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)                         |
+| [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                                             |
+| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                                    |
 
 ### Applications to Install via Homebrew
 
@@ -139,9 +142,9 @@ app.
 | Application                                                                | Description                                                           |
 | -------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | [docker](https://www.docker.com/)                                          | Tool for creating, deploying, and running applications in a container |
-| [powershell](https://docs.microsoft.com/en-us/powershell/)                 | Command-line shell built on .NET                                      |
 | [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | Standalone application for debugging React Native applications.       |
 | [reactotron](https://github.com/infinitered/reactotron)                    | Desktop app for inspecting React JS and React Native projects         |
+| [thaw](https://formulae.brew.sh/cask/thaw)                                 | Menu bar management tool ([website](https://github.com/stonerl/Thaw)) |
 
 ### Bash
 
@@ -233,26 +236,29 @@ machine or on select machines depending on their use.
 
 ### Development Tools
 
-| Application                                                        | Description                             |
-| ------------------------------------------------------------------ | --------------------------------------- |
-| [Cocoa Rest Client](http://mmattozzi.github.io/cocoa-rest-client/) | App for testing HTTP/REST endpoints     |
-| [iExplorer](https://macroplant.com)                                | Transfer utility for iOS devices        |
-| \*[TextMate](https://macromates.com)                               | Text editor                             |
+| Application                                                        | Description                         |
+| ------------------------------------------------------------------ | ----------------------------------- |
+| [Cocoa Rest Client](http://mmattozzi.github.io/cocoa-rest-client/) | App for testing HTTP/REST endpoints |
+| [iExplorer](https://macroplant.com)                                | Transfer utility for iOS devices    |
+| \*[TextMate](https://macromates.com)                               | Text editor                         |
 
 ### Utilities
 
-| Application                                                                           | Description                                             |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [AccessMenuBarApps](http://www.ortisoft.de/en/accessmenubarapps/)                     | Gives access to all menu bar apps                       |
-| [Duet](https://www.duetdisplay.com)                                                   | App to use attached iOS device as screen                |
-| [Fanny for macOS](https://www.fannywidget.com)                                        | Notification Center Widget/Menu Bar app to monitor fans |
-| [Intel Power Gadget](https://software.intel.com/en-us/articles/intel-power-gadget-20) | Power usage monitoring tool                             |
-| [\*iStat Menus](https://bjango.com/mac/istatmenus/)                                   | System monitor for the menubar                          |
-| [Malwarebytes](https://www.malwarebytes.com)                                          | Malware detection software                              |
-| [OmniDiskSweeper](https://www.omnigroup.com/more/)                                    | Disk cleaning application                               |
-| [OverSight](https://objective-see.com/products/oversight.html)                        | Mic and webcam monitor                                  |
-| [\*Stay](https://cordlessdog.com/stay/)                                               | Restores window positions                               |
-| [TinkerTool](https://www.bresink.com/osx/TinkerTool.html)                             | Provides access to additional Mac settings              |
+| Application                                                                           | Description                                              |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [AccessMenuBarApps](http://www.ortisoft.de/en/accessmenubarapps/)                     | Gives access to all menu bar apps                        |
+| [BoringNotch](https://theboring.name)                                                 | Makes the notch useful                                   |
+| [Duet](https://www.duetdisplay.com)                                                   | App to use attached iOS device as screen                 |
+| [Fanny for macOS](https://www.fannywidget.com)                                        | Notification Center Widget/Menu Bar app to monitor fans  |
+| [GrandPerspective](https://grandperspectiv.sourceforge.net)                           | Disk space visualizer                                    |
+| [Intel Power Gadget](https://software.intel.com/en-us/articles/intel-power-gadget-20) | Power usage monitoring tool                              |
+| [\*iStat Menus](https://bjango.com/mac/istatmenus/)                                   | System monitor for the menubar                           |
+| [Malwarebytes](https://www.malwarebytes.com)                                          | Malware detection software                               |
+| [OmniDiskSweeper](https://www.omnigroup.com/more/)                                    | Disk cleaning application                                |
+| [OverSight](https://objective-see.com/products/oversight.html)                        | Mic and webcam monitor                                   |
+| [Say No To Notch](https://apps.apple.com/de/app/say-no-to-notch/id1639306886?mt=12)   | Moves the menubar down so menubar icons won't get hidden |
+| [\*Stay](https://cordlessdog.com/stay/)                                               | Restores window positions                                |
+| [TinkerTool](https://www.bresink.com/osx/TinkerTool.html)                             | Provides access to additional Mac settings               |
 
 ### Productivity
 
