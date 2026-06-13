@@ -22,6 +22,7 @@ function __add_to_path() {
     addToPathIfExists "${ANDROID_SDK_ROOT}/platform-tools"
 
     # Add the profile bin directory to the path.
+    addToPathIfExists "${HOME}/.local/bin"
     addToPathIfExists "${HOME}/bin"
 }
 
