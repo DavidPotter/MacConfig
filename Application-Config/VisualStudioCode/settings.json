@@ -43,7 +43,8 @@
   "yarn.runInTerminal": true,
   "[json]": {
     "editor.formatOnSave": false,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
     "editor.formatOnSave": false,
