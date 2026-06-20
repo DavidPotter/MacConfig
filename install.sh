@@ -70,12 +70,61 @@ function create_link()
 
 }
 
+# Install ~/.bash_profile as a local stub that sources the shared repo profile,
+# instead of symlinking ~/.bash_profile straight into the repo.  Some tool
+# installers append "export ..." lines to ~/.bash_profile; when that file is a
+# symlink into the repo those edits get written through the link into version
+# control and leak onto every other machine.  A stub keeps such machine-local
+# edits in the home directory, below the repo source line.
+function install_bash_profile_stub()
+{
+	local DST="$HOME/.bash_profile"
+	local LOADER='source "$HOME/bin/MacConfig/dotfiles/bash_profile"'
+
+	# Already a local stub: leave it (and any tool-appended lines) untouched.
+	if [ -f "$DST" ] && [ ! -L "$DST" ] && grep -qF "$LOADER" "$DST"
+	then
+		echo "$REPO_NAME: $DST already a local stub (leaving tool-managed lines intact)"
+		return
+	fi
+
+	# A regular file we did not create: do not clobber it, just advise.
+	if [ -f "$DST" ] && [ ! -L "$DST" ]
+	then
+		echo "$REPO_NAME: $DST exists and is not a MacConfig stub; add this line manually:" >&2
+		echo "    $LOADER" >&2
+		return
+	fi
+
+	# A symlink (the old install style, possibly pointing into the repo) or a
+	# broken link: replace it with the stub.
+	if [ -L "$DST" ]
+	then
+		echo "$REPO_NAME: migrating $DST from symlink to local stub"
+		rm -f "$DST"
+	fi
+
+	cat > "$DST" <<-EOF
+		# ~/.bash_profile -- local loader (NOT tracked in the MacConfig repo).
+		#
+		# Sources the shared profile from the repo, then lets machine-local tool
+		# installers append their own "export" lines below.  Keeping this file in
+		# \$HOME -- not a symlink into the repo -- stops those edits from leaking
+		# into version control.
+		$LOADER
+	EOF
+	echo "$REPO_NAME: wrote local stub $DST -> $LOCAL_REPO_DIR/dotfiles/bash_profile"
+}
+
 # CREATE SYMBOLIC LINKS FOR DOT FILES
 # Loop through the files in the dotfiles directory and create a symlink to
 # each one from a file with the same name but with a dot prefix (a dotfile) in
-# the home directory.  Special-case the bash_profile script.
+# the home directory.  The bash_profile script is special-cased: it is installed
+# as a local stub (install_bash_profile_stub, above) so tool installers cannot
+# write through it into the repo.
+install_bash_profile_stub
 echo '--- CREATE SYMBOLIC LINKS FOR DOT FILES ---'
-find $LOCAL_REPO_DIR/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
+find $LOCAL_REPO_DIR/dotfiles -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' -not -name 'bash_profile' | while read SRC
 do
 	if echo "$SRC" | grep -q /bashrc$
 	then
