@@ -159,5 +159,6 @@
       "value": "#42b883"
     }
   ],
-  "editor.guides.indentation": true
+  "editor.guides.indentation": true,
+  "security.workspace.trust.untrustedFiles": "open"
 }
