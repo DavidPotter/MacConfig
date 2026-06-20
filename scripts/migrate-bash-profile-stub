@@ -1,0 +1,157 @@
+#!/bin/bash -e
+
+#
+# migrate-bash-profile-stub
+#   Migrate an existing MacConfig installation from a symlinked ~/.bash_profile
+#   to a local stub that sources the shared repo profile.
+#
+#   Older installs symlinked ~/.bash_profile straight into the repo, so tool
+#   installers that append "export ..." lines to ~/.bash_profile wrote through
+#   the link into the tracked dotfiles/bash_profile and leaked those
+#   machine-local edits onto every other machine that pulled.  This script
+#   replaces the symlink with a local stub in $HOME, preserving any lines tools
+#   appended to the old target and reverting the repo profile back to a clean
+#   state.
+#
+#   Safe to run repeatedly:
+#     - already a stub      -> nothing to do
+#     - a hand-written file -> left untouched, prints the line to add manually
+#     - a symlink           -> migrated, appended lines preserved, repo reverted
+#
+
+set -e # Fail immediately if there's a problem.
+
+REPO_NAME='MacConfig'
+
+# Resolve this script's directory (it lives in $REPO/scripts), following any
+# symlinks, so the repo root can be found regardless of where it was cloned.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "${SOURCE}" ]; do
+	DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+	SOURCE="$( readlink "${SOURCE}" )"
+	[[ ${SOURCE} != /* ]] && SOURCE="${DIR}/${SOURCE}"
+done
+SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+REPO_DIR="$( cd "${SCRIPT_DIR}/.." && pwd )"
+
+DST="${HOME}/.bash_profile"
+REPO_PROFILE="${REPO_DIR}/dotfiles/bash_profile"
+# Keep this loader line identical to the one written by install.sh.
+LOADER='source "$HOME/bin/MacConfig/dotfiles/bash_profile"'
+
+# Resolve a path to its canonical physical form (directory resolved through any
+# symlinks, e.g. macOS /var -> /private/var) so two spellings of the same file
+# compare equal.
+function canonicalize()
+{
+	local path="$1" dir base
+	dir="$( cd -P "$( dirname "${path}" )" 2>/dev/null && pwd )" || return 1
+	base="$( basename "${path}" )"
+	printf '%s/%s\n' "${dir}" "${base}"
+}
+
+# Write the local stub to ~/.bash_profile.  Any extra lines passed on stdin
+# (machine-local "export ..." lines a tool appended) are preserved below the
+# repo source line.
+function write_stub()
+{
+	cat > "${DST}" <<-EOF
+		# ~/.bash_profile -- local loader (NOT tracked in the MacConfig repo).
+		#
+		# Sources the shared profile from the repo, then lets machine-local tool
+		# installers append their own "export" lines below.  Keeping this file in
+		# \$HOME -- not a symlink into the repo -- stops those edits from leaking
+		# into version control.
+		${LOADER}
+	EOF
+
+	# Append preserved machine-local lines, if any were piped in.
+	if [ ! -t 0 ]
+	then
+		local EXTRA
+		EXTRA="$( cat )"
+		if [ -n "${EXTRA}" ]
+		then
+			printf '\n%s\n' "${EXTRA}" >> "${DST}"
+		fi
+	fi
+}
+
+# Already a local stub: leave it (and any tool-appended lines) untouched.
+if [ -f "${DST}" ] && [ ! -L "${DST}" ] && grep -qF "${LOADER}" "${DST}"
+then
+	echo "${REPO_NAME}: ${DST} is already a local stub; nothing to migrate."
+	exit 0
+fi
+
+# A regular file we did not create: do not clobber it, just advise.
+if [ -f "${DST}" ] && [ ! -L "${DST}" ]
+then
+	echo "${REPO_NAME}: ${DST} exists and is not a MacConfig stub." >&2
+	echo "Leaving it untouched.  Add this line to source the repo profile:" >&2
+	echo "    ${LOADER}" >&2
+	exit 1
+fi
+
+# Nothing there at all: just write a fresh stub.
+if [ ! -e "${DST}" ]
+then
+	echo "${REPO_NAME}: ${DST} not found; writing a fresh stub."
+	write_stub < /dev/null
+	echo "${REPO_NAME}: wrote ${DST} -> ${REPO_PROFILE}"
+	exit 0
+fi
+
+# From here on ${DST} is a symlink (the old install style).
+TARGET="$( readlink "${DST}" )"
+echo "${REPO_NAME}: ${DST} is a symlink -> ${TARGET}"
+
+# Back up the resolved profile content before changing anything.
+BACKUP="${DST}.pre-stub-backup"
+if [ -f "${DST}" ]
+then
+	cp "${DST}" "${BACKUP}"
+	echo "${REPO_NAME}: backed up current profile content to ${BACKUP}"
+fi
+
+EXTRA=''
+REVERT_REPO='false'
+
+# If the symlink points at the repo profile, the machine-local lines a tool
+# appended live in the (uncommitted) working copy of dotfiles/bash_profile.
+# Recover them by diffing the working copy against the committed version, then
+# revert the repo file so those lines no longer live in version control.
+if [ "$( canonicalize "${TARGET}" )" = "$( canonicalize "${REPO_PROFILE}" )" ] \
+	&& git -C "${REPO_DIR}" rev-parse --is-inside-work-tree > /dev/null 2>&1
+then
+	if ! git -C "${REPO_DIR}" diff --quiet -- dotfiles/bash_profile
+	then
+		# Capture lines present in the working copy but not in HEAD (the lines a
+		# tool appended through the symlink).
+		EXTRA="$( diff <( git -C "${REPO_DIR}" show HEAD:dotfiles/bash_profile ) \
+			"${REPO_PROFILE}" | sed -n 's/^> //p' )"
+		REVERT_REPO='true'
+		if [ -n "${EXTRA}" ]
+		then
+			echo "${REPO_NAME}: preserving machine-local lines from the repo profile:"
+			printf '%s\n' "${EXTRA}" | sed 's/^/    /'
+		fi
+	fi
+else
+	echo "${REPO_NAME}: symlink does not point at this repo's profile;" >&2
+	echo "not merging its content automatically (see backup at ${BACKUP})." >&2
+fi
+
+# Replace the symlink with the stub (plus any preserved lines).
+rm -f "${DST}"
+printf '%s' "${EXTRA}" | write_stub
+echo "${REPO_NAME}: wrote local stub ${DST} -> ${REPO_PROFILE}"
+
+# Revert the repo profile so the leaked lines leave version control.
+if [ "${REVERT_REPO}" = 'true' ]
+then
+	git -C "${REPO_DIR}" checkout -- dotfiles/bash_profile
+	echo "${REPO_NAME}: reverted dotfiles/bash_profile to the committed version."
+fi
+
+echo "${REPO_NAME}: done.  Run 'source ~/.bash_profile' or open a new shell."

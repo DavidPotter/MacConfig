@@ -49,6 +49,24 @@ Installing in this way will do the following:
 - Clone this Git repository to ~/bin/MacConfig.
 - Attempt to create a symbolic link for all the files in the dotfiles
   subdirectory in your root directory.
+- Install `~/.bash_profile` as a small local stub that sources the shared
+  profile from the repo rather than symlinking it directly. This keeps
+  machine-local `export` lines that tool installers append to
+  `~/.bash_profile` out of version control so they don't leak to other
+  machines.
+
+### Migrating an existing installation
+
+Older installs symlinked `~/.bash_profile` straight into the repo. To convert
+such a machine to the stub approach (preserving any lines tools appended and
+reverting the tracked profile), run:
+
+```bash
+~/bin/MacConfig/scripts/migrate-bash-profile-stub
+```
+
+It is safe to run repeatedly and leaves a hand-written `~/.bash_profile`
+untouched.
 
 ## What else you have to do
 
