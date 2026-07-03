@@ -110,6 +110,38 @@ following packages.
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
 
+## System Configuration
+
+The following commands should be executed from a bash command line to
+configure the Mac for the user. [TODO: Consider moving to a script.]
+
+### Change Screenshot Location
+
+```sh
+# Screenshots: Stop dumping them on the Desktop
+mkdir -p ~/Screenshots
+defaults write com.apple.screencapture location ~/Screenshots
+
+# Screenshots as JPEG instead of huge PNGs
+defaults write com.apple.screencapture type jpg
+```
+
+### Show Hidden Files in Finder
+
+```sh
+# Show hidden files in Finder
+defaults.write com.apple.finder AppleShowAllFiles - bool true
+killall Finder
+```
+
+### Speed up Dock Animation
+
+```sh
+# Speed up dock animation
+defaults.write com.apple.dock autohide-time-modifier -float 0.3
+killall Dock
+```
+
 ## Packages and Applications to Install via Homebrew
 
 [Homebrew](https://brew.sh/) is the next thing to install. Homebrew is a
