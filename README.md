@@ -331,6 +331,26 @@ machine or on select machines depending on their use.
 | ------------------------------------------------------------------------ | ------------------------- |
 | [Infinity Dashboard](https://fiplab.com/apps/infinity-dashboard-for-mac) | Customizable menubar tool |
 
+### Music and Theater Applications
+
+| Application   | Description |
+| ------------- | ----------- |
+| Ableton Live  |             |
+| Ampado (lite) |             |
+| Audacity      |             |
+| Cog           |             |
+| IINA          |             |
+| Soundplant 50 |             |
+
+### Theater Cueing Applications
+
+| Application   | Description |
+| ------------- | ----------- |
+| MIX16 GO      |             |
+| QLab          |             |
+| QLC+          |             |
+| Stage Traxx 3 |             |
+
 ## Other Settings
 
 | Command                                                                  | Description                               |
