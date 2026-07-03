@@ -161,5 +161,8 @@
   ],
   "editor.guides.indentation": true,
   "security.workspace.trust.untrustedFiles": "open",
-  "chat.disableAIFeatures": true
+  "chat.disableAIFeatures": true,
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
