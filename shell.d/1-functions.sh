@@ -1,49 +1,22 @@
 #!/bin/bash -e
 
 #-----------------------------------------------------------------------------
-# Returns whether an array contains a specified element.
-#  $1 - Element to search for
-#  $2 - Array (e.g. "${array[@]}")
-#-----------------------------------------------------------------------------
-
-function elementIn() {
-    local element match="$1"
-    shift
-    for element; do [[ "${element}" == "${match}" ]] && return 0; done
-    return 1
-}
-
-#-----------------------------------------------------------------------------
-# Returns whether a specified entry is present in the PATH variable.
-#  $1 - Path entry to search the PATH variable for.
-#-----------------------------------------------------------------------------
-
-function pathContainsEntry() {
-    # Split path entries into array.
-    local array
-    local IFS=:
-    set -f # Disable glob expansion
-    array=( $PATH )
-    set +f
-
-    # Find new entry in array.
-    if elementIn "$1" "${array[@]}"; then
-        return 0
-    fi
-    return 1
-}
-
-#-----------------------------------------------------------------------------
-# Adds a string to PATH if the directory entry exists.
+# Adds a directory to PATH if it exists and is not already present.
 #  $1 - Name of directory entry to add to the path.
+#
+# Uses a colon-delimited substring test rather than splitting $PATH into an
+# array.  Array-splitting on ":" is bash-specific (it needs IFS=: and does not
+# work in zsh, where `array=( $PATH )` yields a single element); the substring
+# test below behaves identically in bash and zsh, so this file can be shared by
+# both shells.  The zsh loader additionally sets `typeset -U path` to dedupe.
 #-----------------------------------------------------------------------------
 
 function addToPathIfExists() {
-    if [ -d "$1" ]; then
-        if ! pathContainsEntry "$1"; then
-            export PATH="${PATH}:$1"
-        fi
-    fi
+    [ -d "$1" ] || return 0
+    case ":${PATH}:" in
+        *":$1:"*) ;;                              # already present -- do nothing
+        *) export PATH="${PATH}:$1" ;;
+    esac
 }
 
 #-----------------------------------------------------------------------------

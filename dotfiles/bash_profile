@@ -55,7 +55,16 @@ fi
 
 #-----------------------------------------------------------------------------
 # Source common files.
+#
+# The shared, shell-agnostic core (shell.d) is sourced first, then the
+# bash-specific adapters (bash.d).  The zsh loader (dotfiles/zshrc) sources the
+# same shell.d core followed by its own zsh.d adapters, so both shells share the
+# portable configuration and only differ in the shell-specific pieces.
 #-----------------------------------------------------------------------------
+
+if [ -d "${ROOT_DIR}/shell.d" ]; then
+    __source_files "${ROOT_DIR}/shell.d/*"
+fi
 
 if [ -d "${ROOT_DIR}/bash.d" ]; then
     __source_files "${ROOT_DIR}/bash.d/*"
