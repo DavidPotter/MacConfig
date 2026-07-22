@@ -109,6 +109,8 @@ following packages.
   those commands that begin with those characters)
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
+- Home/End jump to the start/end of the line (see the [Terminal](#terminal)
+  section — the Terminal profile also has to send these keys)
 
 ## System Configuration
 
@@ -236,8 +238,41 @@ pwsh
 
 ## Terminal
 
-By default the Home and End keys don't do anything in Terminal. The following
-procedure will modify their behavior to be like in Windows.
+By default the Home and End keys don't jump to the start/end of the line in
+Terminal.app. Fixing that takes **two** layers, and both are required:
+
+1. **Terminal must send the keys to the shell.** By default Terminal.app
+   captures Home/End for its own scrollback, so the keystrokes never reach the
+   shell. Each profile has to be told to "Send Text" the escape sequences
+   `\033[H` (Home) and `\033[F` (End) instead.
+2. **The shell must act on those sequences.** Once the bytes arrive, the shell's
+   line editor has to bind them to beginning-of-line / end-of-line. For bash
+   that lives in [`dotfiles/inputrc`](dotfiles/inputrc) (GNU readline); macOS's
+   default readline binds none of these sequences, so the binding in this repo
+   is what makes them work. `install.sh` symlinks `inputrc` into place, so this
+   layer is handled automatically.
+
+Layer 1 alone gets the bytes to the shell but nothing happens; layer 2 alone is
+useless while Terminal keeps eating the keys.
+
+### Mapping the keys (layer 1)
+
+Run the installer, which maps Home/End in **every** Terminal profile for you:
+
+```sh
+Application-Config/Terminal/install.sh
+```
+
+(`Application-Config/install-application-configs.sh` runs it, along with every
+other app config installer.) The script writes only the two Home/End entries
+into each profile's key map, merging into — never replacing — any key mappings
+the profile already has, and is safe to run while Terminal is open (restart
+Terminal, or open a new window, for the change to take full effect). It is
+idempotent, so re-running it is harmless.
+
+### Mapping the keys by hand (fallback)
+
+If you'd rather set a single profile manually:
 
 1. Bring up preferences on Terminal
 2. Switch to the Profiles tab
