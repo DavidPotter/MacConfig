@@ -1,0 +1,103 @@
+#!/bin/bash -e
+
+#
+# migrate-zshrc-stub
+#   Make an existing MacConfig installation load the shared zsh configuration
+#   by ensuring ~/.zshrc sources the repo's zsh loader.
+#
+#   Unlike ~/.bash_profile (which older installs symlinked into the repo -- see
+#   migrate-bash-profile-stub), zsh support is new, so ~/.zshrc has never been a
+#   symlink into the repo and there are no "leaked" lines to recover.  A stock
+#   ~/.zshrc is usually a real file holding machine-local lines (RVM, NVM, tool
+#   installers, ...).  This script injects the repo loader at the TOP of that
+#   file and leaves everything below it untouched, so the shared config loads
+#   first and the machine-local lines run afterward.
+#
+#   Safe to run repeatedly:
+#     - already sources the loader -> nothing to do
+#     - a regular file             -> loader injected at the top, rest preserved
+#     - a symlink                  -> replaced with a fresh local stub
+#     - missing                    -> a fresh local stub is written
+#
+
+set -e # Fail immediately if there's a problem.
+
+REPO_NAME='MacConfig'
+
+# Resolve this script's directory (it lives in $REPO/scripts), following any
+# symlinks, so the repo root can be found regardless of where it was cloned.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "${SOURCE}" ]; do
+	DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+	SOURCE="$( readlink "${SOURCE}" )"
+	[[ ${SOURCE} != /* ]] && SOURCE="${DIR}/${SOURCE}"
+done
+SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+REPO_DIR="$( cd "${SCRIPT_DIR}/.." && pwd )"
+
+DST="${HOME}/.zshrc"
+REPO_LOADER_FILE="${REPO_DIR}/dotfiles/zshrc"
+# Keep this loader line identical to the one written by install.sh.
+LOADER='source "$HOME/bin/MacConfig/dotfiles/zshrc"'
+
+# Write a fresh local stub to ~/.zshrc.
+function write_stub()
+{
+	cat > "${DST}" <<-EOF
+		# ~/.zshrc -- local loader (NOT tracked in the MacConfig repo).
+		#
+		# Sources the shared zsh configuration from the repo, then lets
+		# machine-local tool installers append their own lines below.  Keeping this
+		# file in \$HOME -- not a symlink into the repo -- stops those edits from
+		# leaking into version control.
+		${LOADER}
+	EOF
+}
+
+# Already sources the repo loader: leave the file (and its machine-local lines)
+# untouched.
+if [ -f "${DST}" ] && [ ! -L "${DST}" ] && grep -qF "${LOADER}" "${DST}"
+then
+	echo "${REPO_NAME}: ${DST} already sources the repo loader; nothing to migrate."
+	exit 0
+fi
+
+# A regular file (a stock ~/.zshrc, or one tools manage): back it up, then
+# inject the loader at the top, preserving everything already there below it.
+if [ -f "${DST}" ] && [ ! -L "${DST}" ]
+then
+	BACKUP="${DST}.pre-macconfig-backup"
+	cp "${DST}" "${BACKUP}"
+	echo "${REPO_NAME}: backed up current ${DST} to ${BACKUP}"
+
+	TMP="$( mktemp )"
+	{
+		echo "# --- MacConfig: load shared shell configuration (added by migrate-zshrc-stub) ---"
+		echo "${LOADER}"
+		echo "# --- end MacConfig ---"
+		echo
+		cat "${DST}"
+	} > "${TMP}"
+	cat "${TMP}" > "${DST}"
+	rm -f "${TMP}"
+	echo "${REPO_NAME}: injected repo loader at the top of ${DST}"
+	echo "${REPO_NAME}: done.  Run 'source ~/.zshrc' or open a new shell."
+	exit 0
+fi
+
+# A symlink (unexpected for zsh, but handle it): replace it with a stub.
+if [ -L "${DST}" ]
+then
+	echo "${REPO_NAME}: ${DST} is a symlink -> $( readlink "${DST}" ); replacing with a local stub."
+	rm -f "${DST}"
+	write_stub
+	echo "${REPO_NAME}: wrote local stub ${DST} -> ${REPO_LOADER_FILE}"
+	echo "${REPO_NAME}: done.  Run 'source ~/.zshrc' or open a new shell."
+	exit 0
+fi
+
+# Nothing there at all: write a fresh stub.
+echo "${REPO_NAME}: ${DST} not found; writing a fresh stub."
+write_stub
+echo "${REPO_NAME}: wrote local stub ${DST} -> ${REPO_LOADER_FILE}"
+echo "${REPO_NAME}: done.  Run 'source ~/.zshrc' or open a new shell."

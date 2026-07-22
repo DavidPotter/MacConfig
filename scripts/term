@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Open a new Mac OS X terminal window or tab in the current or another
 # directory and optionally run a command in the new window or tab.

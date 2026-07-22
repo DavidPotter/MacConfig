@@ -60,6 +60,8 @@ export LPASS_AGENT_TIMEOUT=0
 
 # If TextMate is available and we're in Terminal.app...
 # TODO: Is this still necessary?
-if [ "$TERM_PROGRAM" == "Apple_Terminal" -a -x "`which mate`" ]; then
+# Uses POSIX `=` (not bash's `==`) and `command -v` so the test works
+# identically in bash and zsh, since this file is shared by both shells.
+if [ "$TERM_PROGRAM" = "Apple_Terminal" ] && command -v mate >/dev/null 2>&1; then
     export LESSEDIT='mate -l %lm %f' # press V in less to edit the file in TextMate
 fi

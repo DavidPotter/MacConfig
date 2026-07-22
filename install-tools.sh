@@ -5,12 +5,8 @@
 #   Installs the Git helpers by performing following steps:
 #   - Clones repositories:
 #     - Git source to ~/src/external/git.
-#     - Git-Flow to ~/src/external/gitflow.
-#     - Git-Flow Completion to ~/src/external/git-flow-completion.
-#   - Installs Git-Flow.
 #   - Creates symbolic links:
 #     - git-completion
-#     - git-flow-completion
 #   Installs git-up.
 #   Installs RVM and Ruby.
 #
@@ -57,77 +53,6 @@ if [ ! -f $LOCAL_REPO_DIR/contrib/completion/git-completion.bash ]; then
 fi
 
 ###############################################################################
-# Git-flow
-###############################################################################
-
-# Clone the git-flow source if not already present.
-LOCAL_REPO_DIR="$HOME/src/external/gitflow"
-REMOTE_REPO='https://github.com/nvie/gitflow.git'
-if [ ! -d $LOCAL_REPO_DIR ]; then
-	echo '--'
-	echo '--> Cloning gitflow...'
-	git clone $REMOTE_REPO $LOCAL_REPO_DIR
-fi
-if [ ! -d $LOCAL_REPO_DIR ]; then
-	echo '** Failed to clone git-flow. Aborting.'
-	return
-fi
-
-# Update the git-flow repository.
-echo '--'
-echo '--> Pulling gitflow repository from origin...'
-pushd $LOCAL_REPO_DIR
-git pull origin
-popd
-
-# Don't continue if required files aren't present.
-if [ ! -f $LOCAL_REPO_DIR/contrib/gitflow-installer.sh ]; then
-	echo '** Git-flow install script not found. Aborting.'
-	return
-fi
-
-# Install Git-Flow if not already installed.
-echo '--'
-echo "--> Installing git-flow into $GIT_DIR..."
-echo "If prompted, enter admin password for updating system directory $GIT_DIR"
-sudo bash <<EOF
-	cd $LOCAL_REPO_DIR/..
-	export INSTALL_PREFIX="$GIT_DIR"
-	bash $LOCAL_REPO_DIR/contrib/gitflow-installer.sh
-	unset INSTALL_PREFIX
-EOF
-
-###############################################################################
-# Git-flow-completion
-###############################################################################
-
-# Clone the git-flow-completion source if not already present.
-LOCAL_REPO_DIR="$HOME/src/external/git-flow-completion"
-REMOTE_REPO='https://github.com/bobthecow/git-flow-completion.git'
-if [ ! -d $LOCAL_REPO_DIR ]; then
-	echo '--'
-	echo '--> Cloning git-flow-completion...'
-	git clone $REMOTE_REPO $LOCAL_REPO_DIR
-fi
-if [ ! -d $LOCAL_REPO_DIR ]; then
-	echo '** Failed to clone git-flow-completion. Aborting.'
-	return
-fi
-
-# Update the git-flow-completion repository.
-echo '--'
-echo '--> Pulling git-flow-completion repository from origin...'
-pushd $LOCAL_REPO_DIR
-git pull origin
-popd
-
-# Don't continue if required files aren't present.
-if [ ! -f $LOCAL_REPO_DIR/git-flow-completion.bash ]; then
-	echo '** Git-flow completion script not found. Aborting.'
-	return
-fi
-
-###############################################################################
 # Create symbolic links
 ###############################################################################
 
@@ -160,7 +85,6 @@ echo '--'
 echo '--> Create symbolic links for Git helpers.'
 create_link $HOME/src/external/git/contrib/completion/git-completion.bash   $HOME/bin/git-completion.bash
 create_link $HOME/src/external/git/contrib/completion/git-prompt.sh         $HOME/bin/git-prompt.sh
-create_link $HOME/src/external/git-flow-completion/git-flow-completion.bash $HOME/bin/git-flow-completion.bash
 
 ###############################################################################
 # Install RVM

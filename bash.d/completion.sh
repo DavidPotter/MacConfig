@@ -7,14 +7,6 @@ function __configure_command_line_completion() {
         source "${GIT_COMPLETION_PATH}"
     fi
 
-    # Git-flow
-    local GIT_FLOW_COMPLETION_PATH="${HOME}/bin/git-flow-completion.bash"
-    if [ -f "${GIT_FLOW_COMPLETION_PATH}" ]; then
-        source ${GIT_FLOW_COMPLETION_PATH}
-    else
-        echo "${GIT_FLOW_COMPLETION_PATH} not found."
-    fi
-
     # npm
     if [ ! -z `which npm` ]; then
         source <(npm completion)

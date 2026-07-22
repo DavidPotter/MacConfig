@@ -49,11 +49,31 @@ Installing in this way will do the following:
 - Clone this Git repository to ~/bin/MacConfig.
 - Attempt to create a symbolic link for all the files in the dotfiles
   subdirectory in your root directory.
-- Install `~/.bash_profile` as a small local stub that sources the shared
-  profile from the repo rather than symlinking it directly. This keeps
-  machine-local `export` lines that tool installers append to
-  `~/.bash_profile` out of version control so they don't leak to other
-  machines.
+- Install `~/.bash_profile` and `~/.zshrc` as small local files that source
+  the matching shared loader from the repo rather than symlinking them
+  directly. This keeps machine-local lines that tool installers append to
+  those rc files out of version control so they don't leak to other machines.
+
+### Shell configuration layout
+
+Both shells load from the same repo, sharing everything that is
+shell-agnostic and differing only where bash and zsh genuinely diverge:
+
+| Path                   | Loaded by     | Contents                                                                        |
+| ---------------------- | ------------- | ------------------------------------------------------------------------------- |
+| `shell.d/`             | bash **and** zsh | Portable core: functions, environment, `PATH`, aliases, Ruby. Sourced first. |
+| `bash.d/`              | bash only     | Bash adapters: completion, history, prompt (readline/`PROMPT_COMMAND`).         |
+| `zsh.d/`               | zsh only      | Zsh adapters: completion, history, prompt, and line-editor (`zle`) keybindings. |
+| `dotfiles/bash_profile`| bash          | Loader: sources `shell.d/` then `bash.d/`, then `~/.bash.d/` machine-local.     |
+| `dotfiles/zshrc`       | zsh           | Loader: sources `shell.d/` then `zsh.d/`, then `~/.shell.d/` and `~/.zsh.d/`.    |
+
+Files in `shell.d/` and `bash.d/`/`zsh.d/` are numbered (`1-`, `2-`, ...) so
+they load in a predictable order; the numbering matches across the shared and
+per-shell directories.
+
+> **Note:** `dotfiles/inputrc` configures GNU readline, which only bash uses.
+> zsh ignores it entirely and reconstructs the equivalent keybindings in
+> `zsh.d/4-zle.zsh`.
 
 ### Migrating an existing installation
 
@@ -65,8 +85,16 @@ reverting the tracked profile), run:
 ~/bin/MacConfig/scripts/migrate-bash-profile-stub
 ```
 
-It is safe to run repeatedly and leaves a hand-written `~/.bash_profile`
-untouched.
+To have an existing `~/.zshrc` load the shared zsh configuration (the repo
+loader is injected at the top, preserving your existing machine-local lines),
+run:
+
+```bash
+~/bin/MacConfig/scripts/migrate-zshrc-stub
+```
+
+Both are safe to run repeatedly and leave a hand-written rc file's own
+content untouched.
 
 ## What else you have to do
 
@@ -78,19 +106,21 @@ following packages.
 | Tool                     | Description                                                                                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Git Completion (\*)      | Located in the [contrib directory of the git repository](https://github.com/git/git.git).                                                                     |
-| Git-Flow (\*)            | [Git extensions](https://github.com/nvie/gitflow) to provide high-level repository operations for Vincent Driessen's branching model.                         |
-| Git-Flow Completion (\*) | [Command line completion](https://github.com/bobthecow/git-flow-completion.git) for Git-Flow.                                                                 |
 | Ruby                     | If you have Ruby installed additional features are added for editing and recognizing Ruby files. Most of this is commented out as I don't currently use Ruby. |
 
 ## What It Gives You
 
-### profile
+### profile (bash and zsh)
+
+The bash loader (`dotfiles/bash_profile`) and zsh loader (`dotfiles/zshrc`)
+both produce the same experience:
 
 - Sets the command line prompt to show:
   - The current time
   - The current user and machine
   - The current directory
   - The current branch and status if in a directory that is a GIT repository
+  - The exit code of the previous command, when it was non-zero
 - Sets the default man pager to 'less'
 - Configures the command line history
 - Sets up GIT command line completion
@@ -103,14 +133,17 @@ following packages.
 | cd_smburl | 'cd' into SMB URLs like this: cd_smburl smb://host/share        |
 | dif       | Compare two files using the selected diff application (p4merge) |
 
-### inputrc
+### Key bindings
+
+Both shells get the same line-editing keys, configured for bash in
+`dotfiles/inputrc` (GNU readline) and reconstructed for zsh in
+`zsh.d/4-zle.zsh` (`zle`), since zsh ignores `inputrc`:
 
 - Up/down restricts history lookup (type some characters and it restricts to
   those commands that begin with those characters)
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
-- Home/End jump to the start/end of the line (see the [Terminal](#terminal)
-  section — the Terminal profile also has to send these keys)
+- Home and End jump to the start/end of the line
 
 ## System Configuration
 
@@ -225,6 +258,19 @@ version of bash once it's been installed:
 - [Upgrade to bash 4 in Mac OS X](https://clubmate.fi/upgrade-to-bash-4-in-mac-os-x/)
 - [GNU Bash](https://www.gnu.org/software/bash/)
 
+### Zsh
+
+macOS uses zsh as the default login shell. This repo configures both shells
+from a shared core (see [Shell configuration layout](#shell-configuration-layout)),
+so you can run either one. To use zsh in Terminal, set the desired profile's
+shell back to the default login shell (or point it explicitly at
+`/bin/zsh`) instead of launching bash. `~/.zshrc` (installed by `install.sh`)
+sources the repo's zsh loader, which brings up the same prompt, history,
+completion, aliases, and key bindings as the bash configuration.
+
+For a full walkthrough of moving from bash to zsh on a machine, see
+[MIGRATION-zsh.md](MIGRATION-zsh.md).
+
 ### PowerShell
 
 The PowerShell cask installs an application in the `Applications` directory
@@ -238,41 +284,17 @@ pwsh
 
 ## Terminal
 
-By default the Home and End keys don't jump to the start/end of the line in
-Terminal.app. Fixing that takes **two** layers, and both are required:
+### Home and End keys
 
-1. **Terminal must send the keys to the shell.** By default Terminal.app
-   captures Home/End for its own scrollback, so the keystrokes never reach the
-   shell. Each profile has to be told to "Send Text" the escape sequences
-   `\033[H` (Home) and `\033[F` (End) instead.
-2. **The shell must act on those sequences.** Once the bytes arrive, the shell's
-   line editor has to bind them to beginning-of-line / end-of-line. For bash
-   that lives in [`dotfiles/inputrc`](dotfiles/inputrc) (GNU readline); macOS's
-   default readline binds none of these sequences, so the binding in this repo
-   is what makes them work. `install.sh` symlinks `inputrc` into place, so this
-   layer is handled automatically.
+These key bindings are now handled by the shell configuration itself:
+`dotfiles/inputrc` (for bash) and `zsh.d/4-zle.zsh` (for zsh) bind Home and End
+to jump to the start/end of the line, covering every common escape sequence
+Terminal profiles send — including the `\e[1~` / `\e[4~` that macOS
+Terminal.app sends by default. No manual per-profile key remapping is
+required.
 
-Layer 1 alone gets the bytes to the shell but nothing happens; layer 2 alone is
-useless while Terminal keeps eating the keys.
-
-### Mapping the keys (layer 1)
-
-Run the installer, which maps Home/End in **every** Terminal profile for you:
-
-```sh
-Application-Config/Terminal/install.sh
-```
-
-(`Application-Config/install-application-configs.sh` runs it, along with every
-other app config installer.) The script writes only the two Home/End entries
-into each profile's key map, merging into — never replacing — any key mappings
-the profile already has, and is safe to run while Terminal is open (restart
-Terminal, or open a new window, for the change to take full effect). It is
-idempotent, so re-running it is harmless.
-
-### Mapping the keys by hand (fallback)
-
-If you'd rather set a single profile manually:
+If you use a terminal that sends something unusual, you can still remap the
+keys in the profile:
 
 1. Bring up preferences on Terminal
 2. Switch to the Profiles tab
