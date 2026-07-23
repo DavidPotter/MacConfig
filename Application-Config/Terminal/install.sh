@@ -34,8 +34,16 @@
 #   real Terminal profile name contains a backslash.
 #
 #   The write goes through `defaults` (cfprefsd), not a raw edit of the plist
-#   file, so it is safe to run while Terminal is open; changes apply to new
-#   tabs/windows (fully reliable after Terminal is restarted).
+#   file, so it is safe to run while Terminal is open.  BUT a running Terminal
+#   caches every profile's keymap in memory at launch and neither re-reads it
+#   for new tabs/windows nor adopts this change until it is fully quit and
+#   relaunched.  Worse, Terminal rewrites its entire prefs from that in-memory
+#   copy when it quits, so an ordinary quit can clobber the values just written.
+#   The only reliable way to make the change live on a machine whose Terminal is
+#   already running is a clobber-safe restart: quit Terminal, re-apply this
+#   script while it is down, then relaunch.  Application-Config/Terminal/
+#   safe-restart.sh automates exactly that; after writing, this script detects a
+#   running Terminal and points the user to it.
 #
 #   NOTE: this file is sourced (not executed) by
 #   Application-Config/install-application-configs.sh, from inside a `while
@@ -190,7 +198,17 @@ EOF
     if defaults import "$domain" "$work_plist"
     then
         echo "Terminal: mapped Home/End in $count profile(s)."
-        echo "Terminal: restart Terminal (or open a new window) for the change to take full effect."
+        # A running Terminal won't adopt this until it is fully quit and
+        # relaunched, and its quit can clobber what we just wrote (see the
+        # header comment).  Detect that case and point at the safe restart;
+        # match the real app binary, not `pgrep -x Terminal` (which misses it).
+        if ps -axo command= 2>/dev/null | grep -q '[/]Terminal.app/Contents/MacOS/Terminal'
+        then
+            echo "Terminal: Terminal is running -- the change is on disk but NOT yet live."
+            echo "Terminal: run '$(dirname "${BASH_SOURCE[0]}")/safe-restart.sh' to quit, re-apply, and relaunch it safely."
+        else
+            echo "Terminal: launch Terminal to pick up the change (it reads keymaps at startup)."
+        fi
     else
         echo "Terminal: failed to import updated prefs (original left unchanged)" >&2
     fi
