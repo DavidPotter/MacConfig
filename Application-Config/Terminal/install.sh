@@ -3,24 +3,49 @@
 #
 # install.sh
 #   Makes the Home and End keys jump to the start/end of the line in every
-#   macOS Terminal.app profile.
+#   macOS Terminal.app profile, and seeds each profile with Terminal's built-in
+#   default key map so the profile's Keyboard settings show the complete list
+#   of mappings rather than only the two keys we add.
 #
-#   Why this is needed: Terminal.app captures Home/End for its own scrollback
-#   by default, so the keys never reach the shell.  Telling each profile to
-#   "Send Text" the escape sequences \033[H (Home) and \033[F (End) hands the
-#   keys to the shell instead.  The shell then acts on them because its
-#   line-editor bindings map those sequences to beginning-of-line /
+#   Why Home/End need mapping: Terminal.app captures Home/End for its own
+#   scrollback by default, so the keys never reach the shell.  Telling each
+#   profile to "Send Text" the escape sequences \033[H (Home) and \033[F (End)
+#   hands the keys to the shell instead.  The shell then acts on them because
+#   its line-editor bindings map those sequences to beginning-of-line /
 #   end-of-line (for bash, dotfiles/inputrc).  BOTH layers are required: the
 #   Send Text mapping alone gets the bytes to the shell, and the shell binding
 #   alone is useless while Terminal keeps eating the keys.
 #
-#   How it writes the setting: Terminal stores per-profile key mappings under
-#   "Window Settings" -> <profile> -> keyMapBoundKeys in
-#   com.apple.Terminal.plist, keyed by function-key code (F729 = Home,
-#   F72B = End).  This map is an OVERLAY on Terminal's built-in defaults, so we
-#   MERGE just those two keys into each profile and leave every other mapping
-#   (arrows, F-keys, and any the user added) untouched -- we never replace a
-#   profile's whole keymap.
+#   How Terminal stores this: per-profile key mappings live under "Window
+#   Settings" -> <profile> -> keyMapBoundKeys in com.apple.Terminal.plist, keyed
+#   by function-key code (F729 = Home, F72B = End).  That dict is an OVERLAY on
+#   Terminal's built-in default key map (Terminal.app/Contents/Resources/
+#   keyMappings.plist, 58 entries): a code absent from a profile's keyMapBoundKeys
+#   still works because Terminal falls through to the built-in default.  So the
+#   two keys alone are enough to FUNCTION.
+#
+#   Why we also seed the full default map: the Keyboard settings pane displays
+#   only what a profile actually stores, NOT the effective overlay.  A profile
+#   that stored just F729/F72B therefore showed only Home and End in the UI --
+#   every arrow and function key still worked, but the list looked empty.  To
+#   make the UI show "all the keys it normally would," we copy Terminal's own
+#   built-in defaults into each profile, then add Home/End on top.  Every profile
+#   ends up with the same 58 defaults + Home + End.  (Terminal's stock "Pro"
+#   profile happens to ship with 56 of the 58 defaults already stored -- it is
+#   missing #F704-#F707, Cmd-F1..F4 -- so seeding also completes Pro.)
+#
+#   How the seed avoids clobbering: we use `plutil -insert`, which creates a key
+#   only if it is ABSENT and refuses (harmlessly) to overwrite one that already
+#   exists.  So a profile that has genuinely customized, say, the left-arrow
+#   mapping keeps its value; we only fill in the gaps.  Home/End are then forced
+#   with a replace-or-insert so they always land on our sequences.
+#
+#   Caveat (intentional): materializing the defaults FREEZES them.  If a future
+#   macOS shipped a different built-in sequence for some key, a seeded profile
+#   would keep the value we wrote instead of falling through to the new default.
+#   These are decades-stable VT100/xterm sequences, so this is a theoretical
+#   corner; it is the direct, accepted consequence of storing the full map so
+#   the UI can display it.
 #
 #   Why plutil (not PlistBuddy): plutil takes each key path as a real argument
 #   and treats '.' as the only separator, so profile names containing spaces,
@@ -31,7 +56,9 @@
 #   and a colon silently mis-targets the path.  The one name plutil still can't
 #   express reliably is one containing a backslash (its key-path escape char),
 #   so such a profile is skipped with a warning rather than mis-mapped -- no
-#   real Terminal profile name contains a backslash.
+#   real Terminal profile name contains a backslash.  The default-map key codes
+#   themselves (e.g. "#F704", "$F702", "^F702", "~^F728") contain no '.' or '\',
+#   so they are safe literal path segments.
 #
 #   The write goes through `defaults` (cfprefsd), not a raw edit of the plist
 #   file, so it is safe to run while Terminal is open.  BUT a running Terminal
@@ -68,8 +95,9 @@ __terminal_keypath()
 
 # Set one keyMapBoundKeys entry on one profile in the given working plist,
 # merging into whatever keymap the profile already has (creating the dict if
-# absent).  Idempotent: -replace updates an existing leaf, -insert creates a
-# missing one.  Returns nonzero only if the value could not be written.
+# absent).  Idempotent and FORCING: -replace updates an existing leaf, -insert
+# creates a missing one, so the value always ends up as $4.  Used for Home/End,
+# which must land on our sequences regardless of any prior value.
 #  $1 - working plist path
 #  $2 - profile name
 #  $3 - function-key code (F729 / F72B)
@@ -89,6 +117,50 @@ __terminal_set_keymap_entry()
     # Replace the key if present, otherwise insert it.
     plutil -replace "$leaf_path" -string "$value" "$work_plist" >/dev/null 2>&1 \
         || plutil -insert  "$leaf_path" -string "$value" "$work_plist" >/dev/null 2>&1
+}
+
+# Locate Terminal.app's built-in default key map.  It has lived under
+# /System/Applications/Utilities on modern macOS and under /Applications/
+# Utilities on older releases.  Prints the path and returns 0 if found.
+__terminal_default_keymap_file()
+{
+    local p
+    for p in \
+        '/System/Applications/Utilities/Terminal.app/Contents/Resources/keyMappings.plist' \
+        '/Applications/Utilities/Terminal.app/Contents/Resources/keyMappings.plist'
+    do
+        if [ -f "$p" ]
+        then
+            printf '%s' "$p"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Seed one profile's keyMapBoundKeys with the built-in default map, inserting
+# only keys that are ABSENT (plutil -insert refuses to overwrite, so a profile's
+# own customization is preserved).  Reads the parallel arrays __def_keys /
+# __def_vals from the caller via bash's dynamic scoping.
+#  $1 - working plist path
+#  $2 - profile name
+__terminal_seed_default_keymap()
+{
+    local work_plist="$1" profile="$2"
+    local dict_path i=0
+    dict_path="$(__terminal_keypath "$profile" 'keyMapBoundKeys')"
+
+    # The keyMapBoundKeys dict must exist before we can insert leaves into it.
+    plutil -extract "$dict_path" raw -o - "$work_plist" >/dev/null 2>&1 \
+        || plutil -insert "$dict_path" -dictionary "$work_plist" >/dev/null 2>&1
+
+    while [ "$i" -lt "${#__def_keys[@]}" ]
+    do
+        # Insert-if-absent: fills a gap, harmlessly refuses an existing key.
+        plutil -insert "$(__terminal_keypath "$profile" "keyMapBoundKeys.${__def_keys[$i]}")" \
+            -string "${__def_vals[$i]}" "$work_plist" >/dev/null 2>&1 || :
+        i=$((i + 1))
+    done
 }
 
 __terminal_install_home_end_keys()
@@ -113,6 +185,30 @@ __terminal_install_home_end_keys()
     fi
 
     echo '--- MAP HOME/END KEYS IN TERMINAL PROFILES ---'
+
+    # Load Terminal's built-in default key map into two parallel arrays so we
+    # can stamp it into every profile.  Enumerate keys jq-free (jq isn't on a
+    # stock Mac) via the XML <key> tags -- keyMappings.plist is a flat dict, so
+    # every <key> is a real entry; values are read back with `plutil -extract
+    # ... raw`, preserving the literal ESC bytes.  If the file is missing we
+    # simply skip seeding and still map Home/End (the functional requirement).
+    local __def_keys __def_vals default_map def_key def_val
+    __def_keys=(); __def_vals=()
+    if default_map="$(__terminal_default_keymap_file)"
+    then
+        while IFS= read -r def_key
+        do
+            [ -n "$def_key" ] || continue
+            def_val="$(plutil -extract "$def_key" raw -o - "$default_map" 2>/dev/null)" || continue
+            __def_keys+=("$def_key")
+            __def_vals+=("$def_val")
+        done <<EOF
+$(plutil -convert xml1 -o - "$default_map" 2>/dev/null | grep -oE '<key>[^<]*</key>' | sed -E 's#</?key>##g')
+EOF
+        echo "Terminal: loaded ${#__def_keys[@]} built-in default key mappings from $default_map"
+    else
+        echo "Terminal: built-in default keymap not found; mapping Home/End only" >&2
+    fi
 
     # Work on an exported copy, then import it back.  Editing the export (not
     # the live file) avoids racing cfprefsd; importing routes the change
@@ -169,6 +265,10 @@ __terminal_install_home_end_keys()
         # keyMapBoundKeys (e.g. a scalar instead of a dict, from corrupted or
         # hand-edited prefs) can't take the run down -- the post-write check
         # below is what actually decides success, and simply reports a skip.
+        #
+        # Seed the full default map first (insert-if-absent), then FORCE
+        # Home/End on top so they always land on our sequences.
+        __terminal_seed_default_keymap "$work_plist" "$profile" || :
         __terminal_set_keymap_entry "$work_plist" "$profile" "$home_keycode" "$home_send" || :
         __terminal_set_keymap_entry "$work_plist" "$profile" "$end_keycode"  "$end_send"  || :
 
@@ -178,7 +278,7 @@ __terminal_install_home_end_keys()
         if plutil -extract "$(__terminal_keypath "$profile" "keyMapBoundKeys.${home_keycode}")" \
                 raw -o - "$work_plist" >/dev/null 2>&1
         then
-            echo "Terminal: mapped Home/End in profile '$profile'"
+            echo "Terminal: mapped Home/End (+default keymap) in profile '$profile'"
             count=$((count + 1))
         else
             echo "Terminal: could not map Home/End in profile '$profile'; skipped" >&2
@@ -218,4 +318,6 @@ EOF
 }
 
 __terminal_install_home_end_keys
-unset -f __terminal_install_home_end_keys __terminal_set_keymap_entry __terminal_keypath
+unset -f __terminal_install_home_end_keys __terminal_set_keymap_entry \
+         __terminal_keypath __terminal_seed_default_keymap \
+         __terminal_default_keymap_file
