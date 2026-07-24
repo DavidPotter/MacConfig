@@ -244,15 +244,20 @@ EOF
     # than the one mktemp created, leaking the original on every run.  `defaults`
     # and `plutil` detect the plist format from content, so no ".plist" suffix
     # is needed.
-    local work_plist
+    local work_plist orig_plist
     work_plist="$(mktemp -t "${domain}")"
+    orig_plist="$(mktemp -t "${domain}.orig")"
 
     if ! defaults export "$domain" "$work_plist"
     then
         echo "Terminal: could not export $domain prefs; skipping" >&2
-        rm -f "$work_plist"
+        rm -f "$work_plist" "$orig_plist"
         return 0
     fi
+
+    # Keep a pristine copy of this run's export so we can tell, after editing,
+    # whether our writes actually changed anything (see the import gate below).
+    cp "$work_plist" "$orig_plist"
 
     # One-time backup of the real prefs before we ever modify them.
     if [ ! -f "$backup" ] && [ -f "$prefs" ]
@@ -315,7 +320,28 @@ EOF
     if [ "$count" -eq 0 ]
     then
         echo "Terminal: no profiles updated; nothing to import"
-        rm -f "$work_plist"
+        rm -f "$work_plist" "$orig_plist"
+        return 0
+    fi
+
+    # Decide whether our edits actually changed anything.  The per-profile
+    # writes are idempotent -- seeding is insert-if-absent, and Home/End are
+    # force-replaced with the same sequences every run -- so on an already-mapped
+    # machine the edited copy is identical to what we just exported.  Comparing
+    # the two canonical forms (not the raw bytes: `defaults export` can reorder
+    # keys or carry volatile entries between runs) tells us if THIS run is a
+    # no-op.  We compare against this run's OWN export, so a difference means our
+    # writes changed something -- not merely that the prefs drifted since a prior
+    # run.  If nothing changed, skip the import and the "not yet live" warning,
+    # which otherwise fire on every re-run and misleadingly imply a pending
+    # change when there is none.
+    local before after
+    before="$(plutil -convert xml1 -o - "$orig_plist" 2>/dev/null)"
+    after="$(plutil -convert xml1 -o - "$work_plist" 2>/dev/null)"
+    if [ "$before" = "$after" ]
+    then
+        echo "Terminal: Home/End already mapped in all $count profile(s); no change needed."
+        rm -f "$work_plist" "$orig_plist"
         return 0
     fi
 
@@ -338,7 +364,7 @@ EOF
         echo "Terminal: failed to import updated prefs (original left unchanged)" >&2
     fi
 
-    rm -f "$work_plist"
+    rm -f "$work_plist" "$orig_plist"
     return 0
 }
 
