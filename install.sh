@@ -24,25 +24,68 @@ function clone_repo()
 # If the repository doesn't exist on the local disk, clone it.
 [ -d $LOCAL_REPO_DIR ] || clone_repo
 
-# Pull from the remote repository.
-(
-	set -e
-	cd $LOCAL_REPO_DIR
+# Update the repository from the remote -- best-effort, never fatal.  A local
+# install should always install whatever is in the working tree, so this step
+# is allowed to skip: it fast-forwards only when that is unambiguously safe (on
+# a branch that tracks an upstream, with a clean working tree, and the upstream
+# is strictly ahead), and otherwise prints why it skipped and installs the
+# working tree as-is.  That lets install.sh run on a "dirty" machine -- mid-
+# change, on a feature branch, or offline -- without failing.
+#
+# (There is deliberately no "source the remote's bash_profile" step here.  An
+# older version did that to load create_link, but this script defines its own
+# create_link below, so the step was dead code -- and it carried a bug: the
+# temp-file name was single-quoted, so mktemp never ran and a literally
+# backtick-named file was written into the repo dir.)
+function update_repo()
+{
+	echo "--- UPDATE REPO $REPO_NAME FROM REMOTE ---"
 
-	echo "--- PULL FROM REPO $REPO_NAME ---"
+	# Run in a subshell so the cd is scoped, and trail with '|| true' so a
+	# non-zero exit can never trip the top-level `set -e` (bash -e) and abort
+	# the install.
+	(
+		cd "$LOCAL_REPO_DIR" || exit 0
 
-	TEMP_FILE='`mktemp -t install.XXXXXX`'
-	trap '{ rm -f "$TEMP_FILE"; }' EXIT
+		local branch upstream
+		branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)" || {
+			echo "$REPO_NAME: detached HEAD; skipping remote update (installing working tree as-is)"
+			exit 0
+		}
 
-	set +e
-	git fetch origin
-	git show origin/master:dotfiles/bash_profile > "$TEMP_FILE"
-	echo "Executing $TEMP_FILE"
-	source "$TEMP_FILE"
-	set -e
+		upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)" || {
+			echo "$REPO_NAME: branch '$branch' has no upstream; skipping remote update (installing working tree as-is)"
+			exit 0
+		}
 
-	git pull
-)
+		if ! git diff --quiet || ! git diff --cached --quiet
+		then
+			echo "$REPO_NAME: working tree is dirty; skipping remote update (installing working tree as-is)"
+			exit 0
+		fi
+
+		if ! git fetch --quiet origin 2>/dev/null
+		then
+			echo "$REPO_NAME: could not fetch from remote (offline?); installing working tree as-is"
+			exit 0
+		fi
+
+		# Fast-forward only.  Skip if the branch has diverged (local commits not
+		# on the upstream) rather than create a surprise merge.
+		if [ "$(git rev-parse HEAD)" = "$(git rev-parse "$upstream")" ]
+		then
+			echo "$REPO_NAME: already up to date with $upstream"
+		elif git merge-base --is-ancestor HEAD "$upstream" 2>/dev/null
+		then
+			echo "$REPO_NAME: fast-forwarding $branch to $upstream"
+			git merge --ff-only --quiet "$upstream"
+		else
+			echo "$REPO_NAME: '$branch' has local commits not on $upstream; skipping remote update (installing working tree as-is)"
+		fi
+	) || true
+}
+
+update_repo
 
 # Helper function to create a link if the destination doesn't exist
 # or display an error message detailing why it failed.
