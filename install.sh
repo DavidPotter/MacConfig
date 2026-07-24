@@ -214,10 +214,28 @@ echo '--- INSTALL APPLICATION CONFIGURATIONS ---'
 source $LOCAL_REPO_DIR/Application-Config/install-application-configs.sh
 
 # FINAL INSTRUCTIONS
+# Report the reload command for the shell the user is actually using.  We can't
+# use $0/$SHELL of this script -- install.sh always runs under bash (its
+# shebang), whatever shell launched it -- so infer the caller's interactive
+# shell from the parent process (the tab that ran ./install.sh), stripping a
+# login shell's leading '-' and any path.  Fall back to the login shell
+# ($SHELL), then to a generic hint if we still can't tell.
+CALLER_SHELL="$(ps -o comm= -p "$PPID" 2>/dev/null | sed -e 's#^-##' -e 's#.*/##')"
+case "$CALLER_SHELL" in
+	zsh|bash) ;;                                    # trust the parent process
+	*)        CALLER_SHELL="$(basename "${SHELL:-}")" ;;
+esac
+
+case "$CALLER_SHELL" in
+	zsh)  RELOAD_CMD='source ~/.zshrc' ;;
+	bash) RELOAD_CMD='source ~/.bash_profile' ;;
+	*)    RELOAD_CMD='source ~/.bash_profile   # or ~/.zshrc, depending on your shell' ;;
+esac
+
 echo ' '
 echo '#'
 echo '# Invoke the following commands to complete the installation:'
-echo '#   source ~/.bash_profile   # or ~/.zshrc, depending on your shell'
+echo "#   ${RELOAD_CMD}"
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
 echo ' '
