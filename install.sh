@@ -174,7 +174,7 @@ source $LOCAL_REPO_DIR/Application-Config/install-application-configs.sh
 echo ' '
 echo '#'
 echo '# Invoke the following commands to complete the installation:'
-echo '#   source ~/.zshrc          # or: source ~/.bash_profile'
+echo '#   source ~/.bash_profile   # or ~/.zshrc, depending on your shell'
 echo "#   source ${LOCAL_REPO_DIR}/install-tools.sh"
 echo '#'
 echo ' '

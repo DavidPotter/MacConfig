@@ -3,11 +3,12 @@
 #
 # Bash profile (.bash_profile, .bashrc, .profile, etc.).
 # Sets up the shell the way I like it by performing the following actions:
-# 1. Source scripts in the bash.d directory in the repo to perform most of the
-#       configuration.
-# 2. Add the scripts directory in the repo to the PATH.
-# 3. Source scripts in ~/.bash.d directory to perform configuration local to
-#       this machine.
+# 1. Source the shared, shell-agnostic scripts in shell.d (functions, env,
+#       PATH, aliases, ruby) -- the same files the zsh loader sources.
+# 2. Source the bash-specific adapters in bash.d (completion, history, prompt).
+# 3. Add the scripts directory in the repo to the PATH.
+# 4. Source scripts in ~/.shell.d then ~/.bash.d for machine-local config not
+#       tracked in this repo (shared-local first, then bash-only local).
 ##############################################################################
 
 # Uncomment the next line to see a verbose listing of this script when it is running.
@@ -79,8 +80,15 @@ if [ -d "${ROOT_DIR}/scripts" ]; then
 fi
 
 #-----------------------------------------------------------------------------
-# Source local files.
+# Source local files (machine-local, not tracked in this repo): shared local
+# config first, then bash-specific local config.  The zsh loader sources
+# ~/.shell.d the same way, so machine-local config that applies to both shells
+# lives in ~/.shell.d and is written only once.
 #-----------------------------------------------------------------------------
+
+if [ -d "${HOME}/.shell.d" ]; then
+    __source_files "${HOME}/.shell.d/*"
+fi
 
 if [ -d "${HOME}/.bash.d" ]; then
     __source_files "${HOME}/.bash.d/*"

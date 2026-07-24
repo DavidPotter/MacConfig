@@ -16,9 +16,9 @@ The original repo was bash-only:
 - `dotfiles/inputrc` configured line-editing keys.
 
 macOS already uses **zsh** as the default login shell; the only reason this
-setup ran bash was that the Terminal "Grass" profile was configured to launch
-`bash` explicitly. So "migrating to zsh" really means: stop forcing bash in the
-Terminal profile, and give zsh an equivalent configuration.
+setup ran bash was that a Terminal profile (here, "Pro") was configured to
+launch `bash` explicitly. So "migrating to zsh" really means: stop forcing bash
+in the Terminal profile, and give zsh an equivalent configuration.
 
 The goal was to keep the zsh experience **as close to the bash one as
 possible** while not duplicating the parts that are genuinely shell-agnostic.
@@ -234,11 +234,29 @@ uses its own line editor (`zle`). Every binding was reconstructed in
 ## 7. Home / End keys (fixed as a prerequisite)
 
 While preparing this migration we discovered that plain Home/End never worked
-in the existing bash setup either: the Terminal "Grass" profile sends `\e[1~` /
-`\e[4~`, which `inputrc` didn't bind. That was fixed independently and
-committed first, binding every common Home/End escape variant in `inputrc`
-(bash) and later in `zsh.d/4-zle.zsh` (zsh). So both shells now get working
-Home/End regardless of terminal.
+in the existing setup, and fixing it takes **two** layers — this is not a
+shell-config problem alone:
+
+1. **Terminal.app captures Home/End for its own scrollback**, so by default the
+   keystrokes never reach the shell at all. Each Terminal profile has to be
+   remapped to "Send Text" the escape sequences `\033[H` (Home) and `\033[F`
+   (End) instead. `Application-Config/Terminal/install.sh` does this for every
+   profile (see the [README](README.md#terminal) for the full story and the
+   clobber-safe restart it needs on a machine whose Terminal is already
+   running).
+2. **The shell must then bind those sequences** to beginning-of-line /
+   end-of-line. That's done by binding every common Home/End escape variant in
+   `inputrc` (bash) and in `zsh.d/4-zle.zsh` (zsh), so both shells act on the
+   bytes once Terminal delivers them.
+
+Layer 1 alone gets the bytes to the shell but nothing happens; layer 2 alone is
+useless while Terminal keeps eating the keys. Both are required.
+
+One gotcha worth recording: `inputrc` is a **bash-only** file (GNU readline),
+so a correct binding there has no effect in a tab that is actually running
+**zsh** — zsh reads its bindings from `zsh.d/4-zle.zsh` instead. When Home/End
+"don't work," first check which shell the tab runs (`echo $0`); a bash-only fix
+tested in a zsh tab will always look broken.
 
 ---
 
@@ -281,11 +299,23 @@ This is safe and reversible — bash stays fully configured the whole time.
 
    (Or re-run `install.sh`, which now installs both loaders.)
 
-3. **Reconcile machine-local config.** If this machine has bash-only local
-   files in `~/.bash.d/` that should apply to zsh too (e.g. `go.sh`, `nvm.sh`),
-   move the shell-agnostic ones to `~/.shell.d/` so both shells pick them up;
-   leave anything bash-specific in `~/.bash.d/`. zsh-only local config goes in
-   `~/.zsh.d/`.
+3. **Reconcile machine-local config.** Machine-local drop-ins that apply to
+   *both* shells live in `~/.shell.d/` (sourced by both loaders); bash-only
+   local config stays in `~/.bash.d/`, zsh-only in `~/.zsh.d/`. If a machine has
+   shell-agnostic files under `~/.bash.d/` (e.g. `go.sh`, `nvm.sh`), move them
+   to `~/.shell.d/` so both shells pick them up, and delete the `~/.bash.d/`
+   copies so they don't double-source in bash. Both files are already
+   shell-agnostic: `go.sh` is a plain `export PATH`, and nvm's own `nvm.sh` /
+   `bash_completion` self-adapt to zsh (the completion script runs `bashcompinit`
+   when it detects `ZSH_VERSION`).
+
+   Note the asymmetry in why the tool installers wrote where they did: nvm's
+   installer appends its load block to the shell's *main* rc file, so on this
+   setup it landed in `~/.zshrc` (and, historically, `~/.bash_profile`). After
+   step 2, `~/.zshrc` sources the repo loader, which sources `~/.shell.d/nvm.sh`
+   — so any nvm/rvm block the installer left inline in `~/.zshrc` is now
+   redundant and can be deleted (the shared drop-in loads it once for both
+   shells). Leaving it is harmless; it just loads nvm twice.
 
 4. **Try zsh without committing to it.** Open a new shell and just run `zsh`, or
    `source ~/.zshrc`. Verify: the prompt looks right (time, user@host, cwd, git

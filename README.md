@@ -143,7 +143,8 @@ Both shells get the same line-editing keys, configured for bash in
   those commands that begin with those characters)
 - Support Ctrl-left and right arrows for word moving
 - Support delete and insert keys
-- Home and End jump to the start/end of the line
+- Home and End jump to the start/end of the line (see the [Terminal](#terminal)
+  section — the Terminal profile also has to send these keys)
 
 ## System Configuration
 
@@ -260,16 +261,19 @@ version of bash once it's been installed:
 
 ### Zsh
 
-macOS uses zsh as the default login shell. This repo configures both shells
-from a shared core (see [Shell configuration layout](#shell-configuration-layout)),
-so you can run either one. To use zsh in Terminal, set the desired profile's
-shell back to the default login shell (or point it explicitly at
-`/bin/zsh`) instead of launching bash. `~/.zshrc` (installed by `install.sh`)
-sources the repo's zsh loader, which brings up the same prompt, history,
-completion, aliases, and key bindings as the bash configuration.
+macOS uses zsh as the default login shell, and this repo configures bash and
+zsh identically from a shared core (see
+[Shell configuration layout](#shell-configuration-layout)) — use whichever you
+prefer. `~/.zshrc` (installed by `install.sh`) sources the repo's zsh loader,
+which brings up the same prompt, history, completion, aliases, and key bindings
+as the bash configuration.
 
-For a full walkthrough of moving from bash to zsh on a machine, see
-[MIGRATION-zsh.md](MIGRATION-zsh.md).
+By default a new Terminal tab runs your login shell; a profile can be pointed
+at a specific shell under Terminal ▸ Settings ▸ Profiles ▸ Shell if you want a
+given window to run bash or zsh explicitly.
+
+For notes on the shared-core design and the steps to move a machine's Terminal
+between the two shells, see [MIGRATION-zsh.md](MIGRATION-zsh.md).
 
 ### PowerShell
 
@@ -286,15 +290,59 @@ pwsh
 
 ### Home and End keys
 
-These key bindings are now handled by the shell configuration itself:
-`dotfiles/inputrc` (for bash) and `zsh.d/4-zle.zsh` (for zsh) bind Home and End
-to jump to the start/end of the line, covering every common escape sequence
-Terminal profiles send — including the `\e[1~` / `\e[4~` that macOS
-Terminal.app sends by default. No manual per-profile key remapping is
-required.
+By default the Home and End keys don't jump to the start/end of the line in
+Terminal.app. Fixing that takes **two** layers, and both are required:
 
-If you use a terminal that sends something unusual, you can still remap the
-keys in the profile:
+1. **Terminal must send the keys to the shell.** By default Terminal.app
+   captures Home/End for its own scrollback, so the keystrokes never reach the
+   shell. Each profile has to be told to "Send Text" the escape sequences
+   `\033[H` (Home) and `\033[F` (End) instead.
+2. **The shell must act on those sequences.** Once the bytes arrive, the shell's
+   line editor has to bind them to beginning-of-line / end-of-line. bash reads
+   those bindings from [`dotfiles/inputrc`](dotfiles/inputrc) (GNU readline);
+   zsh ignores `inputrc` and gets the equivalent bindings from
+   [`zsh.d/4-zle.zsh`](zsh.d/4-zle.zsh) (`zle`). Both are installed by
+   `install.sh`, so this layer is handled automatically for whichever shell a
+   tab runs.
+
+Layer 1 alone gets the bytes to the shell but nothing happens; layer 2 alone is
+useless while Terminal keeps eating the keys.
+
+> **Note:** because layer 2 lives in a different file per shell, verify Home/End
+> in the shell the tab actually runs (`echo $0`) — a binding fixed in `inputrc`
+> has no effect in a zsh tab, and vice versa.
+
+### Mapping the keys (layer 1)
+
+Run the installer, which maps Home/End in **every** Terminal profile for you:
+
+```sh
+Application-Config/Terminal/install.sh
+```
+
+(`Application-Config/install-application-configs.sh` runs it, along with every
+other app config installer.) The script seeds each profile with Terminal's
+built-in default key map and then adds the two Home/End entries on top, so the
+profile's Keyboard settings show the complete list of mappings rather than only
+Home/End. It uses `plutil -insert`, which fills in a missing key but never
+overwrites an existing one, so any key mappings a profile already had are
+preserved; only Home/End are forced. Re-running it is harmless (idempotent).
+
+The write goes through `defaults`/cfprefsd, so it's safe to run while Terminal
+is open — **but** a running Terminal caches every profile's key map at launch,
+won't adopt the change until it is fully quit and relaunched, and can clobber
+the new values with its stale in-memory copy on an ordinary quit. To make the
+change live on a machine whose Terminal is already running, use the
+clobber-safe restart, which quits Terminal, re-applies the mapping while it is
+down, and relaunches it:
+
+```sh
+Application-Config/Terminal/safe-restart.sh
+```
+
+### Mapping the keys by hand (fallback)
+
+If you'd rather set a single profile manually:
 
 1. Bring up preferences on Terminal
 2. Switch to the Profiles tab

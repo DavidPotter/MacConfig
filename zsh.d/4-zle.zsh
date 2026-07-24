@@ -60,10 +60,12 @@ bindkey '\e[2~' quoted-insert                     # Insert
 #-----------------------------------------------------------------------------
 # Home and End jump to the start/end of the line.
 # Terminals disagree on what these keys send, so bind every common variant:
-#   \e[1~ / \e[4~  macOS Terminal.app (the sequences the Grass profile sends)
+#   \eOH  / \eOF   application cursor-key mode (SS3) -- what xterm-256color's
+#                  terminfo reports for khome/kend
+#   \e[H  / \e[F   normal cursor-key mode (CSI) -- what this repo's installer
+#                  configures macOS Terminal.app to Send Text (see README)
+#   \e[1~ / \e[4~  vt220-style terminals
 #   \e[7~ / \e[8~  rxvt
-#   \e[H  / \e[F   xterm (normal cursor keys)
-#   \eOH  / \eOF   xterm (application cursor keys)
 #-----------------------------------------------------------------------------
 
 bindkey '\e[1~' beginning-of-line

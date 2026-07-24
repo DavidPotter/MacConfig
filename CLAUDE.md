@@ -17,8 +17,9 @@ Personal macOS configuration files — dotfiles, shell scripts, and application 
 - `zsh.d/` — zsh-only adapters (`1-completion.zsh`, `2-history.zsh`, `3-prompt.zsh`, `4-zle.zsh`) using compinit / `PROMPT` / `zle`. Numbering is single-digit to match `shell.d`/`bash.d`.
 
 **Shell loading chain**:
-- `dotfiles/bash_profile` sources `shell.d/*` then `bash.d/*` (glob order), adds `scripts/` to `$PATH`, then sources `~/.bash.d/*` for machine-local overrides not tracked here.
+- `dotfiles/bash_profile` sources `shell.d/*` then `bash.d/*` (glob order), adds `scripts/` to `$PATH`, then sources `~/.shell.d/*` (shared machine-local) then `~/.bash.d/*` (bash-only machine-local), neither tracked here.
 - `dotfiles/zshrc` sources `shell.d/*` then `zsh.d/*` (using a `(.N)` glob), adds `scripts/` to `$PATH`, then sources `~/.shell.d/*` and `~/.zsh.d/*` for machine-local overrides. It locates the repo root with zsh's `%x` prompt expansion (`${${(%):-%x}:A:h:h}`) and **guards `brew shellenv`** so it doesn't re-run (and reorder `$PATH`) when `~/.zprofile` already ran it.
+- `~/.shell.d/*` is the shared machine-local drop-in sourced by **both** loaders, so config that applies to both shells (e.g. `go`/`nvm` PATH setup) is written once. `~/.bash.d/*` and `~/.zsh.d/*` hold shell-specific machine-local config. As with `shell.d/`, files in `~/.shell.d/` must be polyglot.
 
 **`inputrc` is bash-only**: `dotfiles/inputrc` configures GNU readline. zsh ignores it; the equivalent keybindings are reconstructed in `zsh.d/4-zle.zsh`. Keep the two in sync when changing key bindings.
 
