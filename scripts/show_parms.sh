@@ -1,19 +1,18 @@
-#!/bin/bash
-
-function realpath()
-{
-	python -c 'import os,sys;print os.path.realpath(sys.argv[1])' "$@"
-}
+#!/bin/sh
 
 # Show parameters passed to a script.
+#
+# Uses printf, not echo, for the value lines: /bin/sh's echo interprets
+# backslash escapes, so an argument like 'a\tb' would come out mangled;
+# bash's echo (the original shebang) left it literal.  printf '%s' keeps
+# the bytes exactly as passed.
 
 echo
-echo '# arguments called with ($@) -->  '"$@"
-echo '# $1 -------------------------->  '"$1"
-echo '# $2 -------------------------->  '"$2"
-echo '# path to me ($0) ------------->  '"$0"
-echo '# parent path (${0%/*}) ------->  '"${0%/*}"
-echo '# my name (${0##*/}) ---------->  '"${0##*/}"
-echo '# $BASH_SOURCE ---------------->  '"$BASH_SOURCE"
-echo '# Full script path ------------>  '"$(realpath $BASH_SOURCE)"
+printf '%s%s\n' '# arguments called with ($@) -->  ' "$*"
+printf '%s%s\n' '# $1 -------------------------->  ' "$1"
+printf '%s%s\n' '# $2 -------------------------->  ' "$2"
+printf '%s%s\n' '# path to me ($0) ------------->  ' "$0"
+printf '%s%s\n' '# parent path (${0%/*}) ------->  ' "${0%/*}"
+printf '%s%s\n' '# my name (${0##*/}) ---------->  ' "${0##*/}"
+printf '%s%s\n' '# Full script path ------------>  ' "$(realpath "$0")"
 echo

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh
 
 #
 # migrate-bash-profile-stub
@@ -25,11 +25,16 @@ REPO_NAME='MacConfig'
 
 # Resolve this script's directory (it lives in $REPO/scripts), following any
 # symlinks, so the repo root can be found regardless of where it was cloned.
-SOURCE="${BASH_SOURCE[0]}"
+# This script is executed, not sourced, so $0 is its own path (there is no
+# POSIX equivalent of bash's $BASH_SOURCE).
+SOURCE="$0"
 while [ -h "${SOURCE}" ]; do
 	DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
 	SOURCE="$( readlink "${SOURCE}" )"
-	[[ ${SOURCE} != /* ]] && SOURCE="${DIR}/${SOURCE}"
+	case "${SOURCE}" in
+		/*) ;;                            # already absolute
+		*) SOURCE="${DIR}/${SOURCE}" ;;   # relative -> resolve against link dir
+	esac
 done
 SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
 REPO_DIR="$( cd "${SCRIPT_DIR}/.." && pwd )"
@@ -42,7 +47,7 @@ LOADER='source "$HOME/bin/MacConfig/dotfiles/bash_profile"'
 # Resolve a path to its canonical physical form (directory resolved through any
 # symlinks, e.g. macOS /var -> /private/var) so two spellings of the same file
 # compare equal.
-function canonicalize()
+canonicalize()
 {
 	local path="$1" dir base
 	dir="$( cd -P "$( dirname "${path}" )" 2>/dev/null && pwd )" || return 1
@@ -53,7 +58,7 @@ function canonicalize()
 # Write the local stub to ~/.bash_profile.  Any extra lines passed on stdin
 # (machine-local "export ..." lines a tool appended) are preserved below the
 # repo source line.
-function write_stub()
+write_stub()
 {
 	cat > "${DST}" <<-EOF
 		# ~/.bash_profile -- local loader (NOT tracked in the MacConfig repo).
@@ -128,8 +133,11 @@ then
 	then
 		# Capture lines present in the working copy but not in HEAD (the lines a
 		# tool appended through the symlink).
-		EXTRA="$( diff <( git -C "${REPO_DIR}" show HEAD:dotfiles/bash_profile ) \
-			"${REPO_PROFILE}" | sed -n 's/^> //p' )"
+		# Pipe the committed version into `diff -` (stdin) instead of bash's
+		# `<(...)` process substitution; committed content stays the first diff
+		# argument, so `> ` still marks lines added in the working copy.
+		EXTRA="$( git -C "${REPO_DIR}" show HEAD:dotfiles/bash_profile \
+			| diff - "${REPO_PROFILE}" | sed -n 's/^> //p' )"
 		REVERT_REPO='true'
 		if [ -n "${EXTRA}" ]
 		then

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh
 
 #
 # migrate-zshrc-stub
@@ -26,11 +26,16 @@ REPO_NAME='MacConfig'
 
 # Resolve this script's directory (it lives in $REPO/scripts), following any
 # symlinks, so the repo root can be found regardless of where it was cloned.
-SOURCE="${BASH_SOURCE[0]}"
+# This script is executed, not sourced, so $0 is its own path (there is no
+# POSIX equivalent of bash's $BASH_SOURCE).
+SOURCE="$0"
 while [ -h "${SOURCE}" ]; do
 	DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
 	SOURCE="$( readlink "${SOURCE}" )"
-	[[ ${SOURCE} != /* ]] && SOURCE="${DIR}/${SOURCE}"
+	case "${SOURCE}" in
+		/*) ;;                            # already absolute
+		*) SOURCE="${DIR}/${SOURCE}" ;;   # relative -> resolve against link dir
+	esac
 done
 SCRIPT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
 REPO_DIR="$( cd "${SCRIPT_DIR}/.." && pwd )"
@@ -41,7 +46,7 @@ REPO_LOADER_FILE="${REPO_DIR}/dotfiles/zshrc"
 LOADER='source "$HOME/bin/MacConfig/dotfiles/zshrc"'
 
 # Write a fresh local stub to ~/.zshrc.
-function write_stub()
+write_stub()
 {
 	cat > "${DST}" <<-EOF
 		# ~/.zshrc -- local loader (NOT tracked in the MacConfig repo).

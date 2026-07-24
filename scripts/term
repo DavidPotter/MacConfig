@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Open a new Mac OS X terminal window or tab in the current or another
 # directory and optionally run a command in the new window or tab.
@@ -30,9 +30,9 @@ while getopts xtp:s: OPTION; do
 [ $OPTION = "s" ] && { SIZE="set size of window 1 to {$OPTARG}"; }
 done
 
-for (( $OPTIND; $OPTIND-1; OPTIND=$OPTIND-1 )); do shift; done
+shift $((OPTIND - 1))
 
-if [[ -d "$1" ]]; then WD=$(cd "$1"; pwd); shift; else WD=$PWD; fi
+if [ -d "$1" ]; then WD=$(cd "$1"; pwd); shift; else WD=$PWD; fi
 
 
 COMMAND="cd '$WD' && echo -n \$'\\\\ec';"

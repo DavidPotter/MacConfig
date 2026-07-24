@@ -1,21 +1,37 @@
-#!/bin/bash -e
+#!/bin/sh -e
+# Note on echo vs printf: this script was #!/bin/bash, whose echo leaves
+# backslashes literal.  /bin/sh's echo interprets them, so any value that
+# could contain a backslash is emitted with printf '%s\n' to preserve the
+# original bytes exactly.
 SMBURL="$1"
-if echo "$SMBURL" | grep ^smb:// > /dev/null
+if printf '%s\n' "$SMBURL" | grep ^smb:// > /dev/null
 then
-	DEST_URL=`echo "$SMBURL" | cut -d/ -f 1-4 | /usr/bin/tr 'A-Z' 'a-z'`
-	DEST_DIR=`echo "$SMBURL" | cut -d/ -f 5-`
-	while read MOUNT_URL MOUNT_TMP1 MOUNT_PATH MOUNT_TMP2
-	do
-		MOUNT_URL=`echo "$MOUNT_URL" | tr 'A-Z' 'a-z'`
-		if [ "$MOUNT_URL" = "$DEST_URL" ]
-		then
-			echo "$MOUNT_PATH"/"$DEST_DIR"
-			exit 0
-		fi
-	done < <( /sbin/mount | /usr/bin/grep ^// | /usr/bin/sed -E 's/^\/\/(.*@)?/smb:\/\//' )
-	echo `osascript -e "POSIX path of (mount volume \"$DEST_URL\")"`"$DEST_DIR"
+	DEST_URL=$(printf '%s\n' "$SMBURL" | cut -d/ -f 1-4 | /usr/bin/tr 'A-Z' 'a-z')
+	DEST_DIR=$(printf '%s\n' "$SMBURL" | cut -d/ -f 5-)
+	# Search the mounted SMB shares for one matching DEST_URL.  The search runs
+	# in a command substitution (a pipe into `while read` instead of bash's
+	# `< <(...)` process substitution, which is not POSIX) and prints the mount
+	# path if found.  `break` leaves the loop; capturing the output lets us tell
+	# a hit from a miss without an `exit` that would only leave the subshell.
+	FOUND=$(/sbin/mount | /usr/bin/grep ^// \
+		| /usr/bin/sed -E 's/^\/\/(.*@)?/smb:\/\//' \
+		| while read MOUNT_URL MOUNT_TMP1 MOUNT_PATH MOUNT_TMP2
+		do
+			MOUNT_URL=$(printf '%s\n' "$MOUNT_URL" | tr 'A-Z' 'a-z')
+			if [ "$MOUNT_URL" = "$DEST_URL" ]
+			then
+				printf '%s\n' "$MOUNT_PATH/$DEST_DIR"
+				break
+			fi
+		done)
+	if [ -n "$FOUND" ]
+	then
+		printf '%s\n' "$FOUND"
+		exit 0
+	fi
+	printf '%s\n' "$(osascript -e "POSIX path of (mount volume \"$DEST_URL\")")$DEST_DIR"
 	exit 0
 else
-	echo Usage: `basename $0` smb://host/share
+	printf 'Usage: %s smb://host/share\n' "$(basename "$0")"
 	exit 1
 fi

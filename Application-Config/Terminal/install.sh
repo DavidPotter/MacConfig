@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 #
 # install.sh
@@ -89,8 +89,12 @@
 #  $2 - trailing sub-path (e.g. "keyMapBoundKeys" or "keyMapBoundKeys.F729")
 __terminal_keypath()
 {
-    local profile="$1" leaf="$2"
-    printf 'Window Settings.%s.%s' "${profile//./\\.}" "$leaf"
+    local profile="$1" leaf="$2" escaped
+    # Escape every '.' in the profile name as '\.' for plutil's key-path
+    # grammar.  POSIX sh has no ${var//./\.} pattern substitution, so do it with
+    # sed: the replacement '\\.' emits a literal backslash followed by a dot.
+    escaped="$(printf '%s' "$profile" | sed 's/\./\\./g')"
+    printf 'Window Settings.%s.%s' "$escaped" "$leaf"
 }
 
 # Set one keyMapBoundKeys entry on one profile in the given working plist,
@@ -140,26 +144,32 @@ __terminal_default_keymap_file()
 
 # Seed one profile's keyMapBoundKeys with the built-in default map, inserting
 # only keys that are ABSENT (plutil -insert refuses to overwrite, so a profile's
-# own customization is preserved).  Reads the parallel arrays __def_keys /
-# __def_vals from the caller via bash's dynamic scoping.
+# own customization is preserved).  Reads the default map from the caller via
+# dynamic scoping: $__def_map holds one "key<TAB>value" record per line (POSIX
+# sh has no arrays).  The key codes and ESC values are verified free of tabs and
+# newlines, so this delimiting round-trips them exactly.
 #  $1 - working plist path
 #  $2 - profile name
 __terminal_seed_default_keymap()
 {
     local work_plist="$1" profile="$2"
-    local dict_path i=0
+    local dict_path def_key def_val tab
+    tab="$(printf '\t')"
     dict_path="$(__terminal_keypath "$profile" 'keyMapBoundKeys')"
 
     # The keyMapBoundKeys dict must exist before we can insert leaves into it.
     plutil -extract "$dict_path" raw -o - "$work_plist" >/dev/null 2>&1 \
         || plutil -insert "$dict_path" -dictionary "$work_plist" >/dev/null 2>&1
 
-    while [ "$i" -lt "${#__def_keys[@]}" ]
+    # Split each record on its single TAB (IFS=TAB): field 1 is the key code,
+    # the remainder is the value.  A leading space in a value is preserved
+    # because space is not in IFS.
+    printf '%s\n' "$__def_map" | while IFS="$tab" read -r def_key def_val
     do
+        [ -n "$def_key" ] || continue
         # Insert-if-absent: fills a gap, harmlessly refuses an existing key.
-        plutil -insert "$(__terminal_keypath "$profile" "keyMapBoundKeys.${__def_keys[$i]}")" \
-            -string "${__def_vals[$i]}" "$work_plist" >/dev/null 2>&1 || :
-        i=$((i + 1))
+        plutil -insert "$(__terminal_keypath "$profile" "keyMapBoundKeys.${def_key}")" \
+            -string "$def_val" "$work_plist" >/dev/null 2>&1 || :
     done
 }
 
@@ -168,6 +178,15 @@ __terminal_install_home_end_keys()
     local domain='com.apple.Terminal'
     local prefs="$HOME/Library/Preferences/${domain}.plist"
     local backup="${prefs}.macconfig-bak"
+
+    # Resolve this script's directory so we can point at the sibling
+    # safe-restart.sh.  When sourced by install-application-configs.sh the
+    # aggregator exports MACCONFIG_APP_INSTALL_DIR (a sourced POSIX script can't
+    # find its own path -- $0 is the executor and bash's $BASH_SOURCE isn't
+    # portable).  Fall back to $0 for the standalone/executed case (e.g. the
+    # safe-restart worker runs this file directly).
+    local script_dir
+    script_dir="${MACCONFIG_APP_INSTALL_DIR:-$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)}"
 
     # Function-key codes Terminal uses for these keys, and the bytes to send.
     # \033 is ESC; \033[H / \033[F are exactly what the GUI "Send Text" writes.
@@ -186,26 +205,32 @@ __terminal_install_home_end_keys()
 
     echo '--- MAP HOME/END KEYS IN TERMINAL PROFILES ---'
 
-    # Load Terminal's built-in default key map into two parallel arrays so we
-    # can stamp it into every profile.  Enumerate keys jq-free (jq isn't on a
-    # stock Mac) via the XML <key> tags -- keyMappings.plist is a flat dict, so
-    # every <key> is a real entry; values are read back with `plutil -extract
-    # ... raw`, preserving the literal ESC bytes.  If the file is missing we
-    # simply skip seeding and still map Home/End (the functional requirement).
-    local __def_keys __def_vals default_map def_key def_val
-    __def_keys=(); __def_vals=()
+    # Load Terminal's built-in default key map into a TAB-delimited record
+    # string ("keycode<TAB>value" per line) so we can stamp it into every
+    # profile.  POSIX sh has no arrays; the key codes and ESC values are
+    # verified tab/newline-free, so this delimiting round-trips them exactly.
+    # Enumerate keys jq-free (jq isn't on a stock Mac) via the XML <key> tags --
+    # keyMappings.plist is a flat dict, so every <key> is a real entry; values
+    # are read back with `plutil -extract ... raw`, preserving the literal ESC
+    # bytes.  If the file is missing we simply skip seeding and still map
+    # Home/End (the functional requirement).
+    local __def_map default_map def_key def_val def_count tab
+    tab="$(printf '\t')"
+    __def_map=''
+    def_count=0
     if default_map="$(__terminal_default_keymap_file)"
     then
         while IFS= read -r def_key
         do
             [ -n "$def_key" ] || continue
             def_val="$(plutil -extract "$def_key" raw -o - "$default_map" 2>/dev/null)" || continue
-            __def_keys+=("$def_key")
-            __def_vals+=("$def_val")
+            __def_map="${__def_map}${def_key}${tab}${def_val}
+"
+            def_count=$((def_count + 1))
         done <<EOF
 $(plutil -convert xml1 -o - "$default_map" 2>/dev/null | grep -oE '<key>[^<]*</key>' | sed -E 's#</?key>##g')
 EOF
-        echo "Terminal: loaded ${#__def_keys[@]} built-in default key mappings from $default_map"
+        echo "Terminal: loaded ${def_count} built-in default key mappings from $default_map"
     else
         echo "Terminal: built-in default keymap not found; mapping Home/End only" >&2
     fi
@@ -305,7 +330,7 @@ EOF
         if ps -axo command= 2>/dev/null | grep -q '[/]Terminal.app/Contents/MacOS/Terminal'
         then
             echo "Terminal: Terminal is running -- the change is on disk but NOT yet live."
-            echo "Terminal: run '$(dirname "${BASH_SOURCE[0]}")/safe-restart.sh' to quit, re-apply, and relaunch it safely."
+            echo "Terminal: run '${script_dir}/safe-restart.sh' to quit, re-apply, and relaunch it safely."
         else
             echo "Terminal: launch Terminal to pick up the change (it reads keymaps at startup)."
         fi

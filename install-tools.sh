@@ -1,4 +1,10 @@
-#!/bin/bash -e
+#!/bin/sh
+
+# NOTE: no `set -e` here.  This script is SOURCED (it uses a top-level `return`,
+# and the install.sh final instructions run `source install-tools.sh`), so any
+# `set -e` would turn on errexit in the caller's interactive shell and leave it
+# on afterward.  The old `#!/bin/bash -e` shebang was silently ignored when
+# sourced, so errexit was never actually in effect -- preserve that.
 
 #
 # install-tools.sh
@@ -42,9 +48,7 @@ fi
 # Update the git repository.
 echo '--'
 echo '--> Pulling git repository from origin...'
-pushd $LOCAL_REPO_DIR
-git pull origin
-popd
+( cd $LOCAL_REPO_DIR && git pull origin )
 
 # Don't continue if required files aren't present.
 if [ ! -f $LOCAL_REPO_DIR/contrib/completion/git-completion.bash ]; then
@@ -58,18 +62,18 @@ fi
 
 # Helper function to create a link if the destination doesn't exist
 # or display an error message detailing why it failed.
-function create_link()
+create_link()
 {
 	local SRC="$1"
 	local DST="$2"
 
 	if [ ! -e "$DST" ]; then
 		echo '--'
-		echo -n '--> Creating symbolic link: '
+		printf '%s' '--> Creating symbolic link: '
 		ln -sv "$SRC" "$DST"
 	else
 		if [ ! -L "$DST" ] || [ "`readlink "$DST"`" != "$SRC" ]; then
-			echo -n "--> $DST already exists" >&2
+			printf '%s' "--> $DST already exists" >&2
 			if [ -L "$DST" ]; then
 				echo " (pointing to `readlink "$DST"`)"
 			else
@@ -98,7 +102,7 @@ if [ ! -s "$HOME/.rvm/scripts/rvm" ]; then
 fi
 
 # Enable rvm if available.
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+if [ -s "$HOME/.rvm/scripts/rvm" ]; then
 	echo '--'
 	echo '--> Enable RVM...'
 	source "$HOME/.rvm/scripts/rvm"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # safe-restart.sh
 #   Clobber-safe restart of macOS Terminal.app so that the Home/End key
@@ -43,8 +43,10 @@ PREQUIT="$HOME/.macconfig-terminal-restart.prequit.plist"
 POSTQUIT="$HOME/.macconfig-terminal-restart.postquit.plist"
 
 # Absolute path to this very script (launchd needs an absolute program path)
-# and to its sibling install.sh.
-SELF="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/$(basename "${BASH_SOURCE[0]}")"
+# and to its sibling install.sh.  This script is executed, not sourced (the user
+# runs it, and the LaunchAgent re-runs it), so $0 is its own path -- there is no
+# POSIX equivalent of bash's $BASH_SOURCE.
+SELF="$(cd "$(dirname "$0")" && pwd -P)/$(basename "$0")"
 INSTALL_SH="$(dirname "$SELF")/install.sh"
 
 # True while a real Terminal.app process is alive.  Match the app binary path,
@@ -98,8 +100,11 @@ then
                      | grep -v '^Pro$' | head -1)"
     if [ -n "$check_profile" ]
     then
-        pre_val="$(plutil -extract "Window Settings.${check_profile//./\\.}.keyMapBoundKeys.F729" raw -o - "$PREQUIT"  2>/dev/null)"
-        post_val="$(plutil -extract "Window Settings.${check_profile//./\\.}.keyMapBoundKeys.F729" raw -o - "$POSTQUIT" 2>/dev/null)"
+        # Escape '.' as '\.' for plutil's key-path grammar (POSIX sh has no
+        # ${var//./\.} pattern substitution -- do it with sed).
+        check_escaped="$(printf '%s' "$check_profile" | sed 's/\./\\./g')"
+        pre_val="$(plutil -extract "Window Settings.${check_escaped}.keyMapBoundKeys.F729" raw -o - "$PREQUIT"  2>/dev/null)"
+        post_val="$(plutil -extract "Window Settings.${check_escaped}.keyMapBoundKeys.F729" raw -o - "$POSTQUIT" 2>/dev/null)"
         wlog "worker: clobber check on profile '${check_profile}' F729 -> pre='${pre_val:-<none>}' post='${post_val:-<none>}'"
         if [ -n "$pre_val" ] && [ -z "$post_val" ]
         then
@@ -116,7 +121,7 @@ then
     if [ -f "$INSTALL_SH" ]
     then
         wlog "worker: running $INSTALL_SH"
-        bash "$INSTALL_SH" >> "$LOG" 2>&1 || wlog "worker: install.sh returned nonzero (see above)"
+        sh "$INSTALL_SH" >> "$LOG" 2>&1 || wlog "worker: install.sh returned nonzero (see above)"
     else
         wlog "worker: ERROR install.sh not found at $INSTALL_SH"
     fi
@@ -191,7 +196,7 @@ cat > "$AGENT_PLIST" <<PLIST
     <string>${LABEL}</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/bin/bash</string>
+        <string>/bin/sh</string>
         <string>${SELF}</string>
         <string>--worker</string>
     </array>

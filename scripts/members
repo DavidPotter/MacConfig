@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # members -- list all members of a group
 #
@@ -15,8 +15,11 @@
 #
 
 the_group="$1"
-# Input check and usage
-  if [[ $# != 1 || $1 == -* || $1 =~ [[:space:]] ]]; then
+# Input check and usage.  Reject: not exactly one argument, an argument that
+# starts with '-' (looks like an option), or one containing whitespace.  The
+# whitespace test uses a `case` glob (POSIX) in place of bash's `=~ [[:space:]]`.
+  case "$1" in *[[:space:]]*) has_space=1 ;; *) has_space=0 ;; esac
+  if [ "$#" -ne 1 ] || [ "${1#-}" != "$1" ] || [ "$has_space" -eq 1 ]; then
     echo "Usage: ${0##*/} groupname" >&2
     echo "Lists all members of the group." >&2
     exit 64
@@ -29,7 +32,7 @@ the_group="$1"
 exec dscl . -list /Users \
   | while read each_username
   do
-    printf "$each_username "
+    printf '%s ' "$each_username"
     dsmemberutil checkmembership -U "$each_username" -G "$the_group"
   done \
     | grep "is a member" | cut -d " " -f 1

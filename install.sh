@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 #
 # install.sh
@@ -15,7 +15,7 @@
 REPO_NAME='MacConfig'
 LOCAL_REPO_DIR="$HOME/bin/$REPO_NAME"
 
-function clone_repo()
+clone_repo()
 {
 	echo "--- CLONING REPO $REPO_NAME ---"
 	git clone https://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
@@ -37,13 +37,12 @@ function clone_repo()
 # create_link below, so the step was dead code -- and it carried a bug: the
 # temp-file name was single-quoted, so mktemp never ran and a literally
 # backtick-named file was written into the repo dir.)
-function update_repo()
+update_repo()
 {
 	echo "--- UPDATE REPO $REPO_NAME FROM REMOTE ---"
 
 	# Run in a subshell so the cd is scoped, and trail with '|| true' so a
-	# non-zero exit can never trip the top-level `set -e` (bash -e) and abort
-	# the install.
+	# non-zero exit can never trip the top-level `set -e` and abort the install.
 	(
 		cd "$LOCAL_REPO_DIR" || exit 0
 
@@ -89,7 +88,7 @@ update_repo
 
 # Helper function to create a link if the destination doesn't exist
 # or display an error message detailing why it failed.
-function create_link()
+create_link()
 {
 	local SRC="$1"
 	local DST="$2"
@@ -98,12 +97,12 @@ function create_link()
 	then
 		ln -sv "$SRC" "$DST"
 	else
-		echo -n "$REPO_NAME: $DST already" >&2
+		printf '%s' "$REPO_NAME: $DST already" >&2
 		if [ -L "$DST" ]
 		then
 			if [ "`readlink "$DST"`" = "$SRC" ] >&2
 			then
-				echo -n ' defined properly' >&2
+				printf '%s' ' defined properly' >&2
 			fi
 			echo " (pointing to `readlink "$DST"`)" >&2
 		else
@@ -124,7 +123,7 @@ function create_link()
 #  $1 - Destination rc file (e.g. "$HOME/.zshrc").
 #  $2 - Loader line to ensure is present
 #       (e.g. 'source "$HOME/bin/MacConfig/dotfiles/zshrc"').
-function install_shell_loader()
+install_shell_loader()
 {
 	local DST="$1"
 	local LOADER="$2"
@@ -210,12 +209,17 @@ echo ". '$LOCAL_REPO_DIR/PowerShell/profile/profile.ps1'" | tee "$HOME/.config/p
 create_link "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1" "$HOME/.config/powershell/Microsoft.VSCode_profile.ps1"
 
 # INSTALL APPLICATION CONFIGURATIONS
+# Tell the sourced aggregator where it lives.  A sourced POSIX script can't find
+# its own path ($0 reflects this installer, and bash's $BASH_SOURCE isn't
+# portable), so we pass the directory explicitly.
 echo '--- INSTALL APPLICATION CONFIGURATIONS ---'
-source $LOCAL_REPO_DIR/Application-Config/install-application-configs.sh
+MACCONFIG_APP_CONFIGS_DIR="$LOCAL_REPO_DIR/Application-Config"
+export MACCONFIG_APP_CONFIGS_DIR
+. "$LOCAL_REPO_DIR/Application-Config/install-application-configs.sh"
 
 # FINAL INSTRUCTIONS
 # Report the reload command for the shell the user is actually using.  We can't
-# use $0/$SHELL of this script -- install.sh always runs under bash (its
+# use $0/$SHELL of this script -- install.sh always runs under /bin/sh (its
 # shebang), whatever shell launched it -- so infer the caller's interactive
 # shell from the parent process (the tab that ran ./install.sh), stripping a
 # login shell's leading '-' and any path.  Fall back to the login shell

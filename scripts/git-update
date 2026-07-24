@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh
 
 # git-update - Update the current branch from the upstream branch preserving uncommitted changes.
 #
@@ -37,9 +37,11 @@ if git status | grep "Your branch" > "$TEMPFILE"; then
 	CAN_FF=1
 	grep -q "can be fast-forwarded" "$TEMPFILE" || CAN_FF=0
 
-	# Stash any uncommitted changes.
-	git stash | tee "$TEMPFILE"
-	[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
+	# Stash any uncommitted changes.  Capture the output to the temp file and
+	# echo it, then check git stash's own exit status.  (bash's PIPESTATUS,
+	# used to read the status through a `tee` pipe, is not POSIX.)
+	git stash > "$TEMPFILE" || exit 1
+	cat "$TEMPFILE"
 
 	# Take note if anything was stashed.
 	HAVE_STASH=0
