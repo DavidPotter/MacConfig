@@ -176,6 +176,74 @@ install_shell_loader()
 	echo "$REPO_NAME: wrote local stub $DST"
 }
 
+# Ensure ~/.gitconfig pulls in the repo's tracked Git configuration (base
+# settings + aliases).  Like the shell loaders above, ~/.gitconfig is a
+# machine-local file -- it holds your identity, GPG signing key, commit
+# template, etc. -- that we deliberately do NOT symlink into the repo; instead
+# we make sure it *includes* the tracked config files, so those edits never get
+# written back into version control.
+#
+# We inject the [include] at the TOP so personal settings below still override
+# the shared base (matching the hand-written convention, and the file's own
+# "base configuration" framing), and we never rewrite content we did not write
+# -- only the missing include path(s) are added.  We target ~/.gitconfig by
+# name rather than `git config --global` because git ALWAYS reads ~/.gitconfig
+# (even when an XDG ~/.config/git/config exists, which `git config --global`
+# would write to instead), so appending here is effective on every machine.
+# Idempotent: once both includes are present, a re-run changes nothing.
+install_gitconfig_include()
+{
+	local DST="$HOME/.gitconfig"
+	local base='~/bin/MacConfig/config/gitconfig-base'
+	local aliases='~/bin/MacConfig/config/gitconfig-aliases'
+
+	# Which include paths are already referenced?  Match on the path value with
+	# grep -F, so any indentation or spacing around '=' still counts as present.
+	local have_base=0 have_aliases=0
+	if [ -f "$DST" ]
+	then
+		if grep -qF "$base"    "$DST"; then have_base=1; fi
+		if grep -qF "$aliases" "$DST"; then have_aliases=1; fi
+	fi
+
+	if [ "$have_base" -eq 1 ] && [ "$have_aliases" -eq 1 ]
+	then
+		echo "$REPO_NAME: $DST already includes the repo git config (leaving it intact)"
+		return
+	fi
+
+	# Build an [include] block holding only the path(s) not already present, so
+	# a partially-configured file never gets a duplicate entry.
+	local block
+	block='# --- MacConfig: include shared git configuration (added by install.sh) ---
+[include]
+'
+	if [ "$have_base"    -eq 0 ]; then block="${block}	path = ${base}
+"; fi
+	if [ "$have_aliases" -eq 0 ]; then block="${block}	path = ${aliases}
+"; fi
+	block="${block}# --- end MacConfig ---"
+
+	if [ -f "$DST" ]
+	then
+		# Inject at the top, preserving everything already there below it.
+		local TMP
+		TMP="$(mktemp)"
+		{
+			printf '%s\n\n' "$block"
+			cat "$DST"
+		} > "$TMP"
+		cat "$TMP" > "$DST"
+		rm -f "$TMP"
+		echo "$REPO_NAME: injected repo git config include at the top of $DST"
+	else
+		# No ~/.gitconfig yet: create it with just the include block.  You still
+		# add your own name/email/signing key here as usual.
+		printf '%s\n' "$block" > "$DST"
+		echo "$REPO_NAME: created $DST with the repo git config include"
+	fi
+}
+
 # INSTALL SHELL LOADERS
 # Both bash and zsh load from the same repo.  Each rc file in $HOME is a local
 # file (not a symlink into the repo) that sources the matching shared loader, so
@@ -184,6 +252,12 @@ install_shell_loader()
 echo '--- INSTALL SHELL LOADERS ---'
 install_shell_loader "$HOME/.bash_profile" 'source "$HOME/bin/MacConfig/dotfiles/bash_profile"'
 install_shell_loader "$HOME/.zshrc" 'source "$HOME/bin/MacConfig/dotfiles/zshrc"'
+
+# INSTALL GIT CONFIG INCLUDE
+# Make ~/.gitconfig include the repo's tracked git config (base + aliases),
+# without symlinking or clobbering the machine-local identity it holds.
+echo '--- INSTALL GIT CONFIG INCLUDE ---'
+install_gitconfig_include
 
 # CREATE SYMBOLIC LINKS FOR DOT FILES
 # Loop through the files in the dotfiles directory and create a symlink to
