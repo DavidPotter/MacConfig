@@ -13,9 +13,19 @@ SCRIPT_DIR="${MACCONFIG_APP_INSTALL_DIR:-$(cd "$(dirname "$0")" > /dev/null && p
 # CREATE SYMBOLIC LINKS FOR CONFIG FILES
 # Loop through the files in the local directory and create a symlink to
 # each one from the Cursor settings directory.
-find "$SCRIPT_DIR" -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
-do
-	FILENAME="$(basename "$SRC")"
-	DST="$HOME/Library/Application Support/Cursor/User/$FILENAME"
-	create_link "$SRC" "$DST"
-done
+#
+# Bail out cleanly where Cursor's User directory doesn't exist (Cursor isn't
+# installed on this machine) instead of letting `ln` fail on the first file
+# with a raw, confusing error.
+CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
+if [ ! -d "$CURSOR_USER_DIR" ]
+then
+	echo "Cursor: $CURSOR_USER_DIR does not exist (Cursor not installed?); skipping"
+else
+	find "$SCRIPT_DIR" -maxdepth 1 -type f -not -name 'install.sh' -not -name 'README*' | while read SRC
+	do
+		FILENAME="$(basename "$SRC")"
+		DST="$CURSOR_USER_DIR/$FILENAME"
+		create_link "$SRC" "$DST"
+	done
+fi

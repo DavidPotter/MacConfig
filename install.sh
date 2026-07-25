@@ -88,16 +88,24 @@ update_repo
 
 # Helper function to create a link if the destination doesn't exist
 # or display an error message detailing why it failed.
+#
+# Messages are labeled with $MACCONFIG_APP_NAME when set -- the aggregator
+# (Application-Config/install-application-configs.sh) exports it per app so
+# these lines read "Cursor: ..." / "VisualStudioCode: ..." instead of the
+# generic repo name.  Callers outside that aggregator (e.g. the plain dotfile
+# symlink loop below, which isn't app-specific) leave it unset and fall back
+# to $REPO_NAME.
 create_link()
 {
 	local SRC="$1"
 	local DST="$2"
+	local LABEL="${MACCONFIG_APP_NAME:-$REPO_NAME}"
 
 	if [ ! -e "$DST" ]
 	then
 		ln -sv "$SRC" "$DST"
 	else
-		printf '%s' "$REPO_NAME: $DST already" >&2
+		printf '%s' "$LABEL: $DST already" >&2
 		if [ -L "$DST" ]
 		then
 			if [ "`readlink "$DST"`" = "$SRC" ] >&2
