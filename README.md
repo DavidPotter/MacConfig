@@ -34,14 +34,14 @@ brew install powershell/tap/powershell
 
 From GitLab:
 
-```bash
-bash < <( curl -sL https://raw.githubusercontent.com/DavidPotter/MacConfig/master/install.sh )
+```sh
+curl -sL https://raw.githubusercontent.com/DavidPotter/MacConfig/master/install.sh | sh
 ```
 
 From GitHub:
 
-```bash
-bash < <( curl -sL http://github.com/DavidPotter/MacConfig/raw/master/install.sh )
+```sh
+curl -sL http://github.com/DavidPotter/MacConfig/raw/master/install.sh | sh
 ```
 
 Installing in this way will do the following:
