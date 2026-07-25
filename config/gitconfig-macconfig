@@ -1,0 +1,20 @@
+# Git settings that apply ONLY inside the MacConfig repo.
+#
+# This file is pulled in by gitconfig-base via a conditional include:
+#
+#     [includeIf "gitdir:~/bin/MacConfig/"]
+#         path = ~/bin/MacConfig/config/gitconfig-macconfig
+#
+# Because the include is scoped with `gitdir:`, these settings take effect
+# only when git is operating on the MacConfig clone -- not on every repo on
+# the machine (that would be gitconfig-base itself).  Keeping the settings in
+# a tracked file (rather than this clone's untracked .git/config) means they
+# ride the dotfiles: clone MacConfig on another Mac, keep the include line in
+# ~/.gitconfig, and the same scoped behavior applies there too.
+
+[pull]
+	# Reconcile a divergent `git pull` by rebasing local commits on top of the
+	# fetched ones, keeping this personal-config repo's history linear instead
+	# of accumulating merge commits for small, cross-machine edits.  Without
+	# this, a divergent pull aborts and asks you to choose a strategy.
+	rebase = true

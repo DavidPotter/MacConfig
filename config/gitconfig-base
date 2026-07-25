@@ -30,3 +30,12 @@
 	clean = git media clean %f
 	smudge = git media smudge %f
 	required = true
+
+# Pull in settings scoped to the MacConfig repo itself.  `gitdir:` matches on
+# the repo's git directory, so gitconfig-macconfig applies only when git is
+# operating inside this clone -- not to every repo on the machine.  The `~`
+# expands to $HOME, and install.sh always clones to $HOME/bin/MacConfig, so
+# this matches on any machine regardless of username.  The trailing slash
+# matches the directory and everything under it.
+[includeIf "gitdir:~/bin/MacConfig/"]
+	path = ~/bin/MacConfig/config/gitconfig-macconfig
