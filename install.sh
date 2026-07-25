@@ -184,6 +184,57 @@ install_shell_loader()
 	echo "$REPO_NAME: wrote local stub $DST"
 }
 
+# Ensure a "runs for every shell process" rc file sources ~/.shell.d.
+#
+# ~/.bash_profile / ~/.zshrc (installed above) only run for interactive
+# shells, so tools that spawn a shell non-interactively (or bash spawning a
+# non-login interactive shell) never see the machine-local PATH/env additions
+# in ~/.shell.d (nvm, go, ...). ~/.zshenv is read by *every* zsh process --
+# interactive or not, login or not -- and ~/.bashrc is read by non-login
+# interactive bash, so sourcing ~/.shell.d there closes that gap.
+#
+# This deliberately does NOT source dotfiles/bash_profile or dotfiles/zshrc:
+# re-running full completion/prompt/alias setup on every non-interactive
+# subshell would be wasteful and, for prompt/zle setup, actively wrong
+# outside a real interactive session.
+#
+#  $1 - Destination rc file (e.g. "$HOME/.zshenv", "$HOME/.bashrc").
+install_shell_env_loader()
+{
+	local DST="$1"
+	local MARKER='"$HOME"/.shell.d/*'
+
+	if [ -f "$DST" ] && grep -qF "$MARKER" "$DST"
+	then
+		echo "$REPO_NAME: $DST already sources ~/.shell.d (leaving it intact)"
+		return
+	fi
+
+	local block
+	block="# --- MacConfig: source machine-local ~/.shell.d (added by install.sh) ---
+for f in \"\$HOME\"/.shell.d/*; do
+	[ -f \"\$f\" ] && source \"\$f\"
+done
+unset f
+# --- end MacConfig ---"
+
+	if [ -f "$DST" ]
+	then
+		local TMP
+		TMP="$(mktemp)"
+		{
+			printf '%s\n\n' "$block"
+			cat "$DST"
+		} > "$TMP"
+		cat "$TMP" > "$DST"
+		rm -f "$TMP"
+		echo "$REPO_NAME: injected ~/.shell.d loader at the top of $DST"
+	else
+		printf '%s\n' "$block" > "$DST"
+		echo "$REPO_NAME: created $DST with the ~/.shell.d loader"
+	fi
+}
+
 # Ensure ~/.gitconfig pulls in the repo's tracked Git configuration (base
 # settings + aliases).  Like the shell loaders above, ~/.gitconfig is a
 # machine-local file -- it holds your identity, GPG signing key, commit
@@ -261,6 +312,12 @@ echo '--- INSTALL SHELL LOADERS ---'
 install_shell_loader "$HOME/.bash_profile" 'source "$HOME/bin/MacConfig/dotfiles/bash_profile"'
 install_shell_loader "$HOME/.zshrc" 'source "$HOME/bin/MacConfig/dotfiles/zshrc"'
 
+# Also make ~/.zshenv (every zsh process) and ~/.bashrc (non-login
+# interactive bash) source ~/.shell.d, so tools that spawn shells outside the
+# interactive-login path still see machine-local PATH/env additions.
+install_shell_env_loader "$HOME/.zshenv"
+install_shell_env_loader "$HOME/.bashrc"
+
 # INSTALL GIT CONFIG INCLUDE
 # Make ~/.gitconfig include the repo's tracked git config (base + aliases),
 # without symlinking or clobbering the machine-local identity it holds.
@@ -284,7 +341,7 @@ done
 # Create the PowerShell config directory first if it doesn't exist.
 echo '-- CREATE POWERSHELL PROFILES ---'
 if [ ! -d "$HOME/.config/powershell" ]; then
-    mkdir "$HOME/.config/powershell"
+    mkdir -p "$HOME/.config/powershell"
 fi
 # Create symlink for profile stored in repo.
 echo ". '$LOCAL_REPO_DIR/PowerShell/profile/profile.ps1'" | tee "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1"
