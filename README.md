@@ -59,13 +59,13 @@ Installing in this way will do the following:
 Both shells load from the same repo, sharing everything that is
 shell-agnostic and differing only where bash and zsh genuinely diverge:
 
-| Path                   | Loaded by     | Contents                                                                        |
-| ---------------------- | ------------- | ------------------------------------------------------------------------------- |
-| `shell.d/`             | bash **and** zsh | Portable core: functions, environment, `PATH`, aliases, Ruby. Sourced first. |
-| `bash.d/`              | bash only     | Bash adapters: completion, history, prompt (readline/`PROMPT_COMMAND`).         |
-| `zsh.d/`               | zsh only      | Zsh adapters: completion, history, prompt, and line-editor (`zle`) keybindings. |
-| `dotfiles/bash_profile`| bash          | Loader: sources `shell.d/` then `bash.d/`, then `~/.bash.d/` machine-local.     |
-| `dotfiles/zshrc`       | zsh           | Loader: sources `shell.d/` then `zsh.d/`, then `~/.shell.d/` and `~/.zsh.d/`.    |
+| Path                    | Loaded by        | Contents                                                                        |
+| ----------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `shell.d/`              | bash **and** zsh | Portable core: functions, environment, `PATH`, aliases, Ruby. Sourced first.    |
+| `bash.d/`               | bash only        | Bash adapters: completion, history, prompt (readline/`PROMPT_COMMAND`).         |
+| `zsh.d/`                | zsh only         | Zsh adapters: completion, history, prompt, and line-editor (`zle`) keybindings. |
+| `dotfiles/bash_profile` | bash             | Loader: sources `shell.d/` then `bash.d/`, then `~/.bash.d/` machine-local.     |
+| `dotfiles/zshrc`        | zsh              | Loader: sources `shell.d/` then `zsh.d/`, then `~/.shell.d/` and `~/.zsh.d/`.   |
 
 Files in `shell.d/` and `bash.d/`/`zsh.d/` are numbered (`1-`, `2-`, ...) so
 they load in a predictable order; the numbering matches across the shared and
@@ -103,10 +103,10 @@ following packages.
 
 > The most convenient way to do this is by executing the **_install-tools.sh_** script.
 
-| Tool                     | Description                                                                                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git Completion (\*)      | Located in the [contrib directory of the git repository](https://github.com/git/git.git).                                                                     |
-| Ruby                     | If you have Ruby installed additional features are added for editing and recognizing Ruby files. Most of this is commented out as I don't currently use Ruby. |
+| Tool                | Description                                                                                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Git Completion (\*) | Located in the [contrib directory of the git repository](https://github.com/git/git.git).                                                                     |
+| Ruby                | If you have Ruby installed additional features are added for editing and recognizing Ruby files. Most of this is commented out as I don't currently use Ruby. |
 
 ## What It Gives You
 
