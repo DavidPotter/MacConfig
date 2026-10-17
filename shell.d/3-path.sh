@@ -21,8 +21,13 @@ function __add_to_path() {
     addToPathIfExists "${ANDROID_SDK_ROOT}/tools"
     addToPathIfExists "${ANDROID_SDK_ROOT}/platform-tools"
 
+    # Add the user-level tool directory to the FRONT of the path.  uv puts the
+    # `python` and `python3` commands it manages here (and other installers,
+    # such as pipx, put their commands here too); appending it would
+    # leave /usr/bin's python3 stub winning.
+    prependToPathIfExists "${HOME}/.local/bin"
+
     # Add the profile bin directory to the path.
-    addToPathIfExists "${HOME}/.local/bin"
     addToPathIfExists "${HOME}/bin"
 }
 

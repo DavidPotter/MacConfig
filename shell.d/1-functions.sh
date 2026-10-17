@@ -20,6 +20,30 @@ function addToPathIfExists() {
 }
 
 #-----------------------------------------------------------------------------
+# Puts an existing directory at the FRONT of the PATH, so its commands win over
+# same-named ones later in the PATH (e.g. uv's python/python3 in ~/.local/bin
+# must beat the /usr/bin stubs).  Unlike addToPathIfExists, an entry that is
+# already present is moved to the front rather than left where it was, so
+# re-sourcing the profile never changes the result.
+#  $1 - Directory to put first.  Ignored if it does not exist.
+#-----------------------------------------------------------------------------
+
+function prependToPathIfExists() {
+    [ -d "$1" ] || return 0
+    local rest=":${PATH}:"
+    # Drop every existing occurrence of the directory.
+    while :; do
+        case "${rest}" in
+            *":$1:"*) rest="${rest%%":$1:"*}:${rest#*":$1:"}" ;;
+            *) break ;;
+        esac
+    done
+    rest="${rest#:}"
+    rest="${rest%:}"
+    export PATH="$1${rest:+:${rest}}"
+}
+
+#-----------------------------------------------------------------------------
 # Changes the current directory to an ancestor directory n levels up.
 #  $1 - Number of ancestor directors to traverse.  Defaults to 1.
 #-----------------------------------------------------------------------------
