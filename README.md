@@ -201,12 +201,14 @@ brew install <package>
 | [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac)                    |
 | [gng](https://github.com/gdubw/gng)                                                  | Simple command-line tool for running Gradle or the Gradle wrapper script using a `gw` command |
 | [gradle](https://gradle.org/)                                                        | Build tool                                                                                    |
+| [homebrew-app](https://github.com/Homebrew/brewui)                                   | Homebrew's official macOS GUI                                                                 |
 | [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                                                |
 | [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                                         |
-| [QLMarkdown](https://github.com/sbarex/QLMarkdown)                                   | QuickLook for markdown files                                                                  |
+| [poppler](https://formulae.brew.sh/formula/poppler)                                  | PDF rendering library based on the xpdf-3.0 code base - Used by AI                            |
 | [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                                                 |
 | [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically                                  |
 | [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)                         |
+| [uv](https://docs.astral.sh/uv/)                                                     | An extremely fast Python package and project manager, written in Rust.                        |
 | [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                                             |
 | [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                                    |
 
@@ -226,12 +228,14 @@ Once an application has been installed, it will be available in the
 `Application` directory just like applications installed via the App Store
 app.
 
-| Application                                                                | Description                                                           |
-| -------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [docker](https://www.docker.com/)                                          | Tool for creating, deploying, and running applications in a container |
-| [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | Standalone application for debugging React Native applications.       |
-| [reactotron](https://github.com/infinitered/reactotron)                    | Desktop app for inspecting React JS and React Native projects         |
-| [thaw](https://formulae.brew.sh/cask/thaw)                                 | Menu bar management tool ([website](https://github.com/stonerl/Thaw)) |
+| Application                                                                    | Description                                                                             |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [docker](https://www.docker.com/)                                              | Tool for creating, deploying, and running applications in a container                   |
+| [claude-usage-tracker](https://github.com/hamed-elfayome/Claude-Usage-Tracker) | Lightweight macOS menu bar app providing real-time monitoring of Claude AI usage limits |
+| [QLMarkdown](https://github.com/sbarex/QLMarkdown)                             | QuickLook for markdown files                                                            |
+| [react-native-debugger](https://github.com/jhen0409/react-native-debugger)     | Standalone application for debugging React Native applications                          |
+| [reactotron](https://github.com/infinitered/reactotron)                        | Desktop app for inspecting React JS and React Native projects                           |
+| [thaw](https://formulae.brew.sh/cask/thaw)                                     | Menu bar management tool ([website](https://github.com/stonerl/Thaw))                   |
 
 ### Bash
 
