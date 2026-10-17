@@ -192,25 +192,25 @@ packages. You will install these using the syntax:
 brew install <package>
 ```
 
-| Tool                                                                                 | Description                                                                                   |
-| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                                    |
-| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                                         |
-| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                                         |
-| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects                               |
-| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac)                    |
-| [gng](https://github.com/gdubw/gng)                                                  | Simple command-line tool for running Gradle or the Gradle wrapper script using a `gw` command |
-| [gradle](https://gradle.org/)                                                        | Build tool                                                                                    |
-| [homebrew-app](https://github.com/Homebrew/brewui)                                   | Homebrew's official macOS GUI                                                                 |
-| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                                                |
-| [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                                         |
-| [poppler](https://formulae.brew.sh/formula/poppler)                                  | PDF rendering library based on the xpdf-3.0 code base - Used by AI                            |
-| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                                                 |
-| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically                                  |
-| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)                         |
-| [uv](https://docs.astral.sh/uv/)                                                     | An extremely fast Python package and project manager, written in Rust.                        |
-| [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                                             |
-| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                                    |
+| Tool                                                                                 | Description                                                                                                 |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| [bash](http://git.savannah.gnu.org/cgit/bash.git/)                                   | Latest version of the Bourne Again SHell (see notes below)                                                  |
+| [bash-completion](https://github.com/scop/bash-completion)                           | Command-line completion for bash (Bourne Again Shell)                                                       |
+| [carthage](https://github.com/Carthage/Carthage)                                     | Dependency manager (use CocoaPods instead if you can)                                                       |
+| [cocoapods](https://cocoapods.org/)                                                  | Dependency manager for for Swift and Objective-C Cocoa projects                                             |
+| [dos2unix](https://linux.die.net/man/1/dos2unix)                                     | Converts line endings in a file from CR/LF (Windows) to just LF (Unix/Mac)                                  |
+| [gng](https://github.com/gdubw/gng)                                                  | Simple command-line tool for running Gradle or the Gradle wrapper script using a `gw` command               |
+| [gradle](https://gradle.org/)                                                        | Build tool                                                                                                  |
+| [homebrew-app](https://github.com/Homebrew/brewui)                                   | Homebrew's official macOS GUI                                                                               |
+| [node](https://nodejs.org/)                                                          | (Node.js) a JavaScript runtime                                                                              |
+| [n](https://github.com/tj/n)                                                         | Interactively manage node.js versions                                                                       |
+| [poppler](https://formulae.brew.sh/formula/poppler)                                  | PDF rendering library based on the xpdf-3.0 code base - Used by AI                                          |
+| [swiftlint](https://github.com/realm/SwiftLint)                                      | A tool to enforce Swift style and conventions                                                               |
+| [tree](https://rschu.me/list-a-directory-with-tree-command-on-mac-os-x-3b2d4c4a4827) | Command line tool to display a directory tree hierarchically                                                |
+| [unix2dos](https://linux.die.net/man/1/unix2dos)                                     | Converts line endings in a file from LF (Unix/Mac) to CR/LF (Windows)                                       |
+| [uv](https://docs.astral.sh/uv/)                                                     | An extremely fast Python package and project manager, written in Rust.  (Installed by `install-python.sh`.) |
+| [wget](https://www.gnu.org/software/wget/)                                           | Retrieves files from a web server                                                                           |
+| [yarn](https://yarnpkg.com/en/)                                                      | Dependency management for node.js projects                                                                  |
 
 ### Applications to Install via Homebrew
 
@@ -236,6 +236,40 @@ app.
 | [react-native-debugger](https://github.com/jhen0409/react-native-debugger)     | Standalone application for debugging React Native applications                          |
 | [reactotron](https://github.com/infinitered/reactotron)                        | Desktop app for inspecting React JS and React Native projects                           |
 | [thaw](https://formulae.brew.sh/cask/thaw)                                     | Menu bar management tool ([website](https://github.com/stonerl/Thaw))                   |
+
+### Python (via uv)
+
+[uv](https://docs.astral.sh/uv/) is an extremely fast Python package and
+project manager, written in Rust, and is the recommended way to manage Python
+here.  **_install-tools.sh_** runs **_install-python.sh_**, which you can also
+run on its own (`sh ~/bin/MacConfig/install-python.sh`), for example to move to
+a newer Python later.  It does the following:
+
+- Installs `uv` with Homebrew.
+- Picks the newest stable Python that `uv` can install, unless that release is
+  less than 60 days old, in which case it uses the previous minor version.
+- Installs it with `uv python install <version> --default`, which creates the
+  `python` and `python3` commands in `~/.local/bin`.
+
+**Why wait 60 days?**  A brand-new Python feature release (3.x.0) ships before
+the rest of the ecosystem is ready.  Third-party packages, especially ones with
+compiled extensions, often have no prebuilt wheels for it yet, so installs fall
+back to building from source or fail outright, and the first patch releases
+still fix early bugs.  Waiting about two months lets that settle.  To change
+the policy, edit `MIN_AGE_DAYS` in `install-python.sh`.
+
+`~/.local/bin` is put at the front of `PATH` by `shell.d/3-path.sh`, for both
+bash and zsh, so `python` and `python3` find uv's Python ahead of the stubs in
+`/usr/bin`.  There is nothing to configure.  Do not run
+`uv python update-shell`: it would append a redundant `export PATH=...` line to
+`~/.zshenv`, `~/.bash_profile`, and `~/.bashrc`.
+
+To install manually:
+
+```bash
+brew install uv
+uv python install --default
+```
 
 ### Bash
 
