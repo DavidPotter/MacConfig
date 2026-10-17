@@ -5,6 +5,9 @@
 #   Installs files and creates symbolic links to use the tools in the
 #   MacConfig repository.
 #
+#   Requires git (on a new Mac: `xcode-select --install`).  Homebrew, Python,
+#   and the other tools are installed afterwards by install-tools.sh.
+#
 #   The follow steps are performed:
 #   - Clone the MacConfig repository to ~/bin/MacConfig.
 #   - Create symbolic links for dot files in the home directory.
@@ -20,6 +23,19 @@ clone_repo()
 	echo "--- CLONING REPO $REPO_NAME ---"
 	git clone https://github.com/DavidPotter/$REPO_NAME.git $LOCAL_REPO_DIR
 }
+
+# Git is the one hard prerequisite: it is needed to clone (and later update)
+# the repository.  On a Mac without the Xcode Command Line Tools, /usr/bin/git
+# is only a stub that pops up the installer dialog and fails, so running it
+# doubles as the check that a working git exists.  Everything else (Homebrew,
+# Python, ...) is installed afterwards by install-tools.sh.
+if ! git --version > /dev/null 2>&1
+then
+	echo '** git is not available.  Install the Xcode Command Line Tools with:' >&2
+	echo '     xcode-select --install' >&2
+	echo '   then run this script again.' >&2
+	exit 1
+fi
 
 # If the repository doesn't exist on the local disk, clone it.
 [ -d $LOCAL_REPO_DIR ] || clone_repo
